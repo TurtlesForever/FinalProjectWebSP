@@ -1,0 +1,50 @@
+/* Basic styling for the navigation menu */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Navigation bar styles */
+.menu {
+    background-color: #333;
+    padding: 10px 0;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Menu List */
+.menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* Menu Items */
+.menu ul li {
+    margin: 0 15px;
+}
+
+/* Menu Links */
+.menu ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    padding: 10px 15px;
+    transition: background 0.3s ease;
+}
+
+/* Hover Effect */
+.menu ul li a:hover {
+    background-color: #575757;
+    border-radius: 4px;
+}
