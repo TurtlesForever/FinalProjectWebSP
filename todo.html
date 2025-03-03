@@ -1,0 +1,116 @@
+<!-- Main Content -->
+<section class="section">
+    <div class="container">
+        <!-- Input Form -->
+        <div class="box">
+            <h2 class="title is-4">Add a Task</h2>
+            <form id="todo-form">
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <input class="input" type="text" placeholder="Enter your task" id="todo-input" required>
+                    </div>
+                    <div class="control">
+                        <button class="button is-primary" type="submit">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span>Add</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- To-Do List -->
+        <div class="box">
+            <h2 class="title is-4">Your Tasks</h2>
+            <ul id="todo-list">
+                <!-- Tasks will be dynamically added here -->
+            </ul>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="box">
+            <h2 class="title is-4">Progress</h2>
+            <progress class="progress is-primary" value="0" max="100" id="progress-bar">0%</progress>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p>
+            <strong>To-Do List</strong> by <a href="#">Your Name</a>. Built with Bulma and Font Awesome.
+        </p>
+    </div>
+</footer>
+
+<!-- JavaScript for Interactivity -->
+<script>
+    // Select DOM elements
+    const todoForm = document.getElementById('todo-form');
+    const todoInput = document.getElementById('todo-input');
+    const todoList = document.getElementById('todo-list');
+    const progressBar = document.getElementById('progress-bar');
+
+    // Task Array
+    let tasks = [];
+
+    // Update Progress Bar
+    function updateProgress() {
+        const completedTasks = tasks.filter(task => task.completed).length;
+        const progress = tasks.length > 0 ? (completedTasks / tasks.length) * 100 : 0;
+        progressBar.value = progress;
+        progressBar.textContent = `${progress.toFixed(0)}%`;
+    }
+
+    // Add Task
+    todoForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const taskText = todoInput.value.trim();
+        if (taskText) {
+            const task = { text: taskText, completed: false };
+            tasks.push(task);
+            renderTasks();
+            todoInput.value = '';
+        }
+    });
+
+    // Render Tasks
+    function renderTasks() {
+        todoList.innerHTML = '';
+        tasks.forEach((task, index) => {
+            const li = document.createElement('li');
+            li.className = 'box';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = task.completed;
+            checkbox.addEventListener('change', () => {
+                tasks[index].completed = checkbox.checked;
+                updateProgress();
+            });
+
+            const span = document.createElement('span');
+            span.textContent = task.text;
+            span.style.textDecoration = task.completed ? 'line-through' : 'none';
+
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'button is-small is-danger';
+            deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
+            deleteButton.addEventListener('click', () => {
+                tasks.splice(index, 1);
+                renderTasks();
+                updateProgress();
+            });
+
+            li.appendChild(checkbox);
+            li.appendChild(span);
+            li.appendChild(deleteButton);
+            todoList.appendChild(li);
+        });
+
+        updateProgress();
+    }
+</script>
