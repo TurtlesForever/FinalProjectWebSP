@@ -1,0 +1,22 @@
+fitness-tracker/
+│── src/
+│   ├── components/
+│   │   ├── Login.vue
+│   │   ├── Dashboard.vue
+│   │   ├── AdminPanel.vue
+│   │   ├── ActivityLog.vue
+│   │   ├── FriendsList.vue
+│   │   ├── Stats.vue
+│   ├── store/
+│   │   ├── userStore.js
+│   │   ├── activityStore.js
+│   ├── router/
+│   │   ├── index.js
+│   ├── firebaseConfig.js
+│   ├── App.vue
+│   ├── main.js
+│── public/
+│── index.html
+│── package.json
+│── tailwind.config.js
+│── README.md
