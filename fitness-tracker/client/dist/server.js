@@ -1,23 +1,16 @@
 const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
-
-const userRoutes = require('./routes/userRoutes');
-const activityRoutes = require('./routes/activityRoutes');
-const exerciseTypeRoutes = require('./routes/exerciseTypeRoutes');
-
+const path = require('path');
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(express.json());
+// Serve static files from the Vue client
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
-app.use('/api/users', userRoutes);
-app.use('/api/activities', activityRoutes);
-app.use('/api/exercise-types', exerciseTypeRoutes);
-
-app.get('/', (req, res) => {
-  res.send('Fitness Tracker API running');
+// Handle routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Start the server
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
