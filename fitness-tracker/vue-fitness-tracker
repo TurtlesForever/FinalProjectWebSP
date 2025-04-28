@@ -1,7 +1,6 @@
 fitness-tracker/
 │── client/
 │   ├── dist/
-│   │   ├── server.js
 │   │   ├── Vue.js
 │   ├── src/
 │   │   ├── components/
@@ -44,6 +43,7 @@ fitness-tracker/
 │   │   ├── db.js // database connection (Postgres or MongoDB)
 │   │   ├── tables.sql
 │   ├── package.json
+│   ├── server.js
 │
 │── .env
 ├── GitHub

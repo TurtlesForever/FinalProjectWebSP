@@ -33,7 +33,6 @@ fitness-tracker/
 │
 ├── client/
 │   ├── dist/
-│   │   ├── server.js
 │   │   ├── Vue.js
 │   ├── src/
 │   │   ├── components/         # Vue components (Login, Dashboard, AdminPanel, etc.)
@@ -56,6 +55,7 @@ fitness-tracker/
 │   ├── db/                      # db.js (PostgreSQL connection)
 │   │   ├── tables.sql
 │   ├── package.json
+│   ├── server.js
 │
 ├── .env
 ├── GitHub
