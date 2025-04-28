@@ -34,6 +34,7 @@ fitness-tracker/
 ├── client/
 │   ├── dist/
 │   │   ├── server.js
+│   │   ├── Vue.js
 │   ├── src/
 │   │   ├── components/         # Vue components (Login, Dashboard, AdminPanel, etc.)
 │   │   ├── services/            # Centralized API service (apiService.js)
@@ -46,6 +47,7 @@ fitness-tracker/
 │   │   ├── index.html
 │   ├── package.json
 │   ├── tailwind.config.js
+│   ├── Vite
 │
 ├── server/
 │   ├── controllers/             # User, Activity, ExerciseType controllers
@@ -55,7 +57,10 @@ fitness-tracker/
 │   │   ├── tables.sql
 │
 ├── .env
-├── README.md
+├── GitHub
+│── README.md
+├── vue-fitness-tracker
+├── vue.js
 
 🔒 Authentication & Authorization
 

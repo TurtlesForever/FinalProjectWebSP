@@ -2,6 +2,7 @@ fitness-tracker/
 │── client/
 │   ├── dist/
 │   │   ├── server.js
+│   │   ├── Vue.js
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── Login.vue
@@ -24,6 +25,7 @@ fitness-tracker/
 │   │   ├── index.html
 │   ├── package.json
 │   ├── tailwind.config.js
+│   ├── Vite
 │
 │── server/
 │   ├── controllers/
@@ -43,4 +45,7 @@ fitness-tracker/
 │   │   ├── tables.sql
 │
 │── .env
+├── GitHub
 │── README.md
+├── vue-fitness-tracker
+├── vue.js
