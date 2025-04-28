@@ -4,3 +4,48 @@ git commit -m "Initial fullstack fitness tracker commit"
 git branch -M main
 git remote add origin https://github.com/TurtlesForever/FinalProjectWebSP.git
 git push -u origin main
+git clone https://github.com/TurtlesForever/FinalProjectWebSP.git
+cd FinalProjectWebSP
+cd server
+npm install
+cd ../client
+npm install
+npm start
+npm run serve
+cd server
+npm start
+npm run serve
+cd client
+npm start
+npm run serve
+
+mkdir -p fitness-tracker/client/src/components
+mkdir -p fitness-tracker/client/src/services
+mkdir -p fitness-tracker/client/src/store
+mkdir -p fitness-tracker/client/src/router
+mkdir -p fitness-tracker/client/public
+mkdir -p fitness-tracker/server/controllers
+mkdir -p fitness-tracker/server/models
+mkdir -p fitness-tracker/server/routes
+mkdir -p fitness-tracker/server/db
+
+touch fitness-tracker/client/src/components/Login.vue
+touch fitness-tracker/client/src/components/Dashboard.vue
+touch fitness-tracker/client/src/components/AdminPanel.vue
+touch fitness-tracker/client/src/components/ActivityLog.vue
+touch fitness-tracker/client/src/components/FriendsList.vue
+touch fitness-tracker/client/src/components/Stats.vue
+
+touch fitness-tracker/client/src/store/userStore.js
+touch fitness-tracker/client/src/store/activityStore.js
+touch fitness-tracker/client/src/router/index.js
+touch fitness-tracker/client/src/firebaseConfig.js
+touch fitness-tracker/client/src/App.vue
+touch fitness-tracker/client/src/main.js
+touch fitness-tracker/client/public/index.html
+touch fitness-tracker/client/package.json
+touch fitness-tracker/client/tailwind.config.js
+
+touch fitness-tracker/server/server.js
+touch fitness-tracker/.env
+touch fitness-tracker/README.md
