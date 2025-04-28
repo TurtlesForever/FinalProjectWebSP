@@ -43,6 +43,7 @@ fitness-tracker/
 │   ├── db/
 │   │   ├── db.js // database connection (Postgres or MongoDB)
 │   │   ├── tables.sql
+│   ├── package.json
 │
 │── .env
 ├── GitHub

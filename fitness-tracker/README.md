@@ -55,6 +55,7 @@ fitness-tracker/
 │   ├── routes/                  # Routes for Users, Activities, Exercise Types
 │   ├── db/                      # db.js (PostgreSQL connection)
 │   │   ├── tables.sql
+│   ├── package.json
 │
 ├── .env
 ├── GitHub
