@@ -32,6 +32,8 @@ Hosting: Render (Frontend + Backend)
 fitness-tracker/
 │
 ├── client/
+│   ├── dist/
+│   │   ├── server.js
 │   ├── src/
 │   │   ├── components/         # Vue components (Login, Dashboard, AdminPanel, etc.)
 │   │   ├── services/            # Centralized API service (apiService.js)
@@ -50,7 +52,7 @@ fitness-tracker/
 │   ├── models/                  # User, Activity, ExerciseType models
 │   ├── routes/                  # Routes for Users, Activities, Exercise Types
 │   ├── db/                      # db.js (PostgreSQL connection)
-│   ├── server.js
+│   │   ├── tables.sql
 │
 ├── .env
 ├── README.md
