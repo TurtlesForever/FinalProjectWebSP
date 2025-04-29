@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
-// https://vitejs.dev/config/
+// Vite configuration
 export default defineConfig({
   plugins: [vue()],
-  root: './',  // The root of your client app
+  root: './',  // Ensure Vite uses the correct root directory
   build: {
-    outDir: 'dist',  // Where to output the built files
+    outDir: '../dist',  // Output folder relative to the root project
+    emptyOutDir: true,
   },
 });

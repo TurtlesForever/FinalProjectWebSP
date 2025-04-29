@@ -5,9 +5,11 @@
     "build": "vite build",
     "start": "vite"
   },
-  "devDependencies": {
-    "vite": "^4.x.x",
+  "dependencies": {
     "vue": "^3.x.x",
+    "vite": "^4.x.x"
+  },
+  "devDependencies": {
     "@vitejs/plugin-vue": "^3.x.x"
   }
 }
