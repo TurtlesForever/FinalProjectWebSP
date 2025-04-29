@@ -1,17 +1,22 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+
+// Set the port from environment or default to 3000
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from the Vue client
-app.use(express.static(path.join(__dirname, '../client/dist')));
+// Absolute path to the built Vue app
+const distPath = path.join(__dirname, '../client/dist');
 
-// Handle routing
+// Serve static files (HTML, CSS, JS, etc.)
+app.use(express.static(distPath));
+
+// Catch-all route to support client-side routing (Vue Router)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
-// Start the server
+// Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
