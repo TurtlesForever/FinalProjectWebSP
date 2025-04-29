@@ -3,9 +3,8 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
 export default defineConfig({
-  base: './', // Ensures correct asset paths in production
+  base: './', // crucial for static asset paths on Render
   plugins: [vue()],
-  root: './',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -16,8 +15,9 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true,
     chunkSizeWarningLimit: 600,
-    rollupOptions: {
-      external: ['firebase/app'],
-    },
+    // Remove this if you're not using Firebase via CDN
+    // rollupOptions: {
+    //   external: ['firebase/app'],
+    // },
   },
 });
