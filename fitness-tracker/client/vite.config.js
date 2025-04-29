@@ -1,19 +1,10 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import vue from '@vitejs/plugin-vue';
-import path from 'path';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  base: './', // Ensures correct relative paths for GitHub Pages
-  plugins: [vue()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src'),
-    },
-  },
+  plugins: [react()],
   build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-    sourcemap: true,
+    outDir: '../server/public', // must match how the backend serves static files
   },
-});
+})
