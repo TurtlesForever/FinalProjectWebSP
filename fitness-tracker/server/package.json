@@ -1,13 +1,13 @@
 {
-    "name": "fitness-tracker-server",
-    "version": "1.0.0",
-    "main": "server.js",
-    "dependencies": {
-      "express": "^4.17.1",
-      "pg": "^8.6.0",
-      "jsonwebtoken": "^8.5.1"
-    },
-    "scripts": {
-      "start": "node server.js"
-    }
-  }  
+  "name": "fitness-tracker-server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.6.0",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
