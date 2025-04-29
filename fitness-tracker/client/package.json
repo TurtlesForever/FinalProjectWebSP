@@ -6,10 +6,10 @@
     "start": "vite"
   },
   "dependencies": {
-    "vue": "^3.x.x",
+    "vue": "^4.x.x",
     "vite": "^4.x.x"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^3.x.x"
+    "@vitejs/plugin-vue": "^4.x.x"
   }
 }
