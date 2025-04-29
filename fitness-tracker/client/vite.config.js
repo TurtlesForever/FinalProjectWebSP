@@ -9,12 +9,10 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, 'src'), // <-- Add this!
     },   
-  }, 
-  build: {
+    },
+    build: {
     outDir: '../dist',
     emptyOutDir: true,
-  },
-  build: {
     rollupOptions: {
       external: ['firebase/app'],
     },

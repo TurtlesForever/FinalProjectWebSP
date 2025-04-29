@@ -1,4 +1,3 @@
-import firebase from 'firebase/app';
 import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import 'firebase/auth';
 import 'firebase/firestore';
