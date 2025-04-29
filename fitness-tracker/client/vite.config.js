@@ -15,6 +15,8 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       external: ['firebase/app'],
+    sourcemap: true,
+    chunkSizeWarningLimit: 600,
     },
   },
 });
