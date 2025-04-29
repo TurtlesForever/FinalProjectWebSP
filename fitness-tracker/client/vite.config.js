@@ -2,7 +2,8 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
-export default defineConfig({ 
+export default defineConfig({
+  base: './', // Important so paths resolve correctly in production
   plugins: [vue()],
   root: './',
   resolve: {
@@ -13,8 +14,8 @@ export default defineConfig({
   build: {
     outDir: 'dist',             // Build inside /client/dist
     emptyOutDir: true,
-    sourcemap: true,             // Correct placement
-    chunkSizeWarningLimit: 600,  // Correct placement
+    sourcemap: true,            // Optional: helpful for debugging
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       external: ['firebase/app'],
     },
