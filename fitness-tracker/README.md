@@ -40,6 +40,8 @@ fitness-tracker/
 │   │   ├── router/        # Vue Router config
 │   │   └── firebaseConfig.js (optional)
 │   ├── dist/              # Built files (after npm run build)
+│   │   ├── index.html
+│   │
 │   ├── App.vue
 │   ├── main.js
 │   ├── vite.config.js

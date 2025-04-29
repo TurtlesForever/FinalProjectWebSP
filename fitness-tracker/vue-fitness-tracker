@@ -1,6 +1,7 @@
 fitness-tracker/
 │── client/
 │   ├── dist/
+│   │   ├── index.html
 │   │   ├── Vue.js
 │   ├── node_modules/
 │   ├── src/
