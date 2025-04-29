@@ -2,6 +2,7 @@ fitness-tracker/
 │── client/
 │   ├── dist/
 │   │   ├── Vue.js
+│   ├── node_modules/
 │   ├── src/
 │   ├── index.html
 │   │   ├── components/
@@ -21,9 +22,15 @@ fitness-tracker/
 │   │   ├── firebaseConfig.js   // if using Firebase authentication (optional)
 │   │   ├── App.vue
 │   │   ├── main.js
+│   ├── package-lock.json
 │   ├── package.json
+│   ├── postcss.config.js
 │   ├── tailwind.config.js
 │   ├── Vite
+│   ├── vite.config.js
+│
+├── node_modules/
+│   ├── node_modules/
 │
 │── server/
 │   ├── controllers/
@@ -34,6 +41,8 @@ fitness-tracker/
 │   │   ├── userModel.js
 │   │   ├── activityModel.js
 │   │   ├── exerciseTypeModel.js
+│   ├── middleware/
+│   │   ├── authenticateToken.js
 │   ├── routes/
 │   │   ├── userRoutes.js
 │   │   ├── activityRoutes.js
@@ -41,11 +50,14 @@ fitness-tracker/
 │   ├── db/
 │   │   ├── db.js // database connection (Postgres or MongoDB)
 │   │   ├── tables.sql
+│   ├── package-lock.json
 │   ├── package.json
 │   ├── server.js
 │
 │── .env
 ├── GitHub
+├── package-lock.json
+├── package.json
 │── README.md
 ├── vue-fitness-tracker
 ├── vue.js
