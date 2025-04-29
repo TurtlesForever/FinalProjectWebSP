@@ -1,21 +1,17 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import AutoImport from 'unplugin-auto-import/vite';
+import path from 'path'; // <-- Add this!
 
 export default defineConfig({
-  plugins: [
-    vue(),
-    AutoImport({
-      imports: [
-        'vue',        // Auto-imports like ref, computed
-        'pinia',      // Auto-imports like defineStore, storeToRefs
-      ],
-      dts: './auto-imports.d.ts',  // Generates TypeScript typings (optional but recommended)
-    }),
-  ],
+  plugins: [vue()],
   root: './',
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'), // <-- Add this!
+    },
+  },
   build: {
-    outDir: 'dist',
+    outDir: '../dist',
     emptyOutDir: true,
   },
 });
