@@ -35,6 +35,7 @@ fitness-tracker/
 │   ├── dist/
 │   │   ├── Vue.js
 │   ├── src/
+│   ├── index.html
 │   │   ├── components/         # Vue components (Login, Dashboard, AdminPanel, etc.)
 │   │   ├── services/            # Centralized API service (apiService.js)
 │   │   ├── store/               # Pinia stores for user and activity state
@@ -42,7 +43,6 @@ fitness-tracker/
 │   │   ├── firebaseConfig.js    # (Optional) Firebase setup if used
 │   │   ├── App.vue
 │   │   ├── main.js
-│   │   ├── index.html
 │   ├── package.json
 │   ├── tailwind.config.js
 │   ├── Vite

@@ -3,6 +3,7 @@ fitness-tracker/
 │   ├── dist/
 │   │   ├── Vue.js
 │   ├── src/
+│   ├── index.html
 │   │   ├── components/
 │   │   │   ├── Login.vue
 │   │   │   ├── Dashboard.vue
@@ -20,7 +21,6 @@ fitness-tracker/
 │   │   ├── firebaseConfig.js   // if using Firebase authentication (optional)
 │   │   ├── App.vue
 │   │   ├── main.js
-│   │   ├── index.html
 │   ├── package.json
 │   ├── tailwind.config.js
 │   ├── Vite

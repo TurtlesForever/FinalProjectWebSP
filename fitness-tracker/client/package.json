@@ -2,7 +2,12 @@
   "name": "fitness-tracker-client",
   "version": "1.0.0",
   "scripts": {
-    "build": "vue-cli-service build",
-    "start": "vue-cli-service serve"
+    "build": "vite build",
+    "start": "vite"
+  },
+  "devDependencies": {
+    "vite": "^4.x.x",
+    "vue": "^3.x.x",
+    "@vitejs/plugin-vue": "^3.x.x"
   }
 }
