@@ -1,113 +1,91 @@
-🏋️‍♂️ Fitness Tracker App
+## 🏋️‍♂️ Fitness Tracker App
 
-A full-stack fitness tracker app built with Vue 3, Pinia, Express.js, PostgreSQL, and TailwindCSS.
-Users can log in, track activities, view statistics, and connect with friends. Admins can manage users and activity types.
+A full-stack fitness tracker built with Vue 3, Pinia, Express.js, PostgreSQL, and TailwindCSS.
+Users can log in, track activities, view statistics, connect with friends, and admins can manage users and exercise types.
 
-🚀 Live Demo
+## 🚀 Live Demo
 
 I’ve completed the Fitness Tracker App as part of my final project. The app is fully functional with a front-end built in Vue 3, utilizing TailwindCSS for styling, and the back-end is powered by Node.js and PostgreSQL. You can check out the live app on Render and explore the source code on GitHub.
 
-🔗 Deployed on Render: [Fitness Tracker App](https://finalprojectwebsp.onrender.com)
+🔗 Deployed on Render: [Fitness Tracker App](https://final-fitness-tracker-app.onrender.com)
 🔗 GitHub Repository: [TurtlesForever/FinalProjectWebSP](https://github.com/TurtlesForever/FinalProjectWebSP/tree/main)
 
-📌 Features
+## 📌 Features
 
-✔️ User Authentication: Secure login system with role-based access (User/Admin) using JWT.
-✔️ Personalized Dashboard: Users can view and manage their own activity logs.
-✔️ Admin Panel: Admins can manage users and exercise types.
-✔️ Activity Management: Users can add, edit, and delete their workouts.
-✔️ Friends Feature: View and connect with friends’ activity logs.
-✔️ Statistics Page: Visualize workout stats (totals, averages).
-✔️ Secure Storage: All data stored safely in a PostgreSQL database.
+✔️ User Authentication — Secure login with JWT and role-based access (User/Admin).
+✔️ Personalized Dashboard — Manage and view individual fitness logs.
+✔️ Admin Panel — Manage users and available exercise types.
+✔️ Activity Management — Add, edit, delete workouts.
+✔️ Friends Feature — View and connect with friends' activity logs.
+✔️ Statistics Page — Visualize workout totals and averages.
+✔️ Secure Storage — PostgreSQL database handling all persistent data.
 
-🛠️ Tech Stack
+## 🛠️ Tech Stack
 
 Frontend: Vue 3, Pinia, Vue Router, TailwindCSS
 Backend: Node.js, Express.js, PostgreSQL, JWT
 State Management: Pinia
-Hosting: Render (Frontend + Backend)
+Hosting: Render (Fullstack Deployment)
 
-📂 Project Structure
+## 📂 Project Structure
 
 fitness-tracker/
-│
-├── client/
-│   ├── dist/
-│   │   ├── Vue.js
+├── client/               # Frontend Vue app
 │   ├── src/
-│   ├── index.html
-│   │   ├── components/         # Vue components (Login, Dashboard, AdminPanel, etc.)
-│   │   ├── services/            # Centralized API service (apiService.js)
-│   │   ├── store/               # Pinia stores for user and activity state
-│   │   ├── router/              # Vue Router setup
-│   │   ├── firebaseConfig.js    # (Optional) Firebase setup if used
-│   │   ├── App.vue
-│   │   ├── main.js
-│   ├── package.json
+│   │   ├── components/    # Login, Dashboard, AdminPanel, etc.
+│   │   ├── services/      # Centralized API calls (apiService.js)
+│   │   ├── store/         # Pinia stores (user, activity)
+│   │   ├── router/        # Vue Router config
+│   │   └── firebaseConfig.js (optional)
+│   ├── dist/              # Built files (after npm run build)
+│   ├── App.vue
+│   ├── main.js
+│   ├── vite.config.js
 │   ├── tailwind.config.js
-│   ├── Vite
+│   └── package.json
 │
-├── server/
-│   ├── controllers/             # User, Activity, ExerciseType controllers
-│   ├── models/                  # User, Activity, ExerciseType models
-│   ├── routes/                  # Routes for Users, Activities, Exercise Types
-│   ├── db/                      # db.js (PostgreSQL connection)
-│   │   ├── tables.sql
-│   ├── package.json
-│   ├── server.js
+├── server/               # Backend Express server
+│   ├── controllers/       # Users, Activities, ExerciseTypes
+│   ├── models/            # Database models
+│   ├── routes/            # API endpoints
+│   ├── db/                # PostgreSQL connection and tables.sql
+│   ├── server.js          # Main Express server
+│   └── package.json
 │
-├── .env
-├── GitHub
-│── README.md
-├── vue-fitness-tracker
-├── vue.js
+├── .env                   # Environment variables
+└── README.md              # This file
 
-🔒 Authentication & Authorization
+## 🔒 Authentication & Authorization
 
-JWT tokens used for verifying users.
-Users can only modify their own data.
-Admins have additional privileges to manage users.
-Access control rules are strictly enforced at the server level.
+JWT tokens securely authenticate users.
+Users can only modify their own activities.
+Admins have additional privileges.
+Strict access control enforced at the server level.
 
-📄 Environment Variables Setup
+## 📄 Environment Variables Setup
 
 1. Clone the Repository
 
 git clone https://github.com/TurtlesForever/FinalProjectWebSP.git
 cd fitness-tracker
 
-2. Set up environment variables (.env):
+2. Create and configure a .env file:
 
-DATABASE_URL=your_postgres_connection_string
-JWT_SECRET=your_jwt_secret_key
-FIREBASE_API_KEY=your_firebase_key (if using)
-RENDER_EXTERNAL_URL=https://your-render-app-url.com
+Example .env:
 
-For example:
-
-cp .env.example .env
-require('dotenv').config();
-
-# 📂 .env.example
-
-# PostgreSQL database URL
+# PostgreSQL
 DATABASE_URL=postgresql://username:password@hostname:port/databasename
 
-# JWT secret for signing authentication tokens
-JWT_SECRET=your_super_secret_key_here
+# JWT
+JWT_SECRET=your_jwt_secret_key
 
-# Render deployment base URL (for example, if your app is hosted on Render)
-RENDER_URL=https://your-app-on-render.com
-
-# (Optional) Firebase API config if you use Firebase Authentication
+# Firebase (optional)
 VITE_FIREBASE_API_KEY=your-firebase-api-key
 VITE_FIREBASE_AUTH_DOMAIN=your-firebase-auth-domain
 VITE_FIREBASE_PROJECT_ID=your-firebase-project-id
-VITE_FIREBASE_STORAGE_BUCKET=your-firebase-storage-bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=your-firebase-sender-id
-VITE_FIREBASE_APP_ID=your-firebase-app-id
 
-# Port your server will run on (defaults to 3000 or 8080 typically)
+# Deployment
+RENDER_URL=https://your-app-on-render.com
 PORT=8080
 
 3. Install dependencies:
@@ -117,35 +95,37 @@ npm install
 cd ../server
 npm install
 
-4. Start development servers:
+4. Run locally:
 
 cd client
 npm run dev
 cd ../server
-npm run start
+npm start
 
-5. Push to GitHub and Deploy on Render 🚀
+## ✅ Project Requirements Checklist
 
-✨ License
+✔️ Full-stack app (client + server)
+✔️ Three controllers with matching models
+✔️ Full CRUD functionality
+✔️ Secure database integration (PostgreSQL)
+✔️ MVC structure
+✔️ JWT Authentication & Authorization
+✔️ Centralized API communication
+✔️ Proper .env and environment management
+✔️ Live deployment on Render
+✔️ Clean, responsive UI
+
+## 📣 Final Notes
+
+This project evolves the original frontend-only fitness tracker into a full-fledged full-stack application, with secure authentication, scalable architecture, and professional practices including:
+
+Environment configuration
+MVC backend structure
+Separation of concerns
+Secure user-specific data handling
+
+## ✨ License
 
 This project is licensed for educational purposes.
 
-✅ Project Requirements (based on assignment)
-
-✔️ Fullstack app (client + server)
-✔️ Three controllers (Users, Activities, Exercise Types) each with matching models
-✔️ CRUD functionality for all main resources
-✔️ Database (PostgreSQL) with centralized access
-✔️ Proper MVC structure
-✔️ JWT Authentication and Authorization
-✔️ Centralized client-server communication
-✔️ .env file and environment variables properly managed
-✔️ Hosted and working on Render
-✔️ Clean UI for managing users, activities, stats
-
-📣 Final Notes
-
-This project is a complete upgrade from the frontend-only version to a robust fullstack application.
-It follows professional coding practices, including separation of concerns, secure data handling, environment variable use, and user-based data ownership enforcement.
-
-🙌 Thank You for Checking Out the Fitness Tracker!
+## 🙌 Thank you for checking out the Fitness Tracker App!
