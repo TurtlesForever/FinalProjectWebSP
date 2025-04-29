@@ -4,11 +4,11 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [vue()],
-  root: '.', // Set the root to current directory
+  root: '.', // the folder where index.html lives
   build: {
-    outDir: 'dist', // Output to 'dist' (already default, but good to be explicit)
+    outDir: 'dist',
     rollupOptions: {
-      input: path.resolve(__dirname, 'index.html'), // Tell Vite exactly where index.html is
+      input: path.resolve(__dirname, 'index.html'),
     },
   },
 })
