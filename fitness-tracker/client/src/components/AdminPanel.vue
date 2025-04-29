@@ -42,7 +42,6 @@
 <script>
 import { useUserStore } from '@/store/userStore';
 import { db, collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from '@/firebaseConfig';
-import bcrypt from 'bcryptjs'; // Import bcrypt
 
 export default {
   data() {
