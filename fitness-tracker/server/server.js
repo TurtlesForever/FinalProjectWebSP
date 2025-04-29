@@ -2,13 +2,12 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-// Use the port Render expects
 const PORT = process.env.PORT || 10000;
 
-// Serve the built Vue frontend
+// Serve static files from the Vite build folder
 app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
-// Handle client-side routing (important!)
+// For any other route, send back index.html (for Vue router)
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
 });

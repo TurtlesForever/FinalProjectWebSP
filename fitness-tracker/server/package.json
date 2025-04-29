@@ -1,6 +1,7 @@
 {
   "name": "fitness-tracker-server",
   "version": "1.0.0",
+  "type": "commonjs",
   "main": "server.js",
   "dependencies": {
     "bcryptjs": "^3.0.2",
