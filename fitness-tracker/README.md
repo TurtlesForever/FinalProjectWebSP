@@ -10,6 +10,8 @@ I’ve completed the Fitness Tracker App as part of my final project. The app is
 🔗 Deployed on Render: [Fitness Tracker App](https://final-fitness-tracker-app.onrender.com)
 🔗 GitHub Repository: [TurtlesForever/FinalProjectWebSP](https://github.com/TurtlesForever/FinalProjectWebSP/tree/main)
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
 ## 📌 Features
 
 ✔️ User Authentication — Secure login with JWT and role-based access (User/Admin).
@@ -52,6 +54,7 @@ fitness-tracker/
 │   ├── server.js          # Main Express server
 │   └── package.json
 │
+├── render.yaml
 ├── .env                   # Environment variables
 └── README.md              # This file
 

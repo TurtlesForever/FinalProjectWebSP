@@ -54,6 +54,7 @@ fitness-tracker/
 │   ├── package.json
 │   ├── server.js
 │
+├── render.yaml
 │── .env
 ├── GitHub
 ├── package-lock.json
