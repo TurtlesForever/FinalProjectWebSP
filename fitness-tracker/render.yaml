@@ -1,12 +1,10 @@
 services:
   - type: web
-    name: fitness-tracker-app
+    name: final-fitness-tracker-app
     env: node
-    buildCommand: cd client && npm install && npm run build
-    startCommand: cd server && npm install && node server.js
+    rootDir: server
+    buildCommand: cd ../client && npm install && npm run build && cd ../server && npm install
+    startCommand: npm start
     envVars:
-      - key: DATABASE_URL
-        value: your_database_url
-      - key: JWT_SECRET
-        value: your_jwt_secret
-      # Add other environment variables as needed
+      - key: PORT
+        value: 10000  # or just let Render set this automatically
