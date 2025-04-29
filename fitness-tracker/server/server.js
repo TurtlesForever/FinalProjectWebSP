@@ -4,6 +4,7 @@ const app = express();
 
 const PORT = process.env.PORT || 10000;
 
+// Make sure this path is correct!
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 app.get('*', (req, res) => {
