@@ -20,7 +20,6 @@ fitness-tracker/
 │   │   ├── firebaseConfig.js   // if using Firebase authentication (optional)
 │   │   ├── App.vue
 │   │   ├── main.js
-│   ├── public/
 │   │   ├── index.html
 │   ├── package.json
 │   ├── tailwind.config.js
