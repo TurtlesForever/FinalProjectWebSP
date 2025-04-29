@@ -1,10 +1,29 @@
 services:
   - type: web
-    name: final-fitness-tracker-app
+    name: fitness-tracker-client
     env: node
-    rootDir: server
-    buildCommand: cd ../client && npm install && npm run build && cd ../server && npm install
-    startCommand: npm start
+    buildCommand: |
+      cd client
+      npm install
+      npm run build
+    startCommand: |
+      cd client
+      npm run serve
     envVars:
-      - key: PORT
-        value: 10000  # or just let Render set this automatically
+      - key: NODE_ENV
+        value: production
+    plan: free
+
+  - type: web
+    name: fitness-tracker-server
+    env: node
+    buildCommand: |
+      cd server
+      npm install
+    startCommand: |
+      node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+    plan: free
+    healthCheckPath: "/health"
