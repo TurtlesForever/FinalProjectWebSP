@@ -11,6 +11,7 @@
     "vue": "^3.2.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.0.0"
+    "@vitejs/plugin-vue": "^4.0.0",
+    "unplugin-auto-import": "^19.1.2"
   }
 }
