@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Absolute path to the built Vue app
-const distPath = path.join(__dirname, '../client/dist');
+const distPath = path.join(__dirname, '..', 'client', 'dist');
 
 // Serve static files (HTML, CSS, JS, etc.)
 app.use(express.static(distPath));
@@ -25,4 +25,9 @@ app.use((err, req, res, next) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
+
+app.use((err, req, res, next) => {
+  console.error('Express error:', err.stack);
+  res.status(500).send('Something went wrong!');
 });

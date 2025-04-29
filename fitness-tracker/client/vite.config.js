@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
 export default defineConfig({
-  base: './', // ✅ This is crucial for correct relative paths in production
+  base: './',
   plugins: [vue()],
   root: './',
   resolve: {
