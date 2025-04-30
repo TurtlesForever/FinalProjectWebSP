@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div class="login-container">
     <form @submit.prevent="handleLogin">
       <input v-model="email" type="email" placeholder="Email" required />
@@ -39,5 +39,3 @@ export default {
 <style scoped>
 /* Add your styling here */
 </style>
-
-<router-link to="/register">Don’t have an account? Register here</router-link>
