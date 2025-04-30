@@ -13,9 +13,9 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../server/public', // Make sure the output dir is correct
+    outDir: 'dist', // default
     emptyOutDir: true,
-    sourcemap: true, // Enable source maps to debug JS issues
-    chunkSizeWarningLimit: 2000 // Increase the limit if needed
+    sourcemap: true,
+    chunkSizeWarningLimit: 2000
   },
 });
