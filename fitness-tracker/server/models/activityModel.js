@@ -1,23 +1,10 @@
-const db = require('../db/db');
+const mongoose = require('mongoose');
 
-async function createActivity(userId, exerciseTypeId, duration) {
-  const result = await db.query(
-    'INSERT INTO activities (user_id, exercise_type_id, duration) VALUES ($1, $2, $3) RETURNING *',
-    [userId, exerciseTypeId, duration]
-  );
-  return result.rows[0];
-}
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  email:    { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role:     { type: String, enum: ['user', 'admin'], default: 'user' },
+});
 
-async function getActivitiesByUser(userId) {
-  const result = await db.query(
-    'SELECT * FROM activities WHERE user_id = $1 ORDER BY date DESC',
-    [userId]
-  );
-  return result.rows;
-}
-
-async function deleteActivity(id, userId) {
-  await db.query('DELETE FROM activities WHERE id = $1 AND user_id = $2', [id, userId]);
-}
-
-module.exports = { createActivity, getActivitiesByUser, deleteActivity };
+module.exports = mongoose.model('User', userSchema);&#8203;:contentReference[oaicite:8]{index=8}

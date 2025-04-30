@@ -1,24 +1,43 @@
 const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 const path = require('path');
+
+dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Serve static files from the 'public' directory
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('MongoDB connected'))
+.catch((err) => console.error(err));
+
+// Routes
+const userRoutes = require('./routes/userRoutes');
+const activityRoutes = require('./routes/activityRoutes');
+const exerciseTypeRoutes = require('./routes/exerciseTypeRoutes');
+
+app.use('/api/users', userRoutes);
+app.use('/api/activities', activityRoutes);
+app.use('/api/exercise-types', exerciseTypeRoutes);
+
+// Serve static files from the Vue app
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Catch-all route to serve index.html for client-side routing
+// Handle SPA
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-});
-
-app.get('/api/stats/:id', (req, res) => {
-  res.json({
-    steps: 7421,
-    calories: 480,
-    minutes: 32,
-  });
-});
+});&#8203;:contentReference[oaicite:6]{index=6}

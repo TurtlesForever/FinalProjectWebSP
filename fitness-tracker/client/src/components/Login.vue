@@ -39,3 +39,5 @@ export default {
 <style scoped>
 /* Add your styling here */
 </style>
+
+<router-link to="/register">Don’t have an account? Register here</router-link>

@@ -1,16 +1,10 @@
-const db = require('../db/db');
+const mongoose = require('mongoose');
 
-async function createExerciseType(name) {
-  const result = await db.query(
-    'INSERT INTO exercise_types (name) VALUES ($1) RETURNING *',
-    [name]
-  );
-  return result.rows[0];
-}
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  email:    { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role:     { type: String, enum: ['user', 'admin'], default: 'user' },
+});
 
-async function getAllExerciseTypes() {
-  const result = await db.query('SELECT * FROM exercise_types');
-  return result.rows;
-}
-
-module.exports = { createExerciseType, getAllExerciseTypes };
+module.exports = mongoose.model('User', userSchema);&#8203;:contentReference[oaicite:8]{index=8}
