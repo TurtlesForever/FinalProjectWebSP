@@ -1,52 +1,29 @@
 <template>
-  <div>
-    <h2>Activity Statistics</h2>
-    <p>Total Activities: {{ totalActivities }}</p>
-    <p>Total Duration: {{ totalDuration }} minutes</p>
-    <p>Total Calories: {{ totalCalories }} kcal</p>
-  </div>
+  <section>
+    <h2>Your Stats</h2>
+    <ul>
+      <li>Steps Today: {{ stats.steps }}</li>
+      <li>Calories Burned: {{ stats.calories }}</li>
+      <li>Workout Time: {{ stats.minutes }} minutes</li>
+    </ul>
+  </section>
 </template>
 
-<script>
-import { useActivityStore } from '@/store/activityStore';
+<script setup>
+import { ref, onMounted } from 'vue';
 
-export default {
-  computed: {
-    totalActivities() {
-      return this.activities.length;
-    },
-    totalDuration() {
-      return this.activities.reduce((sum, activity) => sum + activity.duration, 0);
-    },
-    totalCalories() {
-      return this.activities.reduce((sum, activity) => sum + activity.calories, 0);
-    }
-  },
-  data() {
-    return {
-      activities: []
-    };
-  },
-  methods: {
-    async fetchActivities() {
-      const activityStore = useActivityStore();
-      this.activities = activityStore.activities;
-    }
-  },
-  created() {
-    this.fetchActivities();
+const stats = ref({ steps: 0, calories: 0, minutes: 0 });
+
+onMounted(async () => {
+  try {
+    const response = await fetch('/api/stats/1');
+    stats.value = await response.json();
+  } catch (err) {
+    console.error('Failed to load stats:', err);
   }
-};
+});
 </script>
 
-<section v-if="stats">
-  <h2>Your Stats</h2>
-  <ul>
-    <li>Steps Today: {{ stats.steps }}</li>
-    <li>Calories Burned: {{ stats.calories }}</li>
-    <li>Workout Time: {{ stats.minutes }} minutes</li>
-  </ul>
-</section>
-<section v-else>
-  <p>Loading stats...</p>
-</section>
+<style scoped>
+/* Your styles here */
+</style>
