@@ -7,4 +7,4 @@ const userSchema = new mongoose.Schema({
   role:     { type: String, enum: ['user', 'admin'], default: 'user' },
 });
 
-module.exports = mongoose.model('User', userSchema);&#8203;:contentReference[oaicite:8]{index=8}
+module.exports = mongoose.model('User', userSchema);
