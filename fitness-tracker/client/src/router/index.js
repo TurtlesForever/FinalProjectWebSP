@@ -32,4 +32,4 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-export default router;&#8203;:contentReference[oaicite:20]{index=20}
+export default router;
