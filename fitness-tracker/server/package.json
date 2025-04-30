@@ -12,7 +12,6 @@
   },
   "scripts": {
     "build": "cd client && npm install && npm run build && mkdir -p ../server/public && cp -a dist/. ../server/public/",
-    "start": "cd server && node server.js",
-    "postinstall": "cd server && npm install"
+    "start": "cd server && node server.js"
   }
 }
