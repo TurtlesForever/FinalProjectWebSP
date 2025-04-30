@@ -8,10 +8,10 @@ const PORT = process.env.PORT || 10000;
 app.use(cors());
 app.use(express.json());
 
-// Serve static frontend files
+// ✅ Serve static files from the /public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Fallback to index.html for React/Vite routing
+// ✅ Fallback to index.html for client-side routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
