@@ -1,17 +1,18 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-app.use(cors());
-app.use(express.json());
+// Needed for __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// ✅ Serve static frontend from "public" directory
+// ✅ Serve the frontend from the build output
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ✅ Fallback: Always serve index.html for React Router
+// ✅ Fallback to index.html for client-side routing (e.g., Vue Router)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
