@@ -6,6 +6,7 @@ import AdminPanel from '@/components/AdminPanel.vue';
 import FriendsList from '@/components/FriendsList.vue';
 import Stats from '@/components/Stats.vue';
 import Register from '../views/Register.vue';
+import Register from '@/components/Register.vue';
 
 const routes = [
   { path: '/', component: Login },
