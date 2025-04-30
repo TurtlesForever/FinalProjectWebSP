@@ -5,15 +5,15 @@ import Dashboard from '@/components/Dashboard.vue';
 import AdminPanel from '@/components/AdminPanel.vue';
 import FriendsList from '@/components/FriendsList.vue';
 import Stats from '@/components/Stats.vue';
-import Register from '../views/Register.vue';
-import Register from '@/components/Register.vue';
+import Register from '@/views/Register.vue';
 
 const routes = [
   { path: '/', component: Login },
+  { path: '/register', name: 'Register', component: Register },
   { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
   { 
-    path: '/admin', 
-    component: AdminPanel, 
+    path: '/admin',
+    component: AdminPanel,
     meta: { requiresAuth: true, requiresAdmin: true },
     beforeEnter: (to, from, next) => {
       const userStore = useUserStore();
@@ -25,8 +25,7 @@ const routes = [
   },
   { path: '/friends', component: FriendsList, meta: { requiresAuth: true } },
   { path: '/stats', component: Stats, meta: { requiresAuth: true } },
-  { path: '/register', name: 'Register', component: Register },
-  { path: '/:pathMatch(.*)*', redirect: '/' },  // Catch-all route
+  { path: '/:pathMatch(.*)*', redirect: '/' },
 ];
 
 const router = createRouter({
