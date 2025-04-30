@@ -13,5 +13,6 @@ export default defineConfig({
   build: {
     outDir: '../server/public', // Make sure the output dir is correct
     emptyOutDir: true,
+    chunkSizeWarningLimit: 1000
   },
 });

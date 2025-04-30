@@ -24,13 +24,20 @@ const routes = [
   { path: '/friends', component: FriendsList, meta: { requiresAuth: true } },
   { path: '/stats', component: Stats, meta: { requiresAuth: true } },
 
-  // ✅ Catch-all redirect to home
+  // Catch-all redirect to home
   { path: '/:pathMatch(.*)*', redirect: '/' }
 ];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
+  routes: [
+    { path: '/', component: Login },
+    { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
+    { path: '/admin', component: AdminPanel, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/friends', component: FriendsList, meta: { requiresAuth: true } },
+    { path: '/stats', component: Stats, meta: { requiresAuth: true } },
+    { path: '/:pathMatch(.*)*', redirect: '/' },  // Catch-all route for unhandled paths
+  ],
 });
 
 export default router;
