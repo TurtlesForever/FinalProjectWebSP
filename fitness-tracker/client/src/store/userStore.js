@@ -1,31 +1,17 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    user: null,
+    currentUser: null, // or default structure
   }),
   actions: {
-    async register(username, password) {
+    async fetchCurrentUser() {
       try {
-        const response = await axios.post('/api/register', {
-          username,
-          password,   // just send plain password
-        });
-        this.user = response.data.user;
-      } catch (error) {
-        console.error('Registration failed', error);
-      }
-    },
-    async login(username, password) {
-      try {
-        const response = await axios.post('/api/login', {
-          username,
-          password,  // just send plain password
-        });
-        this.user = response.data.user;
-      } catch (error) {
-        console.error('Login failed', error);
+        const res = await fetch('/api/user'); // Adjust to your actual backend route
+        const data = await res.json();
+        this.currentUser = data;
+      } catch (err) {
+        console.error('Failed to fetch user:', err);
       }
     },
   },

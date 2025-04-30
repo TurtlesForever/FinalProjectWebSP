@@ -14,3 +14,11 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+app.get('/api/stats/:id', (req, res) => {
+  res.json({
+    steps: 7421,
+    calories: 480,
+    minutes: 32,
+  });
+});

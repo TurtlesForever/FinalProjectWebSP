@@ -38,3 +38,15 @@ export default {
   }
 };
 </script>
+
+<section v-if="stats">
+  <h2>Your Stats</h2>
+  <ul>
+    <li>Steps Today: {{ stats.steps }}</li>
+    <li>Calories Burned: {{ stats.calories }}</li>
+    <li>Workout Time: {{ stats.minutes }} minutes</li>
+  </ul>
+</section>
+<section v-else>
+  <p>Loading stats...</p>
+</section>
