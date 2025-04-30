@@ -7,9 +7,12 @@
     "bcryptjs": "^3.0.2",
     "express": "^4.17.1",
     "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.14.1",
     "pg": "^8.6.0"
   },
   "scripts": {
-    "start": "node server.js"
+    "build": "cd client && npm install && npm run build && mkdir -p ../server/public && cp -a dist/. ../server/public/",
+    "start": "cd server && node server.js",
+    "postinstall": "cd server && npm install"
   }
 }

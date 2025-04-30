@@ -33,11 +33,12 @@ app.use('/api/exercise-types', exerciseTypeRoutes);
 // Serve static files from the Vue app
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Health check route for Render
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 // Handle SPA
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
 });
