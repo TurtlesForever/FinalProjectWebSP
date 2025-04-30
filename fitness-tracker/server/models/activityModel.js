@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  email:    { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  role:     { type: String, enum: ['user', 'admin'], default: 'user' },
+const activitySchema = new mongoose.Schema({
+  userId:   { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  type:     { type: String, required: true },
+  duration: { type: Number, required: true },
+  date:     { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.models.Activity || mongoose.model('Activity', activitySchema);

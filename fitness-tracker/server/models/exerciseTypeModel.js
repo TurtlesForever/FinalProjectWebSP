@@ -1,10 +1,8 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  email:    { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  role:     { type: String, enum: ['user', 'admin'], default: 'user' },
+const exerciseTypeSchema = new mongoose.Schema({
+  name:     { type: String, required: true, unique: true },
+  category: { type: String }, // e.g., 'strength', 'cardio', etc.
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.models.ExerciseType || mongoose.model('ExerciseType', exerciseTypeSchema);

@@ -1,4 +1,4 @@
-const exerciseTypeModel = require('../models/exerciseTypeModel');
+const ExerciseType = require('../models/exerciseTypeModel');
 
 async function createExerciseType(req, res) {
   const { name } = req.body;

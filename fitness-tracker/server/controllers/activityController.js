@@ -1,4 +1,4 @@
-const activityModel = require('../models/activityModel');
+const Activity = require('../models/activityModel');
 
 async function createActivity(req, res) {
   const { exerciseTypeId, duration } = req.body;
