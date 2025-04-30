@@ -1,15 +1,16 @@
+import { initializeApp } from 'firebase/app';
 import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 import 'firebase/auth';
 import 'firebase/firestore';
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID"
+  apiKey: 'your-api-key',
+  authDomain: 'your-auth-domain',
+  projectId: 'your-project-id',
+  storageBucket: 'your-storage-bucket',
+  messagingSenderId: 'your-msg-sender-id',
+  appId: 'your-app-id'
 };
 
 // Initialize Firebase
@@ -18,3 +19,4 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 export { db, auth, collection, addDoc, getDocs, updateDoc, doc, deleteDoc };
+export default app;
