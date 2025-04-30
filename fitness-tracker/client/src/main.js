@@ -6,7 +6,7 @@ import router from './router';
 import './index.css'; // if you are using TailwindCSS
 
 const app = createApp(App);
-createApp(App).mount('#app');
+createApp(App).use(router).mount('#app');
 console.log("App mounted");
 
 app.use(createPinia());
