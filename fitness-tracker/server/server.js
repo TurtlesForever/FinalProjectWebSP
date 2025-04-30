@@ -1,19 +1,27 @@
-import express from 'express';
-import path from 'path';
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+
 const app = express();
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 3000;
 
-// Serve static files from the frontend build
-app.use(express.static(path.join(__dirname, "../client/dist")));
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// API routes would go here...
-// app.use("/api", yourRoutes);
-
-// Fallback to index.html for React Router
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+// Example API route
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK' });
 });
 
+// Fallback to index.html for SPA routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Start the server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
