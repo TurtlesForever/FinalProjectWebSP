@@ -7,6 +7,7 @@ import './index.css'; // if you are using TailwindCSS
 
 const app = createApp(App);
 createApp(App).mount('#app');
+console.log("App mounted");
 
 app.use(createPinia());
 app.use(router);
