@@ -5,6 +5,7 @@ import Dashboard from '@/components/Dashboard.vue';
 import AdminPanel from '@/components/AdminPanel.vue';
 import FriendsList from '@/components/FriendsList.vue';
 import Stats from '@/components/Stats.vue';
+import Register from '../views/Register.vue';
 
 const routes = [
   { path: '/', component: Login },
@@ -25,7 +26,12 @@ const routes = [
   { path: '/stats', component: Stats, meta: { requiresAuth: true } },
 
   // Catch-all redirect to home
-  { path: '/:pathMatch(.*)*', redirect: '/' }
+  { path: '/:pathMatch(.*)*', redirect: '/' },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register,
+  },
 ];
 
 const router = createRouter({
