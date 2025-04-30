@@ -1,12 +1,17 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import path from 'path';
 
 export default defineConfig({
   plugins: [vue()],
-  base: '/', // Ensure this is present
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'), // Ensure this alias is defined
+    },
+  },
+  base: '/', // Make sure base is set correctly
   build: {
-    outDir: '../server/public',
+    outDir: '../server/public', // Make sure the output dir is correct
     emptyOutDir: true,
-    chunkSizeWarningLimit: 1000,
   },
 });
