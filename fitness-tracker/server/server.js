@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Health check route for Render
 app.get('/health', (req, res) => {
-  res.status(200).send('OK');
+  res.json({ status: 'OK' });
 });
 
 // Handle SPA

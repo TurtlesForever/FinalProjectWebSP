@@ -19,18 +19,18 @@ export default {
     };
   },
   methods: {
-    async submitForm() {
-      try {
-        await API.post('/users/register', {
-          username: this.username,
-          email: this.email,
-          password: this.password,
-        });
-        // Redirect or show success message
-      } catch (error) {
-        // Handle error
-      }
-    },
+  async submitForm() {
+    try {
+      await API.post('/users/register', {
+        username: this.username,
+        email: this.email,
+        password: this.password,
+      });
+      // Handle successful registration (e.g., redirect or show a success message)
+    } catch (error) {
+      // Handle error (e.g., display error message to the user)
+    }
   },
-};
+}
+}
 </script>&#8203;:contentReference[oaicite:24]{index=24}
