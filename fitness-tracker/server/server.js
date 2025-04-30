@@ -1,16 +1,14 @@
 const express = require('express');
 const path = require('path');
-
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Serve the static build from public
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Fallback to index.html for SPA routing
-app.use((req, res, next) => {
-  console.log(`[STATIC REQUEST] ${req.method} ${req.url}`);
-  next();
+// Fallback to index.html for all non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => {
