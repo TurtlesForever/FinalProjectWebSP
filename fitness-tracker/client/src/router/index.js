@@ -23,10 +23,13 @@ const routes = [
   },
   { path: '/friends', component: FriendsList, meta: { requiresAuth: true } },
   { path: '/stats', component: Stats, meta: { requiresAuth: true } },
+
+  // ✅ Catch-all redirect to home
+  { path: '/:pathMatch(.*)*', redirect: '/' }
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 
