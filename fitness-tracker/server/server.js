@@ -8,8 +8,9 @@ const PORT = process.env.PORT || 10000;
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Fallback to index.html for SPA routing
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.use((req, res, next) => {
+  console.log(`[STATIC REQUEST] ${req.method} ${req.url}`);
+  next();
 });
 
 app.listen(PORT, () => {
