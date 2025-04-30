@@ -6,8 +6,8 @@ import router from './router';
 import './index.css'; // if you are using TailwindCSS
 
 const app = createApp(App);
-createApp(App).use(router).mount('#app');
-console.log("App mounted");
+console.log("Bootstrapping Vue app...");
+createApp(App).mount('#app');
 
 app.use(createPinia());
 app.use(router);
