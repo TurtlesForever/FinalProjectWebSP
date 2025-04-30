@@ -9,7 +9,6 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'), // Ensure this alias is defined
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },

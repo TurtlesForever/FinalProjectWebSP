@@ -4,10 +4,10 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Serve static files from the public directory
+// Serve static files from 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Catch-all route to support client-side routing
+// Catch-all: send index.html for SPA routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
