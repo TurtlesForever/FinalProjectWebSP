@@ -49,6 +49,7 @@ export default {
 }
 
 </script>
+import API from '@/services/api';
 
 <style scoped>
 .form-container {

@@ -1,4 +1,4 @@
-import API from '@/api';
+import API from '@/services/api';
 import axios from 'axios';
 
 const API = axios.create({
