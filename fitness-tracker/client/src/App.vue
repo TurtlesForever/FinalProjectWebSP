@@ -3,7 +3,9 @@
     <nav>
       <router-link to="/">Home</router-link> |
       <router-link to="/register">Register</router-link> |
-      <router-link to="/login">Login</router-link>
+      <router-link to="/login">Login</router-link> |
+      <router-link to="/activities">Activities</router-link> |
+      <router-link to="/exercise-types">Exercise Types</router-link>
     </nav>
     <router-view></router-view>
   </div>
@@ -13,7 +15,17 @@
 nav {
   margin-bottom: 20px;
 }
+
 router-link {
   margin-right: 10px;
+}
+
+#app {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+router-view {
+  padding-top: 20px;
 }
 </style>

@@ -1,35 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Login from '@/components/Login.vue';
-import Dashboard from '@/components/Dashboard.vue';
-import AdminPanel from '@/components/AdminPanel.vue';
-import FriendsList from '@/components/FriendsList.vue';
-import Stats from '@/components/Stats.vue';
+import Home from '../views/Home.vue';
+import Register from '../views/Register.vue';
+import Login from '../views/Login.vue';
+import Activities from '../views/Activities.vue';
+import ExerciseTypes from '../views/ExerciseTypes.vue';
 
 const routes = [
-  { path: '/', component: Login },
-  { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
-  { path: '/admin', component: AdminPanel, meta: { requiresAuth: true, requiresAdmin: true } },
-  { path: '/friends', component: FriendsList, meta: { requiresAuth: true } },
-  { path: '/stats', component: Stats, meta: { requiresAuth: true } },
+  { path: '/', component: Home },
+  { path: '/register', component: Register },
+  { path: '/login', component: Login },
+  { path: '/activities', component: Activities },
+  { path: '/exercise-types', component: ExerciseTypes },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
-
-// Navigation guards
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('token');
-  const userRole = localStorage.getItem('role');
-
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next('/');
-  } else if (to.meta.requiresAdmin && userRole !== 'admin') {
-    next('/dashboard');
-  } else {
-    next();
-  }
 });
 
 export default router;
