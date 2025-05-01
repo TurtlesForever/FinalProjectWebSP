@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import Activities from '../views/Activities.vue';
-import AddActivity from '../views/AddActivity.vue';
+const AddActivity = () => import('../views/AddActivity.vue');
 import ExerciseTypes from '../views/ExerciseTypes.vue';
 import AddExerciseType from '../views/AddExerciseType.vue';
 
