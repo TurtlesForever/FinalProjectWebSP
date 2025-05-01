@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import API from '@/api';
+import API from '@/services/api';
 
 export default {
   name: 'Login',
