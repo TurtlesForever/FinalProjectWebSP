@@ -1,32 +1,20 @@
 const Activity = require('../models/activityModel');
 
-async function createActivity(req, res) {
-  const { exerciseTypeId, duration } = req.body;
+exports.createActivity = async (req, res) => {
   try {
-    const activity = await activityModel.createActivity(req.userId, exerciseTypeId, duration);
+    const activity = new Activity({ ...req.body, user: req.user.id });
+    await activity.save();
     res.status(201).json(activity);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(400).json({ error: 'Failed to create activity' });
   }
-}
+};
 
-async function getMyActivities(req, res) {
+exports.getActivities = async (req, res) => {
   try {
-    const activities = await activityModel.getActivitiesByUser(req.userId);
+    const activities = await Activity.find({ user: req.user.id });
     res.json(activities);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(400).json({ error: 'Failed to fetch activities' });
   }
-}
-
-async function deleteMyActivity(req, res) {
-  const { id } = req.params;
-  try {
-    await activityModel.deleteActivity(id, req.userId);
-    res.status(204).send();
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-}
-
-module.exports = { createActivity, getMyActivities, deleteMyActivity };
+};

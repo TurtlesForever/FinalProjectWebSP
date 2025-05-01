@@ -1,6 +1,15 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
+const authController = require('../controllers/authController');
+const authMiddleware = require('../middleware/authMiddleware');
+
+router.get('/protected', authMiddleware, (req, res) => {
+  res.json({ message: 'This is a protected route' });
+});
+
+router.post('/register', authController.register);
+router.post('/login', authController.login);
 
 // Example: User registration
 router.post('/register', async (req, res) => {
