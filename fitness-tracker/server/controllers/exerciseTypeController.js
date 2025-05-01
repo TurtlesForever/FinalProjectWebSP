@@ -2,44 +2,58 @@ const ExerciseType = require('../models/exerciseTypeModel');
 
 // Create a new exercise type
 exports.createExerciseType = async (req, res) => {
+  const { name } = req.body;
+
   try {
-    const { name, description } = req.body;
-    const exerciseType = new ExerciseType({ name, description });
-    await exerciseType.save();
-    res.status(201).json(exerciseType);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const newExerciseType = new ExerciseType({ name });
+    await newExerciseType.save();
+    res.status(201).json({ message: 'Exercise type created successfully', exerciseType: newExerciseType });
+  } catch (error) {
+    console.error('Failed to create exercise type:', error);
+    res.status(500).json({ message: 'Failed to create exercise type, please try again' });
   }
 };
 
-// Get all exercise types
+// Fetch all exercise types
 exports.getExerciseTypes = async (req, res) => {
   try {
     const exerciseTypes = await ExerciseType.find();
     res.status(200).json(exerciseTypes);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error('Failed to fetch exercise types:', error);
+    res.status(500).json({ message: 'Failed to fetch exercise types' });
   }
 };
 
-// Update exercise type by ID
+// Update an exercise type by ID
 exports.updateExerciseType = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+
   try {
-    const updated = await ExerciseType.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updated) return res.status(404).json({ message: 'Exercise type not found' });
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const updatedExerciseType = await ExerciseType.findByIdAndUpdate(id, { name }, { new: true });
+    if (!updatedExerciseType) {
+      return res.status(404).json({ message: 'Exercise type not found' });
+    }
+    res.status(200).json({ message: 'Exercise type updated successfully', exerciseType: updatedExerciseType });
+  } catch (error) {
+    console.error('Failed to update exercise type:', error);
+    res.status(500).json({ message: 'Failed to update exercise type' });
   }
 };
 
-// Delete exercise type by ID
+// Delete an exercise type by ID
 exports.deleteExerciseType = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const deleted = await ExerciseType.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ message: 'Exercise type not found' });
-    res.json({ message: 'Exercise type deleted' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const deletedExerciseType = await ExerciseType.findByIdAndDelete(id);
+    if (!deletedExerciseType) {
+      return res.status(404).json({ message: 'Exercise type not found' });
+    }
+    res.status(200).json({ message: 'Exercise type deleted successfully' });
+  } catch (error) {
+    console.error('Failed to delete exercise type:', error);
+    res.status(500).json({ message: 'Failed to delete exercise type' });
   }
 };

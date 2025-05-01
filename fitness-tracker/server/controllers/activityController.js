@@ -1,77 +1,100 @@
 const Activity = require('../models/activityModel');
-const ExerciseType = require('../models/exerciseTypeModel');
 
 // Create a new activity
 exports.createActivity = async (req, res) => {
+  const { userId } = req.user;  // Assuming the JWT token provides user info
+  const { exerciseType, duration, caloriesBurned } = req.body;
+
   try {
-    const { type, duration, caloriesBurned, notes } = req.body;
-    const activity = new Activity({
-      user: req.user.id, // From verified JWT
-      type, 
-      duration, 
-      caloriesBurned, 
-      notes,
+    const newActivity = new Activity({
+      user: userId,
+      type: exerciseType, // Ensure exerciseType is valid
+      duration,
+      caloriesBurned,
     });
-    await activity.save();
-    res.status(201).json(activity);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+
+    await newActivity.save();
+    res.status(201).json({ message: 'Activity created successfully', activity: newActivity });
+  } catch (error) {
+    console.error('Failed to create activity:', error);
+    res.status(500).json({ message: 'Failed to create activity, please try again' });
   }
 };
 
-// Get all activities for current user
+// Fetch activities for a user
 exports.getActivitiesForUser = async (req, res) => {
   try {
-    const activities = await Activity.find({ user: req.user.id }).populate('type');
+    const activities = await Activity.find({ user: req.user.userId });
     res.status(200).json(activities);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error('Failed to fetch activities:', error);
+    res.status(500).json({ message: 'Failed to fetch activities' });
   }
 };
 
-// Update activity by ID
+// Update an activity by ID
 exports.updateActivity = async (req, res) => {
+  const { id } = req.params;
+  const { exerciseType, duration, caloriesBurned } = req.body;
+
   try {
-    const updated = await Activity.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updated) return res.status(404).json({ message: 'Activity not found' });
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const updatedActivity = await Activity.findByIdAndUpdate(
+      id,
+      { exerciseType, duration, caloriesBurned },
+      { new: true }
+    );
+    if (!updatedActivity) {
+      return res.status(404).json({ message: 'Activity not found' });
+    }
+    res.status(200).json({ message: 'Activity updated successfully', activity: updatedActivity });
+  } catch (error) {
+    console.error('Failed to update activity:', error);
+    res.status(500).json({ message: 'Failed to update activity' });
   }
 };
 
-// Delete activity by ID
+// Delete an activity by ID
 exports.deleteActivity = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const deleted = await Activity.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ message: 'Activity not found' });
-    res.json({ message: 'Activity deleted' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const deletedActivity = await Activity.findByIdAndDelete(id);
+    if (!deletedActivity) {
+      return res.status(404).json({ message: 'Activity not found' });
+    }
+    res.status(200).json({ message: 'Activity deleted successfully' });
+  } catch (error) {
+    console.error('Failed to delete activity:', error);
+    res.status(500).json({ message: 'Failed to delete activity' });
   }
 };
 
-// Custom Function - Get total calories burned by a user
+// Get total calories burned by the user
 exports.getTotalCaloriesBurnedByUser = async (req, res) => {
   try {
-    const activities = await Activity.find({ user: req.user.id });
-    const totalCalories = activities.reduce((sum, activity) => sum + activity.caloriesBurned, 0);
-    res.json({ totalCalories });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const totalCalories = await Activity.aggregate([
+      { $match: { user: req.user.userId } },
+      { $group: { _id: null, totalCalories: { $sum: '$caloriesBurned' } } }
+    ]);
+    res.status(200).json(totalCalories[0] || { totalCalories: 0 });
+  } catch (error) {
+    console.error('Failed to calculate total calories burned:', error);
+    res.status(500).json({ message: 'Failed to calculate total calories burned' });
   }
 };
 
-// Custom Function - Get activities by date range
+// Get activities within a date range
 exports.getActivitiesByDateRange = async (req, res) => {
-  const { start, end } = req.query; // Expecting start and end date in query params
+  const { startDate, endDate } = req.query;
+
   try {
     const activities = await Activity.find({
-      user: req.user.id,
-      date: { $gte: new Date(start), $lte: new Date(end) }
+      user: req.user.userId,
+      date: { $gte: new Date(startDate), $lte: new Date(endDate) }
     });
     res.status(200).json(activities);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error('Failed to fetch activities by date range:', error);
+    res.status(500).json({ message: 'Failed to fetch activities by date range' });
   }
 };
