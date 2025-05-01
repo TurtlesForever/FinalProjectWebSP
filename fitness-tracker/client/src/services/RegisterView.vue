@@ -1,6 +1,6 @@
-const registrationData = {
-  email: registerEmail.value,
-  password: registerPassword.value,
+const credentials = {
+  username: loginUsername.value,
+  password: loginPassword.value,
 };
 
 try {

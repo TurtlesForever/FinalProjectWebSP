@@ -1,3 +1,14 @@
+<template>
+  <div>
+    <h2>Register</h2>
+    <form @submit.prevent="registerUser">
+      <input v-model="user.username" placeholder="Username" required />
+      <input v-model="user.password" type="password" placeholder="Password" required />
+      <button type="submit">Register</button>
+    </form>
+  </div>
+</template>
+
 <script>
 import API from '@/api';
 
@@ -5,22 +16,18 @@ export default {
   name: 'Register',
   data() {
     return {
-      user: {
-        username: '',
-        email: '',
-        password: '',
-      },
+      user: { username: '', password: '' },
     };
   },
   methods: {
     async registerUser() {
       try {
-        const response = await API.post('/users/register', this.user);
-        localStorage.setItem('token', response.data.token);
+        const res = await API.post('/users/register', this.user);
+        localStorage.setItem('token', res.data.token);
         this.$router.push('/');
-      } catch (error) {
-        console.error('Registration failed:', error.response?.data || error.message);
-        alert('Registration failed, try again.');
+      } catch (err) {
+        console.error('Registration failed:', err);
+        alert('Registration failed. Try again.');
       }
     },
   },

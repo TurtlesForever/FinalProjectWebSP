@@ -1,11 +1,15 @@
 <template>
-  <div>
+  <div class="activities-page">
     <h2>Your Activities</h2>
-    <ul>
+
+    <ul v-if="activities.length">
       <li v-for="a in activities" :key="a._id">
-        {{ a.type }} - {{ a.duration }} mins ({{ new Date(a.date).toLocaleDateString() }})
+        <strong>{{ a.type }}</strong> – {{ a.duration }} mins 
+        ({{ formatDate(a.date) }})
       </li>
     </ul>
+
+    <p v-else>No activities logged yet.</p>
   </div>
 </template>
 
@@ -13,6 +17,7 @@
 import { apiFetch } from '../api';
 
 export default {
+  name: 'Activities',
   data() {
     return {
       activities: [],
@@ -25,5 +30,23 @@ export default {
       alert('Failed to fetch activities: ' + e.message);
     }
   },
+  methods: {
+    formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString();
+    },
+  },
 };
 </script>
+
+<style scoped>
+.activities-page {
+  margin: 20px;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  margin-bottom: 10px;
+}
+</style>

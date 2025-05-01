@@ -3,90 +3,62 @@
     <h2>Activities</h2>
     <button @click="showCreateForm = !showCreateForm">Create Activity</button>
 
-    <div v-if="showCreateForm">
-      <form @submit.prevent="createActivity">
-        <input v-model="newActivity.name" placeholder="Activity Name" required />
-        <input v-model="newActivity.duration" type="number" placeholder="Duration (mins)" required />
-        <input v-model="newActivity.calories" type="number" placeholder="Calories Burned" required />
-        <button type="submit">Create Activity</button>
-      </form>
-    </div>
+    <form v-if="showCreateForm" @submit.prevent="createActivity">
+      <input v-model="newActivity.name" placeholder="Name" required />
+      <input v-model="newActivity.duration" type="number" placeholder="Duration (mins)" required />
+      <input v-model="newActivity.calories" type="number" placeholder="Calories" required />
+      <button type="submit">Create</button>
+    </form>
 
-    <div v-if="activities.length > 0">
-      <h3>Activity List</h3>
-      <ul>
-        <li v-for="activity in activities" :key="activity._id">
-          <span>{{ activity.name }} ({{ activity.duration }} mins)</span>
-          <span>{{ activity.calories }} kcal</span>
-          <button @click="deleteActivity(activity._id)">Delete</button>
-          <button @click="editActivity(activity)">Edit</button>
-        </li>
-      </ul>
-    </div>
-    <div v-if="editingActivity">
-      <h3>Edit Activity</h3>
-      <form @submit.prevent="updateActivity">
-        <input v-model="editingActivity.name" required />
-        <input v-model="editingActivity.duration" type="number" required />
-        <input v-model="editingActivity.calories" type="number" required />
-        <button type="submit">Update Activity</button>
-        <button @click="cancelEdit">Cancel</button>
-      </form>
-    </div>
+    <ul v-if="activities.length">
+      <li v-for="activity in activities" :key="activity._id">
+        {{ activity.name }} - {{ activity.duration }} mins, {{ activity.calories }} kcal
+        <button @click="editActivity(activity)">Edit</button>
+        <button @click="deleteActivity(activity._id)">Delete</button>
+      </li>
+    </ul>
+
+    <form v-if="editingActivity" @submit.prevent="updateActivity">
+      <input v-model="editingActivity.name" required />
+      <input v-model="editingActivity.duration" type="number" required />
+      <input v-model="editingActivity.calories" type="number" required />
+      <button type="submit">Update</button>
+      <button @click="cancelEdit">Cancel</button>
+    </form>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import API from '@/api';
 
 export default {
   name: 'Activities',
   data() {
     return {
       activities: [],
-      newActivity: {
-        name: '',
-        duration: '',
-        calories: '',
-      },
-      showCreateForm: false,
+      newActivity: { name: '', duration: '', calories: '' },
       editingActivity: null,
+      showCreateForm: false,
     };
   },
   methods: {
     async fetchActivities() {
-      try {
-        const response = await axios.get('/api/activities');
-        this.activities = response.data;
-      } catch (error) {
-        console.error('Error fetching activities:', error);
-      }
+      const res = await API.get('/activities');
+      this.activities = res.data;
     },
     async createActivity() {
-      try {
-        await axios.post('/api/activities', this.newActivity);
-        this.fetchActivities(); // Refresh the list
-        this.newActivity = { name: '', duration: '', calories: '' }; // Reset the form
-      } catch (error) {
-        console.error('Error creating activity:', error);
-      }
+      await API.post('/activities', this.newActivity);
+      this.newActivity = { name: '', duration: '', calories: '' };
+      this.fetchActivities();
     },
     async updateActivity() {
-      try {
-        await axios.put(`/api/activities/${this.editingActivity._id}`, this.editingActivity);
-        this.fetchActivities(); // Refresh the list
-        this.editingActivity = null; // Reset editing state
-      } catch (error) {
-        console.error('Error updating activity:', error);
-      }
+      await API.put(`/activities/${this.editingActivity._id}`, this.editingActivity);
+      this.editingActivity = null;
+      this.fetchActivities();
     },
-    async deleteActivity(activityId) {
-      try {
-        await axios.delete(`/api/activities/${activityId}`);
-        this.fetchActivities(); // Refresh the list
-      } catch (error) {
-        console.error('Error deleting activity:', error);
-      }
+    async deleteActivity(id) {
+      await API.delete(`/activities/${id}`);
+      this.fetchActivities();
     },
     editActivity(activity) {
       this.editingActivity = { ...activity };
@@ -96,11 +68,7 @@ export default {
     },
   },
   created() {
-    this.fetchActivities(); // Fetch activities on component load
+    this.fetchActivities();
   },
 };
 </script>
-
-<style scoped>
-/* Styling */
-</style>

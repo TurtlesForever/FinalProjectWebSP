@@ -1,19 +1,29 @@
 <template>
   <div>
     <h2>Admin Panel</h2>
+
+    <!-- Add or Edit User Form -->
     <div>
-      <h3>Add New User</h3>
-      <form @submit.prevent="addUser">
-        <input v-model="newUser.username" type="text" placeholder="Username" required />
-        <input v-model="newUser.password" type="password" placeholder="Password" required />
-        <select v-model="newUser.role">
+      <h3>{{ selectedUser ? 'Edit User' : 'Add New User' }}</h3>
+      <form @submit.prevent="selectedUser ? updateUser() : addUser()">
+        <input v-model="formUser.username" type="text" placeholder="Username" required />
+        <input
+          v-if="!selectedUser"
+          v-model="formUser.password"
+          type="password"
+          placeholder="Password"
+          required
+        />
+        <select v-model="formUser.role">
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
-        <button type="submit">Add User</button>
+        <button type="submit">{{ selectedUser ? 'Update' : 'Add' }}</button>
+        <button type="button" @click="cancelEdit" v-if="selectedUser">Cancel</button>
       </form>
     </div>
 
+    <!-- Users Table -->
     <div>
       <h3>Users</h3>
       <table>
@@ -40,57 +50,80 @@
 </template>
 
 <script>
-import { useUserStore } from '@/store/userStore';
-import { db, collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from '@/firebaseConfig';
+import {
+  db,
+  collection,
+  addDoc,
+  doc,
+  updateDoc,
+  deleteDoc,
+  getDocs,
+} from '@/firebaseConfig';
+import bcrypt from 'bcryptjs';
 
 export default {
   data() {
     return {
-      users: [], // To store users fetched from Firestore
-      newUser: {
+      users: [],
+      formUser: {
         username: '',
         password: '',
         role: 'user',
       },
-      selectedUser: null, // To store the user to be edited
+      selectedUser: null,
     };
   },
   methods: {
     async fetchUsers() {
-      const userCollection = collection(db, "users");
-      const querySnapshot = await getDocs(userCollection);
-      this.users = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+      const querySnapshot = await getDocs(collection(db, 'users'));
+      this.users = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
     },
     async addUser() {
-      const { username, password, role } = this.newUser;
-      const hashedPassword = await bcrypt.hash(password, 10); // Hash password before saving
-      await addDoc(collection(db, "users"), {
+      const { username, password, role } = this.formUser;
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await addDoc(collection(db, 'users'), {
         username,
         password: hashedPassword,
         role,
-        friends: [], // Empty friends list initially
+        friends: [],
       });
-      this.newUser = { username: '', password: '', role: 'user' }; // Clear the form
-      this.fetchUsers(); // Refresh users list
+      this.resetForm();
+      await this.fetchUsers();
     },
     async updateUser() {
-      if (this.selectedUser) {
-        const userRef = doc(db, "users", this.selectedUser.id);
-        await updateDoc(userRef, {
-          username: this.selectedUser.username,
-          role: this.selectedUser.role,
-        });
-        this.selectedUser = null; // Reset the selected user after update
-        this.fetchUsers(); // Refresh users list
-      }
+      const userRef = doc(db, 'users', this.selectedUser.id);
+      await updateDoc(userRef, {
+        username: this.formUser.username,
+        role: this.formUser.role,
+      });
+      this.resetForm();
+      await this.fetchUsers();
     },
     async deleteUser(userId) {
-      const userRef = doc(db, "users", userId);
-      await deleteDoc(userRef);
-      this.fetchUsers(); // Refresh users list
+      await deleteDoc(doc(db, 'users', userId));
+      await this.fetchUsers();
     },
     editUser(user) {
-      this.selectedUser = { ...user }; // Copy user data to selectedUser for editing
+      this.selectedUser = user;
+      this.formUser = {
+        username: user.username,
+        role: user.role,
+        password: '', // not editable
+      };
+    },
+    cancelEdit() {
+      this.resetForm();
+    },
+    resetForm() {
+      this.selectedUser = null;
+      this.formUser = {
+        username: '',
+        password: '',
+        role: 'user',
+      };
     },
   },
   created() {
@@ -100,5 +133,19 @@ export default {
 </script>
 
 <style scoped>
-/* You can add your styling here */
+table {
+  margin-top: 1rem;
+  border-collapse: collapse;
+  width: 100%;
+}
+td, th {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+}
+form {
+  margin-bottom: 1rem;
+}
+button {
+  margin-right: 0.5rem;
+}
 </style>

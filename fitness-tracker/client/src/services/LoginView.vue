@@ -1,5 +1,5 @@
 const credentials = {
-  email: loginEmail.value,
+  username: loginUsername.value,
   password: loginPassword.value,
 };
 

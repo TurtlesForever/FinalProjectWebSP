@@ -1,20 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/Home.vue'; // Make sure this path is correct
-import Register from '../views/Register.vue';
-import Login from '../views/Login.vue';
+import Home from '../views/Home.vue';
 import Activities from '../views/Activities.vue';
+import AddActivity from '../views/AddActivity.vue';
 import ExerciseTypes from '../views/ExerciseTypes.vue';
+import AddExerciseType from '../views/AddExerciseType.vue';
 
 const routes = [
-  { path: '/', component: Home },
-  { path: '/register', component: Register },
-  { path: '/login', component: Login },
-  { path: '/activities', component: Activities },
-  { path: '/exercisetypes', component: ExerciseTypes },
+  { path: '/', name: 'Home', component: Home },
+  { path: '/activities', name: 'Activities', component: Activities },
+  { path: '/add-activity', name: 'AddActivity', component: AddActivity },
+  { path: '/exercise-types', name: 'ExerciseTypes', component: ExerciseTypes },
+  { path: '/add-exercise-type', name: 'AddExerciseType', component: AddExerciseType },
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 

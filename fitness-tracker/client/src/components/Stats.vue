@@ -1,7 +1,9 @@
 <template>
   <section>
     <h2>Your Stats</h2>
-    <ul>
+    <div v-if="loading">Loading stats...</div>
+    <div v-else-if="error">Error loading stats: {{ error }}</div>
+    <ul v-else>
       <li>Steps Today: {{ stats.steps }}</li>
       <li>Calories Burned: {{ stats.calories }}</li>
       <li>Workout Time: {{ stats.minutes }} minutes</li>
@@ -13,17 +15,33 @@
 import { ref, onMounted } from 'vue';
 
 const stats = ref({ steps: 0, calories: 0, minutes: 0 });
+const loading = ref(true);
+const error = ref(null);
 
 onMounted(async () => {
   try {
     const response = await fetch('/api/stats/1');
+    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
     stats.value = await response.json();
   } catch (err) {
-    console.error('Failed to load stats:', err);
+    error.value = err.message;
+  } finally {
+    loading.value = false;
   }
 });
 </script>
 
 <style scoped>
-/* Your styles here */
+section {
+  padding: 1rem;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  margin-bottom: 0.5rem;
+}
 </style>
