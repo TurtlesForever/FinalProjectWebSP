@@ -6,6 +6,15 @@ const exerciseTypeRoutes = require('./routes/exerciseTypeRoutes');
 const app = express();
 
 const path = require('path');
+const cors = require('cors');
+app.use(cors());
+
+// Middleware
+app.use(bodyParser.json());
+
+// Routes
+app.use('/activities', activityRoutes);
+app.use('/exercise-types', exerciseTypeRoutes);
 
 // Serve static files from the client build
 app.use(express.static(path.join(__dirname, 'public')));
@@ -14,13 +23,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
-// Middleware
-app.use(bodyParser.json());
-
-// Routes
-app.use('/activities', activityRoutes);
-app.use('/exercise-types', exerciseTypeRoutes);
 
 // Database Connection (ensure MongoDB is connected)
 mongoose.connect(process.env.MONGODB_URI)
