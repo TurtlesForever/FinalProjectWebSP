@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import API from '../api';
+import API from '@/api'; // ✅ fixed import path
 
 export default {
   name: 'AddExerciseType',
@@ -31,30 +31,15 @@ export default {
     };
   },
   methods: {
-  async submitExerciseType() {
-    try {
-      await API.post('/api/exercise-types', this.form);
-      this.successMsg = 'Exercise type added successfully!';
-      this.form = { name: '', description: '' };
-    } catch (e) {
-      alert('Failed to add exercise type: ' + e.message);
-    }
+    async submitExerciseType() {
+      try {
+        await API.post('/api/exercise-types', this.form);
+        this.successMsg = 'Exercise type added successfully!';
+        this.form = { name: '', category: '' }; // ✅ fixed reset
+      } catch (e) {
+        alert('Failed to add exercise type: ' + e.message);
+      }
+    },
   },
-  }
 };
 </script>
-
-<style scoped>
-.form-container {
-  margin: 20px;
-  max-width: 400px;
-}
-label {
-  display: block;
-  margin-bottom: 10px;
-}
-.success {
-  color: green;
-  margin-top: 10px;
-}
-</style>
