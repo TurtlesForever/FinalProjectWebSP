@@ -1,12 +1,11 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue';
-import API from '@/api';
 import path from 'path';
 
 export default defineConfig({
-  base: '/', // Make sure base is set correctly
-  logLevel: 'info', // Change to 'debug' for even more verbose logs
+  base: '/',
+  logLevel: 'info',
   plugins: [vue()],
   resolve: {
     alias: {
@@ -14,7 +13,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist', // default
+    outDir: 'dist',
     emptyOutDir: true,
     sourcemap: true,
     chunkSizeWarningLimit: 2000
