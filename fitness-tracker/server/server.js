@@ -5,6 +5,9 @@ const activityRoutes = require('./routes/activityRoutes');
 const exerciseTypeRoutes = require('./routes/exerciseTypeRoutes');
 const app = express();
 
+const userRoutes = require('./routes/userRoutes');
+app.use('/users', userRoutes);
+
 const path = require('path');
 const cors = require('cors');
 app.use(cors());
