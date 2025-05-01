@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import API from '@/api'; // ✅ fixed import path
+import API from '@/api';
 
 export default {
   name: 'AddExerciseType',
@@ -35,7 +35,7 @@ export default {
       try {
         await API.post('/api/exercise-types', this.form);
         this.successMsg = 'Exercise type added successfully!';
-        this.form = { name: '', category: '' }; // ✅ fixed reset
+        this.form = { name: '', category: '' };
       } catch (e) {
         alert('Failed to add exercise type: ' + e.message);
       }
