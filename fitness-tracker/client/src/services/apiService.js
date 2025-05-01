@@ -1,13 +1,22 @@
 import axios from 'axios';
 
-const API = axios.create({
-  baseURL: 'https://final-fitness-tracker-app.onrender.com/api',
-});
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-API.interceptors.request.use((config) => {
+export async function apiFetch(path, options = {}) {
   const token = localStorage.getItem('token');
-  if (token) config.headers.Authorization = token;
-  return config;
-});
+  const res = await fetch(`${BASE_URL}/${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      ...options.headers,
+    },
+  });
 
-export default API;
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText);
+  }
+
+  return res.json();
+}

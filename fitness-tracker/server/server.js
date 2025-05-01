@@ -6,6 +6,12 @@ const path = require('path');
 
 dotenv.config();
 
+const activityRoutes = require('./routes/activityRoutes');
+const exerciseTypeRoutes = require('./routes/exerciseTypeRoutes');
+
+app.use('/api/activities', activityRoutes);
+app.use('/api/exercise-types', exerciseTypeRoutes);
+
 const app = express();
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

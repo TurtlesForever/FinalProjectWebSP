@@ -1,3 +1,5 @@
+exports.findByUserId = (userId) => User.find({ user: userId });
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
