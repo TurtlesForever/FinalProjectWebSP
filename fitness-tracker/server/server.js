@@ -5,6 +5,16 @@ const activityRoutes = require('./routes/activityRoutes');
 const exerciseTypeRoutes = require('./routes/exerciseTypeRoutes');
 const app = express();
 
+const path = require('path');
+
+// Serve static files from the client build
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Catch-all route to serve index.html (for React/Vite client routing)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Middleware
 app.use(bodyParser.json());
 
