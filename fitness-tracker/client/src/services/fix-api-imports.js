@@ -1,30 +1,26 @@
 const fs = require('fs');
 const path = require('path');
 
-const baseDir = path.join(__dirname, 'client', 'src');
-const badImport = `from '../api'`;
-const correctImport = `from '../services/api'`;
+const baseDir = './client/src';
 
 function walkDir(dir, callback) {
-  fs.readdirSync(dir).forEach(file => {
-    const fullPath = path.join(dir, file);
-    if (fs.statSync(fullPath).isDirectory()) {
-      walkDir(fullPath, callback);
-    } else if (fullPath.endsWith('.vue') || fullPath.endsWith('.js')) {
-      callback(fullPath);
-    }
+  fs.readdirSync(dir).forEach(f => {
+    const dirPath = path.join(dir, f);
+    const isDirectory = fs.statSync(dirPath).isDirectory();
+    isDirectory ? walkDir(dirPath, callback) : callback(path.join(dir, f));
   });
 }
 
 function fixImports(filePath) {
+  if (!filePath.endsWith('.vue') && !filePath.endsWith('.js')) return;
+
   let content = fs.readFileSync(filePath, 'utf8');
-  if (content.includes(badImport)) {
-    const updated = content.replaceAll(badImport, correctImport);
-    fs.writeFileSync(filePath, updated, 'utf8');
-    console.log(`✔ Fixed import in: ${filePath}`);
+  const updated = content.replace(/@\/api/g, '@/services/api');
+
+  if (updated !== content) {
+    fs.writeFileSync(filePath, updated);
+    console.log(`Fixed imports in ${filePath}`);
   }
 }
 
 walkDir(baseDir, fixImports);
-
-console.log('Finished fixing import paths.');
