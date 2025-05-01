@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { apiFetch } from '../api';
+import API from '../api';
 
 export default {
   name: 'AddActivity',
@@ -36,20 +36,18 @@ export default {
     };
   },
   methods: {
-    async submitActivity() {
-      try {
-        await apiFetch('api/activities', {
-          method: 'POST',
-          body: this.form,
-        });
-        this.successMsg = 'Activity added successfully!';
-        this.form = { type: '', duration: null, date: '' };
-      } catch (e) {
-        alert('Failed to add activity: ' + e.message);
-      }
-    },
+  async submitActivity() {
+    try {
+      await API.post('/api/exercise-types', this.form);
+      this.successMsg = 'Activity added successfully!';
+      this.form = { type: '', duration: null, date: '' };
+    } catch (e) {
+      alert('Failed to add activity: ' + e.message);
+    }
   },
-};
+  }
+}
+
 </script>
 
 <style scoped>
