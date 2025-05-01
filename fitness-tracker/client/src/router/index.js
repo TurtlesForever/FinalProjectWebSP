@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/Home.vue';
+import Home from '../views/Home.vue'; // Make sure this path is correct
 import Register from '../views/Register.vue';
 import Login from '../views/Login.vue';
 import Activities from '../views/Activities.vue';
@@ -10,11 +10,11 @@ const routes = [
   { path: '/register', component: Register },
   { path: '/login', component: Login },
   { path: '/activities', component: Activities },
-  { path: '/exercise-types', component: ExerciseTypes },
+  { path: '/exercisetypes', component: ExerciseTypes },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(process.env.BASE_URL),
   routes,
 });
 
