@@ -20,56 +20,69 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import API from '@/api';
 
-export default {
-  methods: {
-    async addActivity() {
-      try {
-        const { data } = await API.post('/activities', this.activityData);
-        this.$router.push('/activities');
-      } catch (e) {
-        console.error('Error adding activity: ', e.message);
-      }
-    },
-  },
+const form = ref({
+  type: '',
+  duration: null,
+  date: '',
+});
+
+const successMsg = ref('');
+const router = useRouter();
+
+const submitActivity = async () => {
+  try {
+    await API.post('/activities', form.value);
+    successMsg.value = 'Activity added successfully!';
+    setTimeout(() => {
+      router.push('/activities');
+    }, 1000);
+  } catch (err) {
+    console.error('Error adding activity:', err.message);
+    successMsg.value = 'Failed to add activity.';
+  }
 };
 </script>
 
 <style scoped>
 .form-container {
-  margin: 20px;
+  margin: 2rem auto;
   max-width: 400px;
   background-color: var(--color-bg);
-  padding: 20px;
+  padding: 1.5rem;
   border-radius: 8px;
+  color: var(--color-text);
 }
+
 label {
   display: block;
-  margin-bottom: 10px;
-  color: var(--color-text);
+  margin-bottom: 1rem;
 }
+
 input {
   width: 100%;
-  padding: 6px;
-  margin-top: 4px;
+  padding: 0.5rem;
   background-color: var(--color-input);
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
-  color: var(--color-text);
+  color: var(--text-color);
 }
+
 button {
-  margin-top: 10px;
-  padding: 8px 12px;
+  padding: 0.5rem 1rem;
   background-color: var(--color-accent);
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
+
 .success {
   color: var(--color-success);
-  margin-top: 10px;
+  margin-top: 1rem;
 }
 </style>

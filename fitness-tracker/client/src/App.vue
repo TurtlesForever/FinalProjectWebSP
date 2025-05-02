@@ -1,123 +1,78 @@
 <template>
-  <div :class="{ 'dark-mode': isDarkMode }" id="app">
-    <header class="app-header">
-      <h1>Fitness Tracker</h1>
-      <nav class="main-nav">
-        <router-link to="/">Home</router-link>
-        <router-link to="/activities">Activities</router-link>
-        <router-link to="/exercise-types">Exercise Types</router-link>
-        <router-link to="/login">Login</router-link>
-        <router-link to="/register">Register</router-link>
-        <button class="toggle-btn" @click="toggleDarkMode">
-          {{ isDarkMode ? '☀ Light' : '🌙 Dark' }}
-        </button>
+  <div class="app">
+    <header>
+      <nav>
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/activities">Activities</RouterLink>
+        <RouterLink to="/exercise-types">Exercise Types</RouterLink>
+        <RouterLink to="/stats">Stats</RouterLink>
+        <RouterLink to="/friends-activities">Friends</RouterLink>
+        <RouterLink to="/login">Login</RouterLink>
+        <RouterLink to="/register">Register</RouterLink>
       </nav>
     </header>
 
-    <div class="layout">
-      <aside class="sidebar">
-        <ul>
-          <li><router-link to="/">Home</router-link></li>
-          <li><router-link to="/activities">Manage Activities</router-link></li>
-          <li><router-link to="/exercise-types">Manage Exercise Types</router-link></li>
-        </ul>
-      </aside>
+    <main>
+      <RouterView />
+    </main>
 
-      <main class="content">
-        <router-view></router-view>
-      </main>
-    </div>
+    <footer>
+      <p>Fitness Tracker &copy; 2025</p>
+    </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, watchEffect } from 'vue';
-
-const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
-watchEffect(() => localStorage.setItem('darkMode', isDarkMode.value));
-const toggleDarkMode = () => (isDarkMode.value = !isDarkMode.value);
+// No JS logic needed for layout
 </script>
 
 <style scoped>
 :root {
-  --bg-color: white;
-  --text-color: #333;
-  --sidebar-bg: #f0f0f0;
-  --link-color: #1e90ff;
-  --header-bg: #1e90ff;
-  --header-text: white;
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --link-color: #90caf9;
+  --header-bg: #1e1e1e;
+  --footer-bg: #1e1e1e;
 }
 
-.dark-mode {
-  --bg-color: #1e1e1e;
-  --text-color: #f1f1f1;
-  --sidebar-bg: #2e2e2e;
-  --link-color: #4fa3ff;
-  --header-bg: #111;
-  --header-text: #f9f9f9;
-}
-
-#app {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.app {
   background-color: var(--bg-color);
   color: var(--text-color);
   min-height: 100vh;
-}
-
-.app-header {
-  background-color: var(--header-bg);
-  padding: 1rem 2rem;
-  color: var(--header-text);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
 }
 
-.main-nav a {
-  margin: 0 0.75rem;
+header {
+  background-color: var(--header-bg);
+  padding: 1rem;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+nav a {
+  color: var(--link-color);
   text-decoration: none;
-  color: var(--header-text);
   font-weight: bold;
 }
 
-.main-nav a.router-link-active {
-  border-bottom: 2px solid var(--header-text);
+nav a.router-link-active {
+  border-bottom: 2px solid var(--link-color);
 }
 
-.toggle-btn {
-  margin-left: 1rem;
-  padding: 0.4rem 0.8rem;
-  background: transparent;
-  border: 1px solid var(--header-text);
-  border-radius: 4px;
-  color: var(--header-text);
-  cursor: pointer;
-}
-
-.layout {
-  display: flex;
-}
-
-.sidebar {
-  width: 220px;
-  background-color: var(--sidebar-bg);
-  padding: 1.5rem;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar a {
-  display: block;
-  color: var(--link-color);
-  text-decoration: none;
-  margin-bottom: 1rem;
-}
-
-.content {
-  flex: 1;
+main {
+  flex-grow: 1;
   padding: 2rem;
+}
+
+footer {
+  background-color: var(--footer-bg);
+  text-align: center;
+  padding: 1rem;
 }
 </style>
