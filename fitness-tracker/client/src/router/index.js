@@ -1,28 +1,37 @@
 import { createRouter, createWebHistory } from 'vue-router';
-
-// Route-level code splitting with dynamic imports
-const Home = () => import('@/views/Home.vue');
-const Activities = () => import('@/views/Activities.vue');
-const ExerciseTypes = () => import('@/views/ExerciseTypes.vue');
-const Login = () => import('@/views/Login.vue');
-const Register = () => import('@/views/Register.vue');
+import { useUserStore } from '@/store/userStore'; // To access current user info
 
 const routes = [
-  { path: '/', name: 'Home', component: Home },
+  {
+    path: '/',
+    component: () => import('@/pages/Home.vue'), // Lazy-loaded
+  },
   {
     path: '/activities',
-    name: 'Activities',
-    component: Activities,
-    meta: { requiresAuth: true, roles: ['user', 'admin'] },
+    component: () => import('@/pages/Activities.vue'), // Lazy-loaded
+    meta: { requiresAuth: true }, // Auth required
   },
   {
     path: '/exercise-types',
-    name: 'ExerciseTypes',
-    component: ExerciseTypes,
-    meta: { requiresAuth: true, roles: ['admin'] }, // Only admins can access
+    component: () => import('@/pages/ExerciseTypes.vue'), // Lazy-loaded
+    meta: { requiresAuth: true }, // Auth required
   },
-  { path: '/login', name: 'Login', component: Login },
-  { path: '/register', name: 'Register', component: Register },
+  {
+    path: '/login',
+    component: () => import('@/pages/Login.vue'), // Lazy-loaded
+    meta: { guest: true }, // Guest only (not logged in)
+  },
+  {
+    path: '/register',
+    component: () => import('@/pages/Register.vue'), // Lazy-loaded
+    meta: { guest: true }, // Guest only
+  },
+  {
+    path: '/admin',
+    component: () => import('@/pages/AdminPanel.vue'), // Lazy-loaded
+    meta: { requiresAuth: true, isAdmin: true }, // Admin required
+  },
+  // Add more routes as needed
 ];
 
 const router = createRouter({
@@ -30,21 +39,27 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token');
-  const userData = JSON.parse(localStorage.getItem('user') || '{}'); // Should include a `role`
+// Navigation guard to handle role-based access and authentication
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
+  const currentUser = userStore.currentUser;
 
-  // Auth check
-  if (to.meta.requiresAuth && !token) {
-    return next({ name: 'Login' });
+  // Check if route requires authentication
+  if (to.meta.requiresAuth && !currentUser) {
+    return next('/login'); // Redirect to login if not authenticated
   }
 
-  // Role check
-  if (to.meta.roles && !to.meta.roles.includes(userData.role)) {
-    return next({ name: 'Home' }); // Redirect to home if role is not authorized
+  // Check if route requires admin role
+  if (to.meta.isAdmin && currentUser?.role !== 'admin') {
+    return next('/'); // Redirect to home if user is not an admin
   }
 
-  next();
+  // Allow access if route is for guests
+  if (to.meta.guest && currentUser) {
+    return next('/'); // Redirect to home if already logged in
+  }
+
+  next(); // Proceed with navigation
 });
 
 export default router;
