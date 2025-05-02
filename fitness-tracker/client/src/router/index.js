@@ -4,34 +4,33 @@ import { useUserStore } from '@/store/userStore'; // To access current user info
 const routes = [
   {
     path: '/',
-    component: () => import('@/pages/Home.vue'), // Lazy-loaded
+    component: () => import('@/pages/Home.jsx'),
   },
   {
     path: '/activities',
-    component: () => import('@/pages/Activities.vue'), // Lazy-loaded
-    meta: { requiresAuth: true }, // Auth required
+    component: () => import('@/pages/Activities.jsx'),
+    meta: { requiresAuth: true },
   },
   {
     path: '/exercise-types',
-    component: () => import('@/pages/ExerciseTypes.vue'), // Lazy-loaded
-    meta: { requiresAuth: true }, // Auth required
+    component: () => import('@/pages/ExerciseTypes.jsx'),
+    meta: { requiresAuth: true },
   },
   {
     path: '/login',
-    component: () => import('@/pages/Login.vue'), // Lazy-loaded
-    meta: { guest: true }, // Guest only (not logged in)
+    component: () => import('@/pages/LoginView.vue'), // If this is still Vue, keep as-is
+    meta: { guest: true },
   },
   {
     path: '/register',
-    component: () => import('@/pages/Register.vue'), // Lazy-loaded
-    meta: { guest: true }, // Guest only
+    component: () => import('@/pages/RegisterView.vue'), // If this is still Vue, keep as-is
+    meta: { guest: true },
   },
   {
     path: '/admin',
-    component: () => import('@/pages/AdminPanel.vue'), // Lazy-loaded
-    meta: { requiresAuth: true, isAdmin: true }, // Admin required
+    component: () => import('@/pages/AdminPanel.vue'), // If this hasn't been refactored yet, keep as-is
+    meta: { requiresAuth: true, isAdmin: true },
   },
-  // Add more routes as needed
 ];
 
 const router = createRouter({
