@@ -15,8 +15,8 @@
       <li v-for="exercise in exerciseTypes" :key="exercise._id">
         {{ exercise.name }}
         <div class="btn-group">
-          <button @click="editExerciseType(exercise)">Edit</button>
-          <button @click="deleteExerciseType(exercise._id)">Delete</button>
+          <button class="edit-btn" @click="editExerciseType(exercise)">Edit</button>
+          <button class="delete-btn" @click="deleteExerciseType(exercise._id)">Delete</button>
         </div>
       </li>
     </ul>
@@ -92,6 +92,9 @@ onMounted(fetchExerciseTypes);
 <style scoped>
 .exercise-types {
   padding: 2rem;
+  color: var(--text-color);
+  background-color: #1e1e1e;
+  border-radius: 8px;
 }
 
 .exercise-list {
@@ -101,14 +104,18 @@ onMounted(fetchExerciseTypes);
 }
 
 .exercise-list li {
+  background-color: #2a2a2a;
   padding: 1rem;
-  border-bottom: 1px solid #ccc;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .btn-group {
   display: flex;
   gap: 0.5rem;
-  margin-top: 0.5rem;
 }
 
 .form {
@@ -122,15 +129,19 @@ input {
   padding: 0.8rem;
   font-size: 1rem;
   border-radius: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid #555;
+  background-color: #2a2a2a;
+  color: var(--text-color);
 }
 
 button {
-  padding: 0.4rem 1rem;
+  padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
   color: white;
+  font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 button.submit-btn {
@@ -149,11 +160,19 @@ button.toggle-btn:hover {
   background-color: #574fd6;
 }
 
-button:not(.submit-btn):not(.toggle-btn) {
+button.edit-btn {
+  background-color: #4caf50;
+}
+
+button.edit-btn:hover {
+  background-color: #3d8b40;
+}
+
+button.delete-btn {
   background-color: #ff5c5c;
 }
 
-button:not(.submit-btn):not(.toggle-btn):hover {
-  background-color: #ff4040;
+button.delete-btn:hover {
+  background-color: #e64545;
 }
 </style>

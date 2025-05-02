@@ -2,21 +2,20 @@
   <div class="activities-page">
     <h2>Your Activities</h2>
 
-    <form @submit.prevent="addActivity">
+    <form @submit.prevent="addActivity" class="activity-form">
       <input v-model="newActivity.type" placeholder="Activity Type" required />
       <input v-model.number="newActivity.duration" type="number" placeholder="Duration (mins)" required />
       <input v-model="newActivity.date" type="date" required />
       <button type="submit">Add Activity</button>
     </form>
 
-    <ul v-if="activities.length">
-      <li v-for="a in activities" :key="a._id">
-        <strong>{{ a.type }}</strong> – {{ a.duration }} mins 
-        ({{ formatDate(a.date) }})
+    <ul v-if="activities.length" class="activity-list">
+      <li v-for="a in activities" :key="a._id" class="activity-item">
+        <strong>{{ a.type }}</strong> – {{ a.duration }} mins ({{ formatDate(a.date) }})
       </li>
     </ul>
 
-    <p v-else>No activities logged yet.</p>
+    <p v-else class="no-activities">No activities logged yet.</p>
   </div>
 </template>
 
@@ -69,40 +68,62 @@ export default {
 
 <style scoped>
 .activities-page {
-  margin: 20px;
-  background-color: var(--bg-color);
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  color: var(--text-color);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.activity-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.activity-form input {
+  flex: 1;
+  padding: 0.75rem;
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
   color: var(--text-color);
 }
 
-form {
-  margin-bottom: 20px;
-}
-
-form input {
-  margin-right: 10px;
-  padding: 0.5rem;
-  background-color: var(--sidebar-bg);
-  color: var(--text-color);
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  margin-bottom: 10px;
-}
-
-button {
-  padding: 0.5rem;
-  background-color: var(--link-color);
-  color: var(--header-text);
+.activity-form button {
+  background-color: #6c63ff;
+  color: white;
+  padding: 0.75rem 1.25rem;
   border: none;
+  border-radius: 4px;
+  font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-button:hover {
-  background-color: #3a8bde;
+.activity-form button:hover {
+  background-color: #574fd6;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activity-item {
+  background-color: #2a2a2a;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-left: 5px solid #4caf50;
+  border-radius: 6px;
+}
+
+.no-activities {
+  text-align: center;
+  opacity: 0.7;
 }
 </style>

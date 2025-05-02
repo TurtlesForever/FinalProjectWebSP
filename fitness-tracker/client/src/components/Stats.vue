@@ -1,41 +1,61 @@
 <template>
-  <section>
+  <div class="stats-container">
     <h2>Your Stats</h2>
-    <div v-if="loading" class="loading">Loading stats...</div>
-    <div v-else-if="error" class="error">Error loading stats: {{ error }}</div>
-    <ul v-else>
-      <li>Steps Today: {{ stats.steps || 0 }}</li>
-      <li>Calories Burned: {{ stats.calories || 0 }}</li>
-      <li>Workout Time: {{ stats.minutes || 0 }} minutes</li>
-    </ul>
-  </section>
+    <div v-if="stats.length > 0">
+      <ul>
+        <li v-for="(stat, index) in stats" :key="index">
+          <p><strong>Exercise:</strong> {{ stat.exerciseType }}</p>
+          <p><strong>Date:</strong> {{ stat.date }}</p>
+          <p><strong>Duration:</strong> {{ stat.duration }} minutes</p>
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>No stats available. Start adding activities!</p>
+    </div>
+  </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
+<script>
+import API from '@/api';
 
-const stats = ref({ steps: 0, calories: 0, minutes: 0 });
-const loading = ref(true);
-const error = ref(null);
-
-onMounted(async () => {
-  try {
-    const response = await fetch('/api/stats/1');
-    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
-    stats.value = await response.json();
-  } catch (err) {
-    error.value = err.message;
-  } finally {
-    loading.value = false;
-  }
-});
+export default {
+  name: 'Stats',
+  data() {
+    return {
+      stats: [],
+      message: '',
+      success: false,
+    };
+  },
+  created() {
+    this.fetchStats();
+  },
+  methods: {
+    async fetchStats() {
+      try {
+        const response = await API.get('/stats');
+        this.stats = response.data;
+        this.message = 'Stats loaded successfully.';
+        this.success = true;
+      } catch (error) {
+        console.error(error);
+        this.message = 'Error loading stats.';
+        this.success = false;
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
-section {
-  padding: 1rem;
-  background-color: #f7f7f7;
+.stats-container {
+  padding: 2rem;
+  text-align: center;
+  background-color: #1e1e1e;
+  color: var(--text-color);
   border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
 ul {
@@ -44,23 +64,23 @@ ul {
 }
 
 li {
-  margin-bottom: 0.5rem;
+  margin: 1rem 0;
+  background-color: #2a2a2a;
+  padding: 1rem;
+  border-radius: 4px;
 }
 
-.loading {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #007bff;
+li p {
+  margin: 0.5rem 0;
+}
+
+.success {
+  margin-top: 1rem;
+  color: #4caf50;
 }
 
 .error {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: red;
-}
-
-li {
-  font-size: 1.1rem;
-  color: #333;
+  margin-top: 1rem;
+  color: #ff5c5c;
 }
 </style>

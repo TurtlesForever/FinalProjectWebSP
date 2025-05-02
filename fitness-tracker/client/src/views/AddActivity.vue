@@ -1,22 +1,23 @@
 <template>
   <div class="form-container">
-    <h2>Add New Activity</h2>
-    <form @submit.prevent="submitActivity">
+    <h2>Add Activity</h2>
+    <form @submit.prevent="submitForm" class="form">
       <label>
-        Name:
-        <input v-model="form.name" required />
+        Date:
+        <input type="date" v-model="activity.date" required />
+      </label>
+      <label>
+        Exercise Type:
+        <input v-model="activity.exerciseType" placeholder="e.g. Running" required />
       </label>
       <label>
         Duration (minutes):
-        <input v-model.number="form.duration" type="number" required />
+        <input type="number" v-model.number="activity.duration" min="1" required />
       </label>
-      <label>
-        Date:
-        <input v-model="form.date" type="date" required />
-      </label>
-      <button type="submit">Add Activity</button>
+      <button type="submit" class="submit-btn">Submit</button>
     </form>
-    <p v-if="successMsg" class="success">{{ successMsg }}</p>
+
+    <p v-if="message" :class="{ success: success, error: !success }">{{ message }}</p>
   </div>
 </template>
 
@@ -27,22 +28,32 @@ export default {
   name: 'AddActivity',
   data() {
     return {
-      form: {
-        name: '',
-        duration: null,
+      activity: {
         date: '',
+        exerciseType: '',
+        duration: null,
       },
-      successMsg: '',
+      message: '',
+      success: false,
     };
   },
   methods: {
-    async submitActivity() {
+    async submitForm() {
+      if (!this.activity.date || !this.activity.exerciseType || !this.activity.duration) {
+        this.message = 'All fields are required.';
+        this.success = false;
+        return;
+      }
+
       try {
-        await API.post('/activities', this.form);
-        this.successMsg = 'Activity added successfully!';
-        this.form = { name: '', duration: null, date: '' };
-      } catch (e) {
-        alert('Failed to add activity: ' + e.message);
+        await API.post('/activities', this.activity);
+        this.message = 'Activity added successfully!';
+        this.success = true;
+        this.activity = { date: '', exerciseType: '', duration: null };
+      } catch (err) {
+        console.error(err);
+        this.message = 'Error adding activity.';
+        this.success = false;
       }
     },
   },
@@ -51,37 +62,50 @@ export default {
 
 <style scoped>
 .form-container {
-  margin: 20px;
-  max-width: 400px;
-  background-color: var(--color-bg);
-  padding: 20px;
+  margin: 2rem auto;
+  max-width: 500px;
+  padding: 1.5rem;
+  background-color: #1e1e1e;
   border-radius: 8px;
+  color: var(--text-color);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
-label {
-  display: block;
-  margin-bottom: 10px;
-  color: var(--color-text);
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
+
 input {
   width: 100%;
-  padding: 6px;
-  margin-top: 4px;
-  background-color: var(--color-input);
-  border: 1px solid #ccc;
+  padding: 0.75rem;
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid #444;
   border-radius: 4px;
-  color: var(--color-text);
 }
-button {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background-color: var(--color-accent);
+
+.submit-btn {
+  padding: 0.75rem;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
+
+.submit-btn:hover {
+  background-color: #45a049;
+}
+
 .success {
-  color: var(--color-success);
-  margin-top: 10px;
+  margin-top: 1rem;
+  color: #4caf50;
+}
+
+.error {
+  margin-top: 1rem;
+  color: #ff5c5c;
 }
 </style>

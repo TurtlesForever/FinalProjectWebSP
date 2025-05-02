@@ -2,7 +2,7 @@
   <div v-if="isAdmin" class="admin-page">
     <h2>Admin Panel</h2>
 
-    <div>
+    <section class="form-section">
       <h3>{{ selectedUser ? 'Edit User' : 'Add New User' }}</h3>
       <form @submit.prevent="selectedUser ? updateUser() : addUser()">
         <input v-model="formUser.username" type="text" placeholder="Username" required />
@@ -17,14 +17,15 @@
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
-        <button type="submit">{{ selectedUser ? 'Update' : 'Add' }}</button>
-        <button type="button" @click="cancelEdit" v-if="selectedUser">Cancel</button>
+        <div class="form-buttons">
+          <button type="submit">{{ selectedUser ? 'Update' : 'Add' }}</button>
+          <button type="button" @click="cancelEdit" v-if="selectedUser" class="cancel">Cancel</button>
+        </div>
       </form>
-    </div>
+    </section>
 
-    <div>
+    <section class="users-section">
       <h3>Users</h3>
-
       <div v-if="loading">Loading users...</div>
 
       <table v-if="!loading">
@@ -41,7 +42,7 @@
             <td>{{ user.role }}</td>
             <td>
               <button @click="editUser(user)">Edit</button>
-              <button @click="deleteUser(user.id)">Delete</button>
+              <button @click="deleteUser(user.id)" class="danger">Delete</button>
             </td>
           </tr>
         </tbody>
@@ -52,10 +53,10 @@
         <span>Page {{ page }}</span>
         <button @click="nextPage" :disabled="page >= totalPages">Next</button>
       </div>
-    </div>
+    </section>
   </div>
 
-  <div v-else>
+  <div v-else class="no-access">
     <p>You do not have permission to view this page.</p>
   </div>
 </template>
@@ -101,7 +102,7 @@ export default {
       try {
         const { data } = await API.get('/users');
         this.users = data;
-      } catch (error) {
+      } catch {
         alert('Error fetching users');
       } finally {
         this.loading = false;
@@ -112,7 +113,7 @@ export default {
         await API.post('/users', this.formUser);
         this.resetForm();
         await this.fetchUsers();
-      } catch (error) {
+      } catch {
         alert('Error adding user');
       }
     },
@@ -121,7 +122,7 @@ export default {
         await API.put(`/users/${this.selectedUser.id}`, this.formUser);
         this.resetForm();
         await this.fetchUsers();
-      } catch (error) {
+      } catch {
         alert('Error updating user');
       }
     },
@@ -129,7 +130,7 @@ export default {
       try {
         await API.delete(`/users/${userId}`);
         await this.fetchUsers();
-      } catch (error) {
+      } catch {
         alert('Error deleting user');
       }
     },
@@ -156,14 +157,23 @@ export default {
 
 <style scoped>
 .admin-page {
-  margin: 20px;
-  background-color: var(--bg-color);
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #1e1e1e;
   color: var(--text-color);
+  border-radius: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+  gap: 10px;
 }
 
 form input,
 form select {
-  margin-bottom: 10px;
   padding: 0.5rem;
   background-color: var(--sidebar-bg);
   color: var(--text-color);
@@ -171,9 +181,26 @@ form select {
   border-radius: 4px;
 }
 
+.form-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.users-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.users-section th,
+.users-section td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--sidebar-bg);
+}
+
 button {
-  padding: 0.5rem;
-  margin-right: 0.5rem;
+  padding: 0.4rem 0.8rem;
   background-color: var(--link-color);
   color: var(--header-text);
   border: none;
@@ -185,9 +212,32 @@ button:hover {
   background-color: #3a8bde;
 }
 
+button.danger {
+  background-color: #e53935;
+}
+
+button.danger:hover {
+  background-color: #c62828;
+}
+
+button.cancel {
+  background-color: #757575;
+}
+
+button.cancel:hover {
+  background-color: #616161;
+}
+
 .pagination {
-  margin-top: 20px;
   display: flex;
   justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.no-access {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-color);
+  opacity: 0.8;
 }
 </style>

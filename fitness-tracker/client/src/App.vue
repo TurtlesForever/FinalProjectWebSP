@@ -22,9 +22,7 @@
   </div>
 </template>
 
-<script setup>
-// No JS logic needed for layout
-</script>
+<script setup></script>
 
 <style scoped>
 :root {

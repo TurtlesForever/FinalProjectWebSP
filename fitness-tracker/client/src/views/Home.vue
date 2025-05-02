@@ -46,6 +46,7 @@ export default {
 .home {
   padding: 2rem;
   text-align: center;
+  color: var(--text-color);
 }
 
 .links {
@@ -68,7 +69,7 @@ export default {
 
 a {
   text-decoration: none;
-  color: #007bff;
+  color: var(--link-color);
 }
 
 a:hover {

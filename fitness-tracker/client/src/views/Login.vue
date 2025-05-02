@@ -4,11 +4,11 @@
     <form @submit.prevent="loginUser" class="form">
       <label>
         Username:
-        <input v-model="user.username" placeholder="Username" required aria-label="Username" />
+        <input v-model="user.username" placeholder="Username" required />
       </label>
       <label>
         Password:
-        <input v-model="user.password" type="password" placeholder="Password" required aria-label="Password" />
+        <input v-model="user.password" type="password" placeholder="Password" required />
       </label>
       <button type="submit" class="submit-btn">Login</button>
     </form>
@@ -30,6 +30,7 @@ export default {
       try {
         const res = await API.post('/users/login', this.user);
         localStorage.setItem('token', res.data.token);
+        localStorage.setItem('username', this.user.username);
         this.$router.push('/');
       } catch (err) {
         console.error('Login failed:', err);
@@ -45,10 +46,10 @@ export default {
   margin: 2rem auto;
   max-width: 400px;
   padding: 1.5rem;
-  background-color: var(--bg-secondary);
+  background-color: #1e1e1e;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   color: var(--text-color);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
 .form {
@@ -57,32 +58,27 @@ export default {
   gap: 1rem;
 }
 
-label {
-  display: block;
-}
-
 input {
   width: 100%;
   padding: 0.75rem;
-  background: var(--bg-input);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid #444;
   border-radius: 4px;
   font-size: 1rem;
 }
 
-button.submit-btn {
+.submit-btn {
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
-  background-color: var(--accent);
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
-  font-size: 1rem;
   cursor: pointer;
 }
 
-button.submit-btn:hover {
-  background-color: #007bff;
+.submit-btn:hover {
+  background-color: #0056b3;
 }
 </style>
