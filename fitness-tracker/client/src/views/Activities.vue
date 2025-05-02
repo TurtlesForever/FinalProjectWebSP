@@ -99,7 +99,17 @@ function formatDate(timestamp) {
 
 <style scoped>
 .activities {
+  max-width: 800px;
+  margin: auto;
   padding: 2rem;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+h2, h3 {
+  color: var(--accent-color);
 }
 
 .form {
@@ -113,7 +123,14 @@ input {
   padding: 0.8rem;
   font-size: 1rem;
   border-radius: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent-color);
 }
 
 .activity-list {
@@ -124,7 +141,10 @@ input {
 
 .activity-list li {
   padding: 1rem;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+  border-radius: 6px;
+  margin-bottom: 1rem;
 }
 
 .btn-group {
@@ -134,32 +154,40 @@ input {
 }
 
 button {
-  padding: 0.4rem 1rem;
-  background-color: #ff5c5c;
-  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  color: white;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #ff4040;
+  opacity: 0.9;
 }
 
 button.submit-btn {
-  background-color: #1e90ff;
-}
-
-button.submit-btn:hover {
-  background-color: #007bff;
+  background-color: var(--blue);
 }
 
 button.toggle-btn {
-  background-color: #6c63ff;
-  color: white;
+  background-color: var(--purple);
+  margin-bottom: 1rem;
 }
 
 button.toggle-btn:hover {
-  background-color: #574fd6;
+  background-color: var(--purple-dark);
 }
+
+button[type="button"] {
+  background-color: var(--gray);
+}
+
+button[type="button"]:hover {
+  background-color: var(--gray-dark);
+}
+
+/* You can define the custom CSS variables in App.vue or main.css */
 </style>
