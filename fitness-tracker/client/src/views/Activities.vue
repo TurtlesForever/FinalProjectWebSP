@@ -1,21 +1,25 @@
 <template>
-  <div class="activities">
-    <h2>My Activities</h2>
+  <div :class="['flex justify-center items-center min-h-screen', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
+    <div class="activities w-full max-w-3xl p-6 bg-gray-800 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold mb-6 text-center">My Activities</h2>
 
-    <ul class="activity-list">
-      <li v-for="act in activities" :key="act.id" class="activity-item">
-        <div class="activity-details">
-          <strong>{{ act.type }}</strong> — {{ act.duration }} min on {{ formatDate(act.date) }}
-        </div>
-        <button class="delete-btn" @click="deleteActivity(act.id)">Delete</button>
-      </li>
-    </ul>
+      <ul class="activity-list">
+        <li v-for="act in activities" :key="act.id" class="activity-item">
+          <div class="activity-details">
+            <strong>{{ act.type }}</strong> — {{ act.duration }} min on {{ formatDate(act.date) }}
+          </div>
+          <button class="delete-btn" @click="deleteActivity(act.id)">Delete</button>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import API from '@/api';
+
+const darkMode = ref(false);
 
 const activities = ref([]);
 
@@ -43,16 +47,6 @@ onMounted(fetchActivities);
 </script>
 
 <style scoped>
-.activities {
-  max-width: 700px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #1e1e1e;
-  border-radius: 8px;
-  color: var(--text-color);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-}
-
 .activity-list {
   list-style: none;
   padding: 0;
@@ -88,5 +82,13 @@ onMounted(fetchActivities);
 
 .delete-btn:hover {
   background-color: #e64545;
+}
+
+.activities {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.activities h2 {
+  color: #f9f9f9;
 }
 </style>

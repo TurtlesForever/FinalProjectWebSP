@@ -67,7 +67,7 @@ export default {
 
 <style scoped>
 .exercise-types-page {
-  background-color: var(--bg-color);
+  background-color: #1e1e1e;
   color: var(--text-color);
   max-width: 600px;
   margin: 2rem auto;
@@ -90,7 +90,7 @@ h2 {
 input {
   flex: 1;
   padding: 0.5rem;
-  background-color: var(--sidebar-bg);
+  background-color: #2a2a2a;
   color: var(--text-color);
   border: 1px solid var(--text-color);
   border-radius: 4px;
@@ -98,15 +98,15 @@ input {
 
 button {
   padding: 0.5rem 1rem;
-  background-color: var(--link-color);
-  color: var(--header-text);
+  background-color: #6c63ff;
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #3a8bde;
+  background-color: #574fd6;
 }
 
 .types-list ul {
@@ -116,7 +116,7 @@ button:hover {
 
 .types-list li {
   padding: 0.75rem 1rem;
-  background-color: var(--sidebar-bg);
+  background-color: #2a2a2a;
   border: 1px solid var(--text-color);
   border-radius: 4px;
   margin-bottom: 0.75rem;

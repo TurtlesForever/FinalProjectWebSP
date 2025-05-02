@@ -3,11 +3,11 @@ import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
 
-import './index.css'; // if you are using TailwindCSS
+import './index.css'; // TailwindCSS setup
 
 import axios from 'axios';
 
-// Add a request interceptor
+// Add a request interceptor for auth
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -16,14 +16,12 @@ axios.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
+// Initialize Vue app
 const app = createApp(App);
 console.log("Bootstrapping Vue app...");
-createApp(App).mount('#app');
 
 app.use(createPinia());
 app.use(router);

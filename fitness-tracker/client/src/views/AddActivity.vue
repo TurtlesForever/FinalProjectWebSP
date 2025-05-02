@@ -1,92 +1,71 @@
 <template>
-  <div class="form-container">
-    <h2>Add Activity</h2>
-    <form @submit.prevent="submitForm" class="form">
-      <label>
-        Date:
-        <input type="date" v-model="activity.date" required />
-      </label>
-      <label>
-        Exercise Type:
-        <input v-model="activity.exerciseType" placeholder="e.g. Running" required />
-      </label>
-      <label>
-        Duration (minutes):
-        <input type="number" v-model.number="activity.duration" min="1" required />
-      </label>
-      <button type="submit" class="submit-btn">Submit</button>
-    </form>
+  <div :class="['flex justify-center items-center min-h-screen', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
+    <div class="form-container w-full max-w-md p-6 bg-gray-800 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold mb-6 text-center">Add Activity</h2>
+      <form @submit.prevent="submitForm" class="form">
+        <label class="text-lg mb-2 block">
+          Date:
+          <input type="date" v-model="activity.date" required class="input-field" />
+        </label>
+        <label class="text-lg mb-2 block">
+          Exercise Type:
+          <input v-model="activity.exerciseType" placeholder="e.g. Running" required class="input-field" />
+        </label>
+        <label class="text-lg mb-2 block">
+          Duration (minutes):
+          <input type="number" v-model.number="activity.duration" min="1" required class="input-field" />
+        </label>
+        <button type="submit" class="submit-btn w-full">Submit</button>
+      </form>
 
-    <p v-if="message" :class="{ success: success, error: !success }">{{ message }}</p>
+      <p v-if="message" :class="{ success: success, error: !success }" class="mt-4">{{ message }}</p>
+    </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
 import API from '@/api';
 
-export default {
-  name: 'AddActivity',
-  data() {
-    return {
-      activity: {
-        date: '',
-        exerciseType: '',
-        duration: null,
-      },
-      message: '',
-      success: false,
-    };
-  },
-  methods: {
-    async submitForm() {
-      if (!this.activity.date || !this.activity.exerciseType || !this.activity.duration) {
-        this.message = 'All fields are required.';
-        this.success = false;
-        return;
-      }
+const darkMode = ref(false);
 
-      try {
-        await API.post('/activities', this.activity);
-        this.message = 'Activity added successfully!';
-        this.success = true;
-        this.activity = { date: '', exerciseType: '', duration: null };
-      } catch (err) {
-        console.error(err);
-        this.message = 'Error adding activity.';
-        this.success = false;
-      }
-    },
-  },
+const activity = ref({ date: '', exerciseType: '', duration: null });
+const message = ref('');
+const success = ref(false);
+
+const submitForm = async () => {
+  if (!activity.value.date || !activity.value.exerciseType || !activity.value.duration) {
+    message.value = 'All fields are required.';
+    success.value = false;
+    return;
+  }
+
+  try {
+    await API.post('/activities', activity.value);
+    message.value = 'Activity added successfully!';
+    success.value = true;
+    activity.value = { date: '', exerciseType: '', duration: null };
+  } catch (err) {
+    console.error(err);
+    message.value = 'Error adding activity.';
+    success.value = false;
+  }
 };
 </script>
 
 <style scoped>
-.form-container {
-  margin: 2rem auto;
-  max-width: 500px;
-  padding: 1.5rem;
-  background-color: #1e1e1e;
-  border-radius: 8px;
-  color: var(--text-color);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-input {
+.input-field {
   width: 100%;
   padding: 0.75rem;
   background-color: #2a2a2a;
   color: white;
   border: 1px solid #444;
   border-radius: 4px;
+  font-size: 1rem;
 }
 
 .submit-btn {
+  margin-top: 1rem;
   padding: 0.75rem;
   background-color: #4caf50;
   color: white;
@@ -107,5 +86,19 @@ input {
 .error {
   margin-top: 1rem;
   color: #ff5c5c;
+}
+
+.form-container {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.form label {
+  display: block;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 </style>

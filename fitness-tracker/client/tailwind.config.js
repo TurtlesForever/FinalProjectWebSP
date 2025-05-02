@@ -3,14 +3,14 @@ module.exports = {
   content: [
     "./client/src/**/*.{vue,js,ts,jsx,tsx}",
     "./client/public/index.html"
-  ],
+  ],  
   theme: {
     extend: {
       colors: {
-        primary: '#4F46E5',  // Indigo
-        secondary: '#22D3EE', // Cyan
-        accent: '#F59E0B',    // Amber
-        background: '#F9FAFB', // Light Gray
+        primary: '#4F46E5',
+        secondary: '#22D3EE',
+        accent: '#F59E0B',
+        background: '#F9FAFB',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
