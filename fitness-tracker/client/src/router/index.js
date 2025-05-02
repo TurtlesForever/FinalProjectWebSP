@@ -7,12 +7,12 @@ const routes = [
   // Auth Routes (Guest Only)
   {
     path: '/login',
-    component: () => import('@/services/LoginView.vue'),
+    component: () => import('@/views/Login.vue'),
     meta: { guest: true },
   },
   {
     path: '/register',
-    component: () => import('@/services/RegisterView.vue'),
+    component: () => import('@/views/Register.vue'),
     meta: { guest: true },
   },
 
@@ -44,12 +44,12 @@ const routes = [
   },
   {
     path: '/add-activity',
-    component: () => import('@/services/AddActivity.vue'),
+    component: () => import('@/views/AddActivity.vue'),
     meta: { requiresAuth: true },
   },
   {
     path: '/add-exercise-type',
-    component: () => import('@/services/AddExerciseType.vue'),
+    component: () => import('@/views/AddExerciseType.vue'),
     meta: { requiresAuth: true },
   },
 

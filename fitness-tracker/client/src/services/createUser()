@@ -1,5 +1,6 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:10000/api';
 
+// Function to create a new user
 export async function createUser(userData) {
   try {
     const response = await fetch(`${API_BASE_URL}/users/register`, {
@@ -15,9 +16,24 @@ export async function createUser(userData) {
       throw new Error(errorData.message || 'Failed to register user');
     }
 
-    return await response.json(); // Return response JSON (e.g., user data or confirmation)
+    const newUser = await response.json(); // Get the new user data (or token, etc.)
+    
+    // Automatically log the user in after successful registration
+    loginUser(newUser);
+
+    return newUser; // Return the newly created user data
   } catch (error) {
     console.error('Error creating user:', error);
     throw error; // Re-throw the error for higher-level handling
   }
+}
+
+// Function to log the user in (you can customize this depending on your app's needs)
+export function loginUser(user) {
+  // Example of setting the user in local storage, a Pinia store, or session
+  // You can also handle authentication tokens here.
+  localStorage.setItem('currentUser', JSON.stringify(user));  // Storing user in localStorage
+
+  // You could also store the user in a state management store like Pinia
+  // useUserStore().setCurrentUser(user);
 }
