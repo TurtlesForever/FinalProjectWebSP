@@ -5,7 +5,7 @@
 
     <div v-if="isLoggedIn">
       <p>Welcome, {{ username }}!</p>
-      <div>
+      <div class="links">
         <router-link to="/activities">Manage Activities</router-link><br />
         <router-link to="/add-activity">Add Activity</router-link><br />
         <router-link to="/exercise-types">Manage Exercise Types</router-link><br />
@@ -46,6 +46,10 @@ export default {
 .home {
   padding: 2rem;
   text-align: center;
+}
+
+.links {
+  margin-top: 1rem;
 }
 
 .logout-btn {

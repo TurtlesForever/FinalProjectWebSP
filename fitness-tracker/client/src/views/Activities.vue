@@ -17,27 +17,25 @@ import API from '@/api';
 
 const activities = ref([]);
 
-async function fetchActivities() {
+const fetchActivities = async () => {
   try {
     const { data } = await API.get('/activities');
     activities.value = data;
   } catch (err) {
     console.error('Failed to load activities:', err.message);
   }
-}
+};
 
-async function deleteActivity(id) {
+const deleteActivity = async (id) => {
   try {
     await API.delete(`/activities/${id}`);
     activities.value = activities.value.filter((a) => a.id !== id);
   } catch (err) {
     console.error('Error deleting activity:', err.message);
   }
-}
+};
 
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString();
-}
+const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString();
 
 onMounted(fetchActivities);
 </script>

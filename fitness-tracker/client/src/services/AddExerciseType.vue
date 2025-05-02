@@ -33,10 +33,7 @@ export default {
   methods: {
     async submitExerciseType() {
       try {
-        await API.post('exercise-types', {
-          method: 'POST',
-          body: JSON.stringify(this.form),
-        });
+        await API.post('/exercise-types', this.form);
         this.successMsg = 'Exercise type added successfully!';
         this.form = { name: '', category: '' };
       } catch (e) {

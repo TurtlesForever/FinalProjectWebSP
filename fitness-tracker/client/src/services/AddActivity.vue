@@ -3,8 +3,8 @@
     <h2>Add New Activity</h2>
     <form @submit.prevent="submitActivity">
       <label>
-        Type:
-        <input v-model="form.type" required />
+        Name:
+        <input v-model="form.name" required />
       </label>
       <label>
         Duration (minutes):
@@ -20,69 +20,68 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+<script>
 import API from '@/api';
 
-const form = ref({
-  type: '',
-  duration: null,
-  date: '',
-});
-
-const successMsg = ref('');
-const router = useRouter();
-
-const submitActivity = async () => {
-  try {
-    await API.post('/activities', form.value);
-    successMsg.value = 'Activity added successfully!';
-    setTimeout(() => {
-      router.push('/activities');
-    }, 1000);
-  } catch (err) {
-    console.error('Error adding activity:', err.message);
-    successMsg.value = 'Failed to add activity.';
-  }
+export default {
+  name: 'AddActivity',
+  data() {
+    return {
+      form: {
+        name: '',
+        duration: null,
+        date: '',
+      },
+      successMsg: '',
+    };
+  },
+  methods: {
+    async submitActivity() {
+      try {
+        await API.post('/activities', this.form);
+        this.successMsg = 'Activity added successfully!';
+        this.form = { name: '', duration: null, date: '' };
+      } catch (e) {
+        alert('Failed to add activity: ' + e.message);
+      }
+    },
+  },
 };
 </script>
 
 <style scoped>
 .form-container {
-  margin: 2rem auto;
+  margin: 20px;
   max-width: 400px;
   background-color: var(--color-bg);
-  padding: 1.5rem;
+  padding: 20px;
   border-radius: 8px;
-  color: var(--color-text);
 }
-
 label {
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: 10px;
+  color: var(--color-text);
 }
-
 input {
   width: 100%;
-  padding: 0.5rem;
+  padding: 6px;
+  margin-top: 4px;
   background-color: var(--color-input);
-  border: 1px solid var(--border-color);
+  border: 1px solid #ccc;
   border-radius: 4px;
-  color: var(--text-color);
+  color: var(--color-text);
 }
-
 button {
-  padding: 0.5rem 1rem;
+  margin-top: 10px;
+  padding: 8px 12px;
   background-color: var(--color-accent);
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
-
 .success {
   color: var(--color-success);
-  margin-top: 1rem;
+  margin-top: 10px;
 }
 </style>

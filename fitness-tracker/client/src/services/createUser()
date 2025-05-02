@@ -1,18 +1,23 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:10000/api';
 
 export async function createUser(userData) {
-  const response = await fetch(`${API_BASE_URL}/users/register`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(userData),
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
 
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({})); // Prevent JSON parse crash
-    throw new Error(error.message || 'Failed to register user');
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to register user');
+    }
+
+    return await response.json(); // Return response JSON (e.g., user data or confirmation)
+  } catch (error) {
+    console.error('Error creating user:', error);
+    throw error; // Re-throw the error for higher-level handling
   }
-
-  return await response.json();
 }
