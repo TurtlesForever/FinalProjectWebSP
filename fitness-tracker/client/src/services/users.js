@@ -1,4 +1,4 @@
-import API from '@/api';  // Assuming API is an axios instance
+import API from '../api';  // Assuming API is an axios instance
 
 export async function createUser(userData) {
   try {

@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import API from '@/services/api';
+import API from '../api';
 
 export default {
   name: 'ExerciseTypes',
