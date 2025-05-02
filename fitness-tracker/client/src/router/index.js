@@ -1,34 +1,77 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { useUserStore } from '@/store/userStore'; // To access current user info
+import { useUserStore } from '@/store/userStore';
 
 const routes = [
-  {
-    path: '/',
-    component: () => import('@/pages/Home.jsx'),
-  },
-  {
-    path: '/activities',
-    component: () => import('@/pages/Activities.jsx'),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/exercise-types',
-    component: () => import('@/pages/ExerciseTypes.jsx'),
-    meta: { requiresAuth: true },
-  },
+  { path: '/', component: () => import('@/views/Home.vue') },
+
+  // Auth Routes (Guest Only)
   {
     path: '/login',
-    component: () => import('@/pages/LoginView.vue'), // If this is still Vue, keep as-is
+    component: () => import('@/services/LoginView.vue'),
     meta: { guest: true },
   },
   {
     path: '/register',
-    component: () => import('@/pages/RegisterView.vue'), // If this is still Vue, keep as-is
+    component: () => import('@/services/RegisterView.vue'),
     meta: { guest: true },
+  },
+
+  // Authenticated User Routes
+  {
+    path: '/dashboard',
+    component: () => import('@/components/Dashboard.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/activities',
+    component: () => import('@/views/Activities.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/exercise-types',
+    component: () => import('@/views/ExerciseTypes.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/friends-list',
+    component: () => import('@/components/FriendsList.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/stats',
+    component: () => import('@/components/Stats.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/add-activity',
+    component: () => import('@/services/AddActivity.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/add-exercise-type',
+    component: () => import('@/services/AddExerciseType.vue'),
+    meta: { requiresAuth: true },
+  },
+
+  // Admin-Only Routes
+  {
+    path: '/activity-list',
+    component: () => import('@/components/ActivityList.vue'),
+    meta: { requiresAuth: true, isAdmin: true },
+  },
+  {
+    path: '/activity-log',
+    component: () => import('@/components/ActivityLog.vue'),
+    meta: { requiresAuth: true, isAdmin: true },
+  },
+  {
+    path: '/exercise-type-list',
+    component: () => import('@/components/ExerciseTypesList.vue'),
+    meta: { requiresAuth: true, isAdmin: true },
   },
   {
     path: '/admin',
-    component: () => import('@/pages/AdminPanel.vue'), // If this hasn't been refactored yet, keep as-is
+    component: () => import('@/components/AdminPanel.vue'),
     meta: { requiresAuth: true, isAdmin: true },
   },
 ];
@@ -38,27 +81,24 @@ const router = createRouter({
   routes,
 });
 
-// Navigation guard to handle role-based access and authentication
-router.beforeEach(async (to, from, next) => {
+// Global Nav Guard
+router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
   const currentUser = userStore.currentUser;
 
-  // Check if route requires authentication
   if (to.meta.requiresAuth && !currentUser) {
-    return next('/login'); // Redirect to login if not authenticated
+    return next('/login');
   }
 
-  // Check if route requires admin role
   if (to.meta.isAdmin && currentUser?.role !== 'admin') {
-    return next('/'); // Redirect to home if user is not an admin
+    return next('/');
   }
 
-  // Allow access if route is for guests
   if (to.meta.guest && currentUser) {
-    return next('/'); // Redirect to home if already logged in
+    return next('/');
   }
 
-  next(); // Proceed with navigation
+  next();
 });
 
 export default router;
