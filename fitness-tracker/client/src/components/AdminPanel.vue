@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import API from '@../api';
+import API from '@/api';
 
 export default {
   name: 'AdminPanel',
