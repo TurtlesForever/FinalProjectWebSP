@@ -20,8 +20,6 @@
           <li><router-link to="/">Home</router-link></li>
           <li><router-link to="/activities">Manage Activities</router-link></li>
           <li><router-link to="/exercise-types">Manage Exercise Types</router-link></li>
-          <li><router-link to="/login">Login</router-link></li>
-          <li><router-link to="/register">Register</router-link></li>
         </ul>
       </aside>
 
@@ -33,19 +31,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, watchEffect } from 'vue';
 
-const isDarkMode = ref(false);
-
-onMounted(() => {
-  const darkMode = localStorage.getItem('darkMode') === 'true';
-  isDarkMode.value = darkMode;
-});
-
-const toggleDarkMode = () => {
-  isDarkMode.value = !isDarkMode.value;
-  localStorage.setItem('darkMode', isDarkMode.value);
-};
+const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
+watchEffect(() => localStorage.setItem('darkMode', isDarkMode.value));
+const toggleDarkMode = () => (isDarkMode.value = !isDarkMode.value);
 </script>
 
 <style scoped>
@@ -112,26 +102,18 @@ const toggleDarkMode = () => {
   width: 220px;
   background-color: var(--sidebar-bg);
   padding: 1.5rem;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar ul {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
 }
 
-.sidebar li {
-  margin-bottom: 1rem;
-}
-
 .sidebar a {
+  display: block;
   color: var(--link-color);
   text-decoration: none;
-  font-weight: 500;
-}
-
-.sidebar a.router-link-active {
-  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
 .content {

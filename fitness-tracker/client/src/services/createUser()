@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:10000/api'; // Make sure this matches your server
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:10000/api';
 
 export async function createUser(userData) {
   const response = await fetch(`${API_BASE_URL}/users/register`, {
@@ -10,7 +10,7 @@ export async function createUser(userData) {
   });
 
   if (!response.ok) {
-    const error = await response.json();
+    const error = await response.json().catch(() => ({})); // Prevent JSON parse crash
     throw new Error(error.message || 'Failed to register user');
   }
 

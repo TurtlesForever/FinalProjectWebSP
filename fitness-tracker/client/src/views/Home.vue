@@ -29,7 +29,6 @@ export default {
       return !!localStorage.getItem('token');
     },
     username() {
-      // Assuming the username is stored in localStorage, you could adjust if you store it elsewhere
       return localStorage.getItem('username') || 'User';
     },
   },

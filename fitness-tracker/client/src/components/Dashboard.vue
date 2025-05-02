@@ -1,84 +1,104 @@
 <template>
-  <div class="dashboard">
-    <h1>Welcome, {{ user?.name || 'User' }}!</h1>
+  <div class="dashboard-page">
+    <h2>Dashboard</h2>
 
-    <section v-if="stats">
-      <h2>Your Stats</h2>
-      <ul>
-        <li>Steps Today: {{ stats.steps }}</li>
-        <li>Calories Burned: {{ stats.calories }}</li>
-        <li>Workout Time: {{ stats.minutes }} minutes</li>
+    <div class="statistics">
+      <div class="stat-item">
+        <h3>Total Activities</h3>
+        <p>{{ totalActivities }}</p>
+      </div>
+
+      <div class="stat-item">
+        <h3>Total Duration</h3>
+        <p>{{ totalDuration }} mins</p>
+      </div>
+    </div>
+
+    <div class="recent-activities">
+      <h3>Recent Activities</h3>
+      <ul v-if="activities.length">
+        <li v-for="activity in activities" :key="activity._id">
+          <div><strong>{{ activity.type }}</strong></div>
+          <div>{{ activity.duration }} mins</div>
+          <div>{{ formatDate(activity.date) }}</div>
+        </li>
       </ul>
-    </section>
-
-    <section v-else-if="loading">
-      <p>Loading your stats...</p>
-    </section>
-
-    <section v-else>
-      <p v-if="errorMessage">{{ errorMessage }}</p>
-      <p v-else>No stats available for today.</p>
-    </section>
+      <p v-else>No recent activities.</p>
+    </div>
   </div>
 </template>
 
-<script setup>
-import { onMounted, computed, ref } from 'vue';
-import { useUserStore } from '@/store/userStore';
+<script>
+import { apiFetch } from '../api';
 
-const userStore = useUserStore();
-const user = computed(() => userStore.currentUser);
-
-const stats = ref(null);
-const loading = ref(true);
-const errorMessage = ref('');
-
-onMounted(async () => {
-  try {
-    if (!user.value) {
-      await userStore.fetchCurrentUser();
-    }
-
-    if (userStore.currentUser?.id) {
-      const res = await fetch(`/api/stats/${userStore.currentUser.id}`);
-      if (!res.ok) throw new Error('Failed to fetch stats');
-      stats.value = await res.json();
-    } else {
-      errorMessage.value = 'No user logged in.';
-    }
-  } catch (err) {
-    console.error('Failed to load stats:', err);
-    errorMessage.value = 'Something went wrong while fetching your stats. Please try again later.';
-  } finally {
-    loading.value = false;
-  }
-});
+export default {
+  name: 'Dashboard',
+  data() {
+    return {
+      activities: [],
+      totalActivities: 0,
+      totalDuration: 0,
+    };
+  },
+  async mounted() {
+    await this.fetchDashboardData();
+  },
+  methods: {
+    async fetchDashboardData() {
+      try {
+        const response = await apiFetch('api/activities/dashboard');
+        this.activities = response.activities;
+        this.totalActivities = response.totalActivities;
+        this.totalDuration = response.totalDuration;
+      } catch (e) {
+        alert('Error fetching dashboard data: ' + e.message);
+      }
+    },
+    formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString();
+    },
+  },
+};
 </script>
 
 <style scoped>
-.dashboard {
+.dashboard-page {
+  background-color: var(--bg-color);
+  color: var(--text-color);
   padding: 2rem;
 }
 
-section {
-  margin-bottom: 1.5rem;
+.statistics {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
 }
 
-p {
-  font-size: 1.2rem;
+.stat-item {
+  background-color: var(--sidebar-bg);
+  padding: 1rem;
+  border-radius: 4px;
+  width: 48%;
 }
 
-ul {
+.recent-activities ul {
   list-style-type: none;
   padding: 0;
 }
 
-ul li {
-  font-size: 1rem;
+.recent-activities li {
+  margin-bottom: 1rem;
 }
 
-.error-message {
-  color: red;
-  font-weight: bold;
+button {
+  padding: 0.5rem;
+  background-color: var(--link-color);
+  color: var(--header-text);
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3a8bde;
 }
 </style>

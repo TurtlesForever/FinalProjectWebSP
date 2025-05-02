@@ -2,7 +2,6 @@
   <div v-if="isAdmin">
     <h2>Admin Panel</h2>
 
-    <!-- Add or Edit User Form -->
     <div>
       <h3>{{ selectedUser ? 'Edit User' : 'Add New User' }}</h3>
       <form @submit.prevent="selectedUser ? updateUser() : addUser()">
@@ -23,11 +22,9 @@
       </form>
     </div>
 
-    <!-- Users Table -->
     <div>
       <h3>Users</h3>
 
-      <!-- Loading Indicator -->
       <div v-if="loading">Loading users...</div>
 
       <table v-if="!loading">
@@ -50,7 +47,6 @@
         </tbody>
       </table>
 
-      <!-- Pagination Controls -->
       <div class="pagination">
         <button @click="prevPage" :disabled="page === 1">Prev</button>
         <span>Page {{ page }}</span>
@@ -60,25 +56,17 @@
   </div>
 
   <div v-else>
-    <h2>Access Denied</h2>
-    <p>You must be an admin to view this page.</p>
+    <p>You do not have permission to view this page.</p>
   </div>
 </template>
 
 <script>
-import {
-  db,
-  collection,
-  addDoc,
-  doc,
-  updateDoc,
-  deleteDoc,
-  getDocs,
-} from '@/firebaseConfig';
-import bcrypt from 'bcryptjs';
-import { useUserStore } from '@/store/userStore';
+import { ref } from 'vue';
+import { useUserStore } from '../stores/userStore';
+import { apiFetch, apiPost, apiDelete } from '../api';
 
 export default {
+  name: 'AdminPanel',
   data() {
     return {
       users: [],
@@ -88,108 +76,71 @@ export default {
         role: 'user',
       },
       selectedUser: null,
-      isAdmin: false,
-      loading: false,
+      loading: true,
       page: 1,
-      perPage: 5,
+      pageSize: 5,
     };
   },
   computed: {
-    totalPages() {
-      return Math.ceil(this.users.length / this.perPage);
+    isAdmin() {
+      return this.$store.state.user.role === 'admin';
     },
     paginatedUsers() {
-      const start = (this.page - 1) * this.perPage;
-      return this.users.slice(start, start + this.perPage);
+      const startIndex = (this.page - 1) * this.pageSize;
+      return this.users.slice(startIndex, startIndex + this.pageSize);
     },
+    totalPages() {
+      return Math.ceil(this.users.length / this.pageSize);
+    },
+  },
+  async mounted() {
+    if (this.isAdmin) {
+      await this.fetchUsers();
+    }
   },
   methods: {
     async fetchUsers() {
-      this.loading = true;
       try {
-        const querySnapshot = await getDocs(collection(db, 'users'));
-        this.users = querySnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-      } catch (err) {
-        console.error('Error fetching users:', err);
-      } finally {
+        this.users = await apiFetch('api/users');
         this.loading = false;
+      } catch (error) {
+        alert('Error fetching users');
       }
     },
     async addUser() {
       try {
-        const exists = this.users.some(
-          (u) => u.username.toLowerCase() === this.formUser.username.toLowerCase()
-        );
-        if (exists) {
-          alert('Username already exists.');
-          return;
-        }
-
-        const { username, password, role } = this.formUser;
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await addDoc(collection(db, 'users'), {
-          username,
-          password: hashedPassword,
-          role,
-          friends: [],
-        });
-        this.resetForm();
+        await apiPost('api/users', this.formUser);
+        this.formUser = { username: '', password: '', role: 'user' };
         await this.fetchUsers();
-      } catch (err) {
-        console.error('Error adding user:', err);
-        alert('Failed to add user. Please try again later.');
+      } catch (error) {
+        alert('Error adding user');
       }
     },
     async updateUser() {
       try {
-        const userRef = doc(db, 'users', this.selectedUser.id);
-        await updateDoc(userRef, {
-          username: this.formUser.username,
-          role: this.formUser.role,
-        });
-        this.resetForm();
+        await apiPost(`api/users/${this.selectedUser.id}`, this.formUser);
+        this.selectedUser = null;
+        this.formUser = { username: '', password: '', role: 'user' };
         await this.fetchUsers();
-      } catch (err) {
-        console.error('Error updating user:', err);
-        alert('Failed to update user. Please try again later.');
-      }
-    },
-    async deleteUser(userId) {
-      if (confirm('Are you sure you want to delete this user?')) {
-        try {
-          const wasLastPage = this.page === this.totalPages;
-          await deleteDoc(doc(db, 'users', userId));
-          await this.fetchUsers();
-          if (wasLastPage && this.page > this.totalPages) {
-            this.page--; // Adjust page if the last user on the page was deleted
-          }
-        } catch (err) {
-          console.error('Error deleting user:', err);
-          alert('Failed to delete user. Please try again later.');
-        }
+      } catch (error) {
+        alert('Error updating user');
       }
     },
     editUser(user) {
       this.selectedUser = user;
-      this.formUser = {
-        username: user.username,
-        role: user.role,
-        password: '', // Not editable
-      };
+      this.formUser = { ...user };
     },
     cancelEdit() {
-      this.resetForm();
-    },
-    resetForm() {
       this.selectedUser = null;
-      this.formUser = {
-        username: '',
-        password: '',
-        role: 'user',
-      };
+      this.formUser = { username: '', password: '', role: 'user' };
+    },
+    async deleteUser(userId) {
+      try {
+        await apiDelete(`api/users/${userId}`);
+        await this.fetchUsers();
+      } catch (error) {
+        alert('Error deleting user');
+      }
     },
     prevPage() {
       if (this.page > 1) this.page--;
@@ -197,39 +148,40 @@ export default {
     nextPage() {
       if (this.page < this.totalPages) this.page++;
     },
-    async checkAdmin() {
-      const store = useUserStore();
-      await store.fetchCurrentUser();
-      this.isAdmin = store.currentUser?.role === 'admin';
-    },
-  },
-  async created() {
-    await this.checkAdmin();
-    if (this.isAdmin) {
-      await this.fetchUsers();
-    }
   },
 };
 </script>
 
 <style scoped>
-table {
-  margin-top: 1rem;
-  border-collapse: collapse;
-  width: 100%;
+.admin-page {
+  margin: 20px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
-td,
-th {
-  border: 1px solid #ccc;
+
+form input,
+form select {
+  margin-bottom: 10px;
   padding: 0.5rem;
+  background-color: var(--sidebar-bg);
+  color: var(--text-color);
 }
-form {
-  margin-bottom: 1rem;
-}
+
 button {
-  margin-right: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--link-color);
+  color: var(--header-text);
+  border: none;
+  cursor: pointer;
 }
+
+button:hover {
+  background-color: #3a8bde;
+}
+
 .pagination {
-  margin-top: 1rem;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

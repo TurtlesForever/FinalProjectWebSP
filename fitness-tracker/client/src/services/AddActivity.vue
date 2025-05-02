@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import API from '@/services/api';
+import { apiFetch } from '@/services/apiFetch';
 
 export default {
   name: 'AddActivity',
@@ -36,32 +36,55 @@ export default {
     };
   },
   methods: {
-  async submitActivity() {
-    try {
-      await API.post('/api/exercise-types', this.form);
-      this.successMsg = 'Activity added successfully!';
-      this.form = { type: '', duration: null, date: '' };
-    } catch (e) {
-      alert('Failed to add activity: ' + e.message);
-    }
+    async submitActivity() {
+      try {
+        await apiFetch('activities', {
+          method: 'POST',
+          body: JSON.stringify(this.form),
+        });
+        this.successMsg = 'Activity added successfully!';
+        this.form = { type: '', duration: null, date: '' };
+      } catch (e) {
+        alert('Failed to add activity: ' + e.message);
+      }
+    },
   },
-  }
-}
-
+};
 </script>
-import API from '@/services/api';
 
 <style scoped>
 .form-container {
   margin: 20px;
   max-width: 400px;
+  background-color: var(--color-bg);
+  padding: 20px;
+  border-radius: 8px;
 }
 label {
   display: block;
   margin-bottom: 10px;
+  color: var(--color-text);
+}
+input {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+  background-color: var(--color-input);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: var(--color-text);
+}
+button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 .success {
-  color: green;
+  color: var(--color-success);
   margin-top: 10px;
 }
 </style>

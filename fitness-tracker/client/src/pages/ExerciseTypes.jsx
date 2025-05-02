@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import API from '../services/api'; // Adjust if your API file is elsewhere
+import API from '../services/api';
+import '../styles/SharedStyles.css';
 
 const ExerciseTypes = () => {
   const [exerciseTypes, setExerciseTypes] = useState([]);
@@ -23,24 +24,23 @@ const ExerciseTypes = () => {
     try {
       const res = await API.post('/exercise-types', newType);
       setExerciseTypes([...exerciseTypes, res.data]);
-      setNewType({ name: '', category: '' }); // Clear form
+      setNewType({ name: '', category: '' });
     } catch (e) {
       alert('Failed to add exercise type: ' + e.message);
     }
   };
 
   return (
-    <div style={styles.page}>
+    <div className="page-container">
       <h2>Manage Exercise Types</h2>
-
-      <form onSubmit={handleSubmit} style={styles.form}>
+      <form onSubmit={handleSubmit} className="form-box">
         <input
           type="text"
           placeholder="Name"
           value={newType.name}
           onChange={(e) => setNewType({ ...newType, name: e.target.value })}
           required
-          style={styles.input}
+          className="input-field"
         />
         <input
           type="text"
@@ -48,14 +48,14 @@ const ExerciseTypes = () => {
           value={newType.category}
           onChange={(e) => setNewType({ ...newType, category: e.target.value })}
           required
-          style={styles.input}
+          className="input-field"
         />
-        <button type="submit" style={styles.button}>Add Exercise Type</button>
+        <button type="submit" className="button-primary">Add Exercise Type</button>
       </form>
 
-      <ul style={styles.ul}>
+      <ul className="list-reset">
         {exerciseTypes.map((type) => (
-          <li key={type._id} style={styles.li}>
+          <li key={type._id} className="list-item">
             <strong>{type.name}</strong> – Category: {type.category}
           </li>
         ))}
@@ -64,38 +64,6 @@ const ExerciseTypes = () => {
       {exerciseTypes.length === 0 && <p>No exercise types defined yet.</p>}
     </div>
   );
-};
-
-const styles = {
-  page: {
-    margin: '20px',
-  },
-  form: {
-    marginBottom: '20px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    maxWidth: '300px',
-  },
-  input: {
-    padding: '8px',
-    fontSize: '16px',
-  },
-  button: {
-    padding: '8px',
-    fontSize: '16px',
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    border: 'none',
-    cursor: 'pointer',
-  },
-  ul: {
-    listStyleType: 'none',
-    padding: 0,
-  },
-  li: {
-    marginBottom: '10px',
-  },
 };
 
 export default ExerciseTypes;

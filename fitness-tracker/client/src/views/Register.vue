@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="form-container">
     <h2>Register</h2>
-    <form @submit.prevent="registerUser">
+    <form @submit.prevent="registerUser" class="form">
       <input v-model="user.username" placeholder="Username" required />
       <input v-model="user.password" type="password" placeholder="Password" required />
-      <button type="submit" :disabled="loading">Register</button>
+      <button type="submit" class="submit-btn">Register</button>
     </form>
   </div>
 </template>
@@ -33,3 +33,36 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.form-container {
+  padding: 2rem;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+input {
+  padding: 0.8rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+button.submit-btn {
+  padding: 0.8rem 1.5rem;
+  background-color: #1e90ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button.submit-btn:hover {
+  background-color: #007bff;
+}
+</style>

@@ -3,18 +3,16 @@
     <h2>Exercise Types</h2>
 
     <form @submit.prevent="addExerciseType">
-      <input v-model="newType.name" placeholder="Name" required />
-      <input v-model="newType.category" placeholder="Category" required />
+      <input v-model="newExerciseType.name" placeholder="New Exercise Type" required />
       <button type="submit">Add Exercise Type</button>
     </form>
 
     <ul v-if="exerciseTypes.length">
       <li v-for="type in exerciseTypes" :key="type._id">
-        <strong>{{ type.name }}</strong> – Category: {{ type.category }}
+        {{ type.name }}
       </li>
     </ul>
-
-    <p v-else>No exercise types defined yet.</p>
+    <p v-else>No exercise types added yet.</p>
   </div>
 </template>
 
@@ -22,31 +20,33 @@
 import { apiFetch, apiPost } from '../api';
 
 export default {
-  name: 'ExerciseTypes',
+  name: 'ExerciseTypesList',
   data() {
     return {
       exerciseTypes: [],
-      newType: { name: '', category: '' },
+      newExerciseType: {
+        name: '',
+      },
     };
   },
   async mounted() {
-    await this.fetchTypes();
+    await this.fetchExerciseTypes();
   },
   methods: {
-    async fetchTypes() {
+    async fetchExerciseTypes() {
       try {
         this.exerciseTypes = await apiFetch('api/exercise-types');
       } catch (e) {
-        alert('Failed to fetch exercise types: ' + e.message);
+        alert('Error fetching exercise types: ' + e.message);
       }
     },
     async addExerciseType() {
       try {
-        await apiPost('api/exercise-types', this.newType);
-        this.newType = { name: '', category: '' };
-        await this.fetchTypes();
+        await apiPost('api/exercise-types', this.newExerciseType);
+        this.newExerciseType = { name: '' };
+        await this.fetchExerciseTypes();
       } catch (e) {
-        alert('Failed to add exercise type: ' + e.message);
+        alert('Error adding exercise type: ' + e.message);
       }
     },
   },
@@ -55,19 +55,36 @@ export default {
 
 <style scoped>
 .exercise-types-page {
-  margin: 20px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 2rem;
 }
-form {
-  margin-bottom: 20px;
-}
+
 form input {
-  margin-right: 10px;
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+  background-color: var(--sidebar-bg);
+  color: var(--text-color);
 }
+
+button {
+  padding: 0.5rem;
+  background-color: var(--link-color);
+  color: var(--header-text);
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3a8bde;
+}
+
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 li {
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 }
 </style>

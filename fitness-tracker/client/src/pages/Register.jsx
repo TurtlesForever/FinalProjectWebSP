@@ -2,7 +2,7 @@ import RegisterForm from '../components/RegisterForm';
 
 export default function Register() {
   return (
-    <div>
+    <div className="auth-page">
       <RegisterForm />
     </div>
   );

@@ -31,7 +31,7 @@ export default {
       newActivity: {
         type: '',
         duration: null,
-        date: new Date().toISOString().slice(0, 10), // today's date
+        date: new Date().toISOString().slice(0, 10),
       },
     };
   },
@@ -50,7 +50,7 @@ export default {
       try {
         await apiPost('api/activities', this.newActivity);
         this.newActivity = { type: '', duration: null, date: new Date().toISOString().slice(0, 10) };
-        await this.fetchActivities(); // refresh list
+        await this.fetchActivities();
       } catch (e) {
         alert('Failed to add activity: ' + e.message);
       }
@@ -65,18 +65,39 @@ export default {
 <style scoped>
 .activities-page {
   margin: 20px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
+
 form {
   margin-bottom: 20px;
 }
+
 form input {
   margin-right: 10px;
+  padding: 0.5rem;
+  background-color: var(--sidebar-bg);
+  color: var(--text-color);
 }
+
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 li {
   margin-bottom: 10px;
+}
+
+button {
+  padding: 0.5rem;
+  background-color: var(--link-color);
+  color: var(--header-text);
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3a8bde;
 }
 </style>
