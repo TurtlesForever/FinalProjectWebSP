@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isAdmin">
     <h2>Admin Panel</h2>
 
     <!-- Add or Edit User Form -->
@@ -26,7 +26,11 @@
     <!-- Users Table -->
     <div>
       <h3>Users</h3>
-      <table>
+
+      <!-- Loading Indicator -->
+      <div v-if="loading">Loading users...</div>
+
+      <table v-if="!loading">
         <thead>
           <tr>
             <th>Username</th>
@@ -35,7 +39,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="user in users" :key="user.id">
+          <tr v-for="user in paginatedUsers" :key="user.id">
             <td>{{ user.username }}</td>
             <td>{{ user.role }}</td>
             <td>
@@ -45,7 +49,19 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Pagination Controls -->
+      <div class="pagination">
+        <button @click="prevPage" :disabled="page === 1">Prev</button>
+        <span>Page {{ page }}</span>
+        <button @click="nextPage" :disabled="page >= totalPages">Next</button>
+      </div>
     </div>
+  </div>
+
+  <div v-else>
+    <h2>Access Denied</h2>
+    <p>You must be an admin to view this page.</p>
   </div>
 </template>
 
@@ -60,6 +76,7 @@ import {
   getDocs,
 } from '@/firebaseConfig';
 import bcrypt from 'bcryptjs';
+import { useUserStore } from '@/store/userStore';
 
 export default {
   data() {
@@ -71,47 +88,96 @@ export default {
         role: 'user',
       },
       selectedUser: null,
+      isAdmin: false,
+      loading: false,
+      page: 1,
+      perPage: 5,
     };
+  },
+  computed: {
+    totalPages() {
+      return Math.ceil(this.users.length / this.perPage);
+    },
+    paginatedUsers() {
+      const start = (this.page - 1) * this.perPage;
+      return this.users.slice(start, start + this.perPage);
+    },
   },
   methods: {
     async fetchUsers() {
-      const querySnapshot = await getDocs(collection(db, 'users'));
-      this.users = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
+      this.loading = true;
+      try {
+        const querySnapshot = await getDocs(collection(db, 'users'));
+        this.users = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+      } catch (err) {
+        console.error('Error fetching users:', err);
+      } finally {
+        this.loading = false;
+      }
     },
     async addUser() {
-      const { username, password, role } = this.formUser;
-      const hashedPassword = await bcrypt.hash(password, 10);
-      await addDoc(collection(db, 'users'), {
-        username,
-        password: hashedPassword,
-        role,
-        friends: [],
-      });
-      this.resetForm();
-      await this.fetchUsers();
+      try {
+        const exists = this.users.some(
+          (u) => u.username.toLowerCase() === this.formUser.username.toLowerCase()
+        );
+        if (exists) {
+          alert('Username already exists.');
+          return;
+        }
+
+        const { username, password, role } = this.formUser;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await addDoc(collection(db, 'users'), {
+          username,
+          password: hashedPassword,
+          role,
+          friends: [],
+        });
+        this.resetForm();
+        await this.fetchUsers();
+      } catch (err) {
+        console.error('Error adding user:', err);
+        alert('Failed to add user. Please try again later.');
+      }
     },
     async updateUser() {
-      const userRef = doc(db, 'users', this.selectedUser.id);
-      await updateDoc(userRef, {
-        username: this.formUser.username,
-        role: this.formUser.role,
-      });
-      this.resetForm();
-      await this.fetchUsers();
+      try {
+        const userRef = doc(db, 'users', this.selectedUser.id);
+        await updateDoc(userRef, {
+          username: this.formUser.username,
+          role: this.formUser.role,
+        });
+        this.resetForm();
+        await this.fetchUsers();
+      } catch (err) {
+        console.error('Error updating user:', err);
+        alert('Failed to update user. Please try again later.');
+      }
     },
     async deleteUser(userId) {
-      await deleteDoc(doc(db, 'users', userId));
-      await this.fetchUsers();
+      if (confirm('Are you sure you want to delete this user?')) {
+        try {
+          const wasLastPage = this.page === this.totalPages;
+          await deleteDoc(doc(db, 'users', userId));
+          await this.fetchUsers();
+          if (wasLastPage && this.page > this.totalPages) {
+            this.page--; // Adjust page if the last user on the page was deleted
+          }
+        } catch (err) {
+          console.error('Error deleting user:', err);
+          alert('Failed to delete user. Please try again later.');
+        }
+      }
     },
     editUser(user) {
       this.selectedUser = user;
       this.formUser = {
         username: user.username,
         role: user.role,
-        password: '', // not editable
+        password: '', // Not editable
       };
     },
     cancelEdit() {
@@ -125,9 +191,23 @@ export default {
         role: 'user',
       };
     },
+    prevPage() {
+      if (this.page > 1) this.page--;
+    },
+    nextPage() {
+      if (this.page < this.totalPages) this.page++;
+    },
+    async checkAdmin() {
+      const store = useUserStore();
+      await store.fetchCurrentUser();
+      this.isAdmin = store.currentUser?.role === 'admin';
+    },
   },
-  created() {
-    this.fetchUsers();
+  async created() {
+    await this.checkAdmin();
+    if (this.isAdmin) {
+      await this.fetchUsers();
+    }
   },
 };
 </script>
@@ -138,7 +218,8 @@ table {
   border-collapse: collapse;
   width: 100%;
 }
-td, th {
+td,
+th {
   border: 1px solid #ccc;
   padding: 0.5rem;
 }
@@ -147,5 +228,8 @@ form {
 }
 button {
   margin-right: 0.5rem;
+}
+.pagination {
+  margin-top: 1rem;
 }
 </style>

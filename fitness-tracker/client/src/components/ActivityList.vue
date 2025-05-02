@@ -2,6 +2,13 @@
   <div class="activities-page">
     <h2>Your Activities</h2>
 
+    <form @submit.prevent="addActivity">
+      <input v-model="newActivity.type" placeholder="Activity Type" required />
+      <input v-model.number="newActivity.duration" type="number" placeholder="Duration (mins)" required />
+      <input v-model="newActivity.date" type="date" required />
+      <button type="submit">Add Activity</button>
+    </form>
+
     <ul v-if="activities.length">
       <li v-for="a in activities" :key="a._id">
         <strong>{{ a.type }}</strong> – {{ a.duration }} mins 
@@ -14,23 +21,40 @@
 </template>
 
 <script>
-import { apiFetch } from '../api';
+import { apiFetch, apiPost } from '../api';
 
 export default {
   name: 'Activities',
   data() {
     return {
       activities: [],
+      newActivity: {
+        type: '',
+        duration: null,
+        date: new Date().toISOString().slice(0, 10), // today's date
+      },
     };
   },
   async mounted() {
-    try {
-      this.activities = await apiFetch('api/activities');
-    } catch (e) {
-      alert('Failed to fetch activities: ' + e.message);
-    }
+    await this.fetchActivities();
   },
   methods: {
+    async fetchActivities() {
+      try {
+        this.activities = await apiFetch('api/activities');
+      } catch (e) {
+        alert('Failed to fetch activities: ' + e.message);
+      }
+    },
+    async addActivity() {
+      try {
+        await apiPost('api/activities', this.newActivity);
+        this.newActivity = { type: '', duration: null, date: new Date().toISOString().slice(0, 10) };
+        await this.fetchActivities(); // refresh list
+      } catch (e) {
+        alert('Failed to add activity: ' + e.message);
+      }
+    },
     formatDate(dateStr) {
       return new Date(dateStr).toLocaleDateString();
     },
@@ -41,6 +65,12 @@ export default {
 <style scoped>
 .activities-page {
   margin: 20px;
+}
+form {
+  margin-bottom: 20px;
+}
+form input {
+  margin-right: 10px;
 }
 ul {
   list-style-type: none;

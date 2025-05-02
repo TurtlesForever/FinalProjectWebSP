@@ -10,11 +10,14 @@
         <li>Workout Time: {{ stats.minutes }} minutes</li>
       </ul>
     </section>
+
     <section v-else-if="loading">
-      <p>Loading stats...</p>
+      <p>Loading your stats...</p>
     </section>
+
     <section v-else>
-      <p>No stats available.</p>
+      <p v-if="errorMessage">{{ errorMessage }}</p>
+      <p v-else>No stats available for today.</p>
     </section>
   </div>
 </template>
@@ -28,6 +31,7 @@ const user = computed(() => userStore.currentUser);
 
 const stats = ref(null);
 const loading = ref(true);
+const errorMessage = ref('');
 
 onMounted(async () => {
   try {
@@ -39,9 +43,12 @@ onMounted(async () => {
       const res = await fetch(`/api/stats/${userStore.currentUser.id}`);
       if (!res.ok) throw new Error('Failed to fetch stats');
       stats.value = await res.json();
+    } else {
+      errorMessage.value = 'No user logged in.';
     }
   } catch (err) {
     console.error('Failed to load stats:', err);
+    errorMessage.value = 'Something went wrong while fetching your stats. Please try again later.';
   } finally {
     loading.value = false;
   }
@@ -51,5 +58,27 @@ onMounted(async () => {
 <style scoped>
 .dashboard {
   padding: 2rem;
+}
+
+section {
+  margin-bottom: 1.5rem;
+}
+
+p {
+  font-size: 1.2rem;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  font-size: 1rem;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
 }
 </style>
