@@ -1,4 +1,4 @@
-import API from '../api';
+import API from '@../api';
 
 // Inside an async function or lifecycle hook
 async function fetchActivities() {

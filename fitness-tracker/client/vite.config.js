@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
@@ -9,13 +8,13 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './src'),  // Resolving '@' to the 'src' folder
     },
   },
   build: {
     outDir: 'dist',
     emptyOutDir: true,
     sourcemap: true,
-    chunkSizeWarningLimit: 2000
+    chunkSizeWarningLimit: 2000,  // Increase chunk size limit to avoid warnings
   },
 });
