@@ -4,7 +4,7 @@
     <form @submit.prevent="registerUser">
       <input v-model="user.username" placeholder="Username" required />
       <input v-model="user.password" type="password" placeholder="Password" required />
-      <button type="submit">Register</button>
+      <button type="submit" :disabled="loading">Register</button>
     </form>
   </div>
 </template>

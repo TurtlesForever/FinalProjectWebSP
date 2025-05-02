@@ -33,16 +33,18 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from 'vue';
+import { ref, onMounted } from 'vue';
 
-const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
+const isDarkMode = ref(false);
 
-watchEffect(() => {
-  localStorage.setItem('darkMode', isDarkMode.value);
+onMounted(() => {
+  const darkMode = localStorage.getItem('darkMode') === 'true';
+  isDarkMode.value = darkMode;
 });
 
 const toggleDarkMode = () => {
   isDarkMode.value = !isDarkMode.value;
+  localStorage.setItem('darkMode', isDarkMode.value);
 };
 </script>
 
