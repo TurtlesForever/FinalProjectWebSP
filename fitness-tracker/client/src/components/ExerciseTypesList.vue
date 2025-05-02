@@ -3,7 +3,11 @@
     <h2>Exercise Types</h2>
 
     <form @submit.prevent="addExerciseType">
-      <input v-model="newExerciseType.name" placeholder="New Exercise Type" required />
+      <input
+        v-model="newExerciseType.name"
+        placeholder="New Exercise Type"
+        required
+      />
       <button type="submit">Add Exercise Type</button>
     </form>
 
@@ -17,7 +21,7 @@
 </template>
 
 <script>
-import { apiFetch, apiPost } from '../api';
+import API from '@/api';
 
 export default {
   name: 'ExerciseTypesList',
@@ -35,15 +39,21 @@ export default {
   methods: {
     async fetchExerciseTypes() {
       try {
-        this.exerciseTypes = await apiFetch('api/exercise-types');
+        const { data } = await API.get('/exercise-types');
+        this.exerciseTypes = data;
       } catch (e) {
         alert('Error fetching exercise types: ' + e.message);
       }
     },
     async addExerciseType() {
+      const trimmedName = this.newExerciseType.name.trim();
+      if (!trimmedName) {
+        return alert('Please enter a valid exercise type name.');
+      }
+
       try {
-        await apiPost('api/exercise-types', this.newExerciseType);
-        this.newExerciseType = { name: '' };
+        await API.post('/exercise-types', { name: trimmedName });
+        this.newExerciseType.name = '';
         await this.fetchExerciseTypes();
       } catch (e) {
         alert('Error adding exercise type: ' + e.message);
@@ -65,6 +75,8 @@ form input {
   margin-right: 0.5rem;
   background-color: var(--sidebar-bg);
   color: var(--text-color);
+  border: 1px solid var(--text-color);
+  border-radius: 4px;
 }
 
 button {
@@ -72,6 +84,7 @@ button {
   background-color: var(--link-color);
   color: var(--header-text);
   border: none;
+  border-radius: 4px;
   cursor: pointer;
 }
 

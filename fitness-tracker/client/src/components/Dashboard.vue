@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { apiFetch } from '../api';
+import API from '@../api';
 
 export default {
   name: 'Dashboard',
@@ -44,18 +44,18 @@ export default {
     await this.fetchDashboardData();
   },
   methods: {
-    async fetchDashboardData() {
-      try {
-        const response = await apiFetch('api/activities/dashboard');
-        this.activities = response.activities;
-        this.totalActivities = response.totalActivities;
-        this.totalDuration = response.totalDuration;
-      } catch (e) {
-        alert('Error fetching dashboard data: ' + e.message);
+  async fetchDashboardData() {
+    try {
+      const { data } = await API.get('/activities/dashboard');
+      this.activities = data.activities;
+      this.totalActivities = data.totalActivities;
+      this.totalDuration = data.totalDuration;
+    } catch (e) {
+      alert('Error fetching dashboard data: ' + e.message);
       }
     },
     formatDate(dateStr) {
-      return new Date(dateStr).toLocaleDateString();
+    return new Date(dateStr).toLocaleDateString();
     },
   },
 };

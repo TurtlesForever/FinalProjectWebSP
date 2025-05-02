@@ -1,8 +1,11 @@
-import { apiFetch } from './apiFetch';
+import API from '@/api';
 
 export async function loginUser(credentials) {
-  return await apiFetch('auth/login', {
-    method: 'POST',
-    body: JSON.stringify(credentials),
-  });
+  try {
+    const response = await API.post('/auth/login', credentials);
+    return response.data;
+  } catch (err) {
+    const message = err.response?.data?.message || err.message;
+    throw new Error(message);
+  }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isAdmin">
+  <div v-if="isAdmin" class="admin-page">
     <h2>Admin Panel</h2>
 
     <div>
@@ -61,9 +61,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useUserStore } from '../stores/userStore';
-import { apiFetch, apiPost, apiDelete } from '../api';
+import API from '@/api';
 
 export default {
   name: 'AdminPanel',
@@ -83,11 +81,11 @@ export default {
   },
   computed: {
     isAdmin() {
-      return this.$store.state.user.role === 'admin';
+      return this.$store.state.user?.role === 'admin';
     },
     paginatedUsers() {
-      const startIndex = (this.page - 1) * this.pageSize;
-      return this.users.slice(startIndex, startIndex + this.pageSize);
+      const start = (this.page - 1) * this.pageSize;
+      return this.users.slice(start, start + this.pageSize);
     },
     totalPages() {
       return Math.ceil(this.users.length / this.pageSize);
@@ -101,16 +99,18 @@ export default {
   methods: {
     async fetchUsers() {
       try {
-        this.users = await apiFetch('api/users');
-        this.loading = false;
+        const { data } = await API.get('/users');
+        this.users = data;
       } catch (error) {
         alert('Error fetching users');
+      } finally {
+        this.loading = false;
       }
     },
     async addUser() {
       try {
-        await apiPost('api/users', this.formUser);
-        this.formUser = { username: '', password: '', role: 'user' };
+        await API.post('/users', this.formUser);
+        this.resetForm();
         await this.fetchUsers();
       } catch (error) {
         alert('Error adding user');
@@ -118,29 +118,31 @@ export default {
     },
     async updateUser() {
       try {
-        await apiPost(`api/users/${this.selectedUser.id}`, this.formUser);
-        this.selectedUser = null;
-        this.formUser = { username: '', password: '', role: 'user' };
+        await API.put(`/users/${this.selectedUser.id}`, this.formUser);
+        this.resetForm();
         await this.fetchUsers();
       } catch (error) {
         alert('Error updating user');
       }
     },
-    editUser(user) {
-      this.selectedUser = user;
-      this.formUser = { ...user };
-    },
-    cancelEdit() {
-      this.selectedUser = null;
-      this.formUser = { username: '', password: '', role: 'user' };
-    },
     async deleteUser(userId) {
       try {
-        await apiDelete(`api/users/${userId}`);
+        await API.delete(`/users/${userId}`);
         await this.fetchUsers();
       } catch (error) {
         alert('Error deleting user');
       }
+    },
+    editUser(user) {
+      this.selectedUser = user;
+      this.formUser = { ...user, password: '' };
+    },
+    cancelEdit() {
+      this.resetForm();
+    },
+    resetForm() {
+      this.selectedUser = null;
+      this.formUser = { username: '', password: '', role: 'user' };
     },
     prevPage() {
       if (this.page > 1) this.page--;
@@ -165,13 +167,17 @@ form select {
   padding: 0.5rem;
   background-color: var(--sidebar-bg);
   color: var(--text-color);
+  border: 1px solid var(--text-color);
+  border-radius: 4px;
 }
 
 button {
   padding: 0.5rem;
+  margin-right: 0.5rem;
   background-color: var(--link-color);
   color: var(--header-text);
   border: none;
+  border-radius: 4px;
   cursor: pointer;
 }
 

@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { apiFetch } from '@/services/apiFetch';
+import API from '@/api';
 
 export default {
   name: 'AddExerciseType',
@@ -33,7 +33,7 @@ export default {
   methods: {
     async submitExerciseType() {
       try {
-        await apiFetch('exercise-types', {
+        await API.post('exercise-types', {
           method: 'POST',
           body: JSON.stringify(this.form),
         });

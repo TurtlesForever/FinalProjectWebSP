@@ -21,31 +21,16 @@
 </template>
 
 <script>
-import { apiFetch } from '@/services/apiFetch';
+import API from '@/api';
 
 export default {
-  name: 'AddActivity',
-  data() {
-    return {
-      form: {
-        type: '',
-        duration: null,
-        date: '',
-      },
-      successMsg: '',
-    };
-  },
   methods: {
-    async submitActivity() {
+    async addActivity() {
       try {
-        await apiFetch('activities', {
-          method: 'POST',
-          body: JSON.stringify(this.form),
-        });
-        this.successMsg = 'Activity added successfully!';
-        this.form = { type: '', duration: null, date: '' };
+        const { data } = await API.post('/activities', this.activityData);
+        this.$router.push('/activities');
       } catch (e) {
-        alert('Failed to add activity: ' + e.message);
+        console.error('Error adding activity: ', e.message);
       }
     },
   },

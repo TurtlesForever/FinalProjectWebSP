@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { apiFetch } from '../api';
+import API from '@/api';
 
 export default {
   name: 'ActivityLog',
@@ -30,7 +30,8 @@ export default {
   methods: {
     async fetchActivities() {
       try {
-        this.activities = await apiFetch('api/activities');
+        const { data } = await API.get('/activities');
+        this.activities = data;
       } catch (e) {
         alert('Error fetching activity logs: ' + e.message);
       }

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { apiFetch, apiPost } from '../api';
+import API from '@/api';
 
 export default {
   name: 'Activities',
@@ -41,15 +41,20 @@ export default {
   methods: {
     async fetchActivities() {
       try {
-        this.activities = await apiFetch('api/activities');
+        const { data } = await API.get('/activities');
+        this.activities = data;
       } catch (e) {
         alert('Failed to fetch activities: ' + e.message);
       }
     },
     async addActivity() {
       try {
-        await apiPost('api/activities', this.newActivity);
-        this.newActivity = { type: '', duration: null, date: new Date().toISOString().slice(0, 10) };
+        await API.post('/activities', this.newActivity);
+        this.newActivity = {
+          type: '',
+          duration: null,
+          date: new Date().toISOString().slice(0, 10),
+        };
         await this.fetchActivities();
       } catch (e) {
         alert('Failed to add activity: ' + e.message);
