@@ -10,9 +10,15 @@
         Description:
         <textarea v-model="exerciseType.description" placeholder="Describe the exercise..." required></textarea>
       </label>
-      <button type="submit" class="submit-btn">Submit</button>
+      <button type="submit" class="submit-btn" :disabled="isSubmitting">
+        Submit
+      </button>
     </form>
 
+    <!-- Loading Indicator -->
+    <div v-if="isSubmitting" class="loading">Submitting...</div>
+
+    <!-- Message Feedback -->
     <p v-if="message" :class="{ success: success, error: !success }">{{ message }}</p>
   </div>
 </template>
@@ -30,6 +36,7 @@ export default {
       },
       message: '',
       success: false,
+      isSubmitting: false, // Track form submission state
     };
   },
   methods: {
@@ -40,15 +47,24 @@ export default {
         return;
       }
 
+      this.isSubmitting = true;
       try {
         await API.post('/exercise-types', this.exerciseType);
         this.message = 'Exercise type added!';
         this.success = true;
-        this.exerciseType = { name: '', description: '' };
+        this.exerciseType = { name: '', description: '' }; // Clear fields
+        setTimeout(() => {
+          this.message = ''; // Clear message after 3 seconds
+        }, 3000);
       } catch (err) {
         console.error(err);
         this.message = 'Error adding exercise type.';
         this.success = false;
+        setTimeout(() => {
+          this.message = ''; // Clear message after 3 seconds
+        }, 3000);
+      } finally {
+        this.isSubmitting = false;
       }
     },
   },
@@ -100,6 +116,11 @@ textarea {
   background-color: #45a049;
 }
 
+.submit-btn:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
 .success {
   margin-top: 1rem;
   color: #4caf50;
@@ -108,5 +129,10 @@ textarea {
 .error {
   margin-top: 1rem;
   color: #ff5c5c;
+}
+
+.loading {
+  margin-top: 1rem;
+  color: #ffa500;
 }
 </style>

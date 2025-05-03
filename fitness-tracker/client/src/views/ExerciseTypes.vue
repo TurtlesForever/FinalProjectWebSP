@@ -8,8 +8,11 @@
 
     <form v-if="showCreateForm" @submit.prevent="createExerciseType" class="form">
       <input v-model="newExerciseType.name" placeholder="Exercise Type" required />
-      <button type="submit" class="submit-btn">Create</button>
+      <button type="submit" class="submit-btn" :disabled="isSubmitting">Create</button>
     </form>
+
+    <!-- Loading indicator -->
+    <div v-if="isSubmitting" class="loading">Loading...</div>
 
     <ul v-if="exerciseTypes.length" class="exercise-list">
       <li v-for="exercise in exerciseTypes" :key="exercise._id">
@@ -23,8 +26,11 @@
 
     <form v-if="editing" @submit.prevent="updateExerciseType" class="form">
       <input v-model="editedExerciseType.name" required />
-      <button type="submit" class="submit-btn">Update</button>
+      <button type="submit" class="submit-btn" :disabled="isSubmitting">Update</button>
     </form>
+
+    <!-- Error message -->
+    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
   </div>
 </template>
 
@@ -37,52 +43,77 @@ const showCreateForm = ref(false);
 const newExerciseType = ref({ name: '' });
 const editedExerciseType = ref({ name: '', _id: '' });
 const editing = ref(false);
+const isSubmitting = ref(false);
+const errorMessage = ref('');
 
-const toggleForm = () => (showCreateForm.value = !showCreateForm.value);
+const toggleForm = () => {
+  showCreateForm.value = !showCreateForm.value;
+  errorMessage.value = ''; // Clear error when toggling the form
+};
 
 const fetchExerciseTypes = async () => {
   try {
+    isSubmitting.value = true;
     const res = await API.get('/exercise-types');
     exerciseTypes.value = res.data;
   } catch (err) {
+    errorMessage.value = 'Error fetching exercise types.';
     console.error('Error fetching exercise types:', err);
+  } finally {
+    isSubmitting.value = false;
   }
 };
 
 const createExerciseType = async () => {
   try {
+    isSubmitting.value = true;
     const res = await API.post('/exercise-types', newExerciseType.value);
     exerciseTypes.value.push(res.data);
-    newExerciseType.value = { name: '' };
+    newExerciseType.value = { name: '' }; // Reset input field
     showCreateForm.value = false;
+    errorMessage.value = ''; // Clear any previous errors
   } catch (err) {
+    errorMessage.value = 'Error creating exercise type.';
     console.error('Error creating exercise type:', err);
+  } finally {
+    isSubmitting.value = false;
   }
 };
 
 const editExerciseType = (exercise) => {
   editedExerciseType.value = { ...exercise };
   editing.value = true;
+  errorMessage.value = ''; // Clear error when editing
 };
 
 const updateExerciseType = async () => {
   try {
+    isSubmitting.value = true;
     const res = await API.put(`/exercise-types/${editedExerciseType.value._id}`, editedExerciseType.value);
     const index = exerciseTypes.value.findIndex(ex => ex._id === res.data._id);
     exerciseTypes.value.splice(index, 1, res.data);
     editing.value = false;
     editedExerciseType.value = { name: '', _id: '' };
+    errorMessage.value = ''; // Clear error on successful update
   } catch (err) {
+    errorMessage.value = 'Error updating exercise type.';
     console.error('Error updating exercise type:', err);
+  } finally {
+    isSubmitting.value = false;
   }
 };
 
 const deleteExerciseType = async (id) => {
   try {
+    isSubmitting.value = true;
     await API.delete(`/exercise-types/${id}`);
     exerciseTypes.value = exerciseTypes.value.filter(ex => ex._id !== id);
+    errorMessage.value = ''; // Clear error on successful delete
   } catch (err) {
+    errorMessage.value = 'Error deleting exercise type.';
     console.error('Error deleting exercise type:', err);
+  } finally {
+    isSubmitting.value = false;
   }
 };
 
@@ -174,5 +205,15 @@ button.delete-btn {
 
 button.delete-btn:hover {
   background-color: #e64545;
+}
+
+.loading {
+  margin-top: 1rem;
+  color: #ffa500;
+}
+
+.error {
+  margin-top: 1rem;
+  color: #ff5c5c;
 }
 </style>

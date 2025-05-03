@@ -1,243 +1,165 @@
 <template>
-  <div v-if="isAdmin" class="admin-page">
-    <h2>Admin Panel</h2>
+  <div v-if="isAdmin" class="admin-page min-h-screen flex flex-col items-center px-4 py-8 text-white">
+    <h2 class="text-3xl font-semibold mb-8">Admin Panel</h2>
 
-    <section class="form-section">
-      <h3>{{ selectedUser ? 'Edit User' : 'Add New User' }}</h3>
-      <form @submit.prevent="selectedUser ? updateUser() : addUser()">
-        <input v-model="formUser.username" type="text" placeholder="Username" required />
-        <input
+    <section class="form-section w-full max-w-3xl bg-gray-800 p-6 rounded mb-8">
+      <h3 class="text-2xl font-semibold mb-4">{{ selectedUser ? 'Edit User' : 'Add New User' }}</h3>
+      <form @submit.prevent="selectedUser ? updateUser() : addUser" class="space-y-4">
+        <input v-model="formUser.username" type="text" placeholder="Username" required class="w-full p-3 bg-gray-700 border border-gray-600 rounded" />
+        
+        <input 
           v-if="!selectedUser"
-          v-model="formUser.password"
-          type="password"
-          placeholder="Password"
-          required
+          v-model="formUser.password" 
+          type="password" 
+          placeholder="Password" 
+          required 
+          class="w-full p-3 bg-gray-700 border border-gray-600 rounded" 
         />
-        <select v-model="formUser.role">
+        
+        <select v-model="formUser.role" class="w-full p-3 bg-gray-700 border border-gray-600 rounded">
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
-        <div class="form-buttons">
-          <button type="submit">{{ selectedUser ? 'Update' : 'Add' }}</button>
-          <button type="button" @click="cancelEdit" v-if="selectedUser" class="cancel">Cancel</button>
+
+        <div class="form-buttons flex gap-4">
+          <button type="submit" class="w-full py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">{{ selectedUser ? 'Update' : 'Add' }}</button>
+          <button type="button" @click="cancelEdit" v-if="selectedUser" class="w-full py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Cancel</button>
         </div>
       </form>
     </section>
 
-    <section class="users-section">
-      <h3>Users</h3>
-      <div v-if="loading">Loading users...</div>
+    <section class="users-section w-full max-w-3xl">
+      <h3 class="text-2xl font-semibold mb-4">Users</h3>
 
-      <table v-if="!loading">
+      <div v-if="loading" class="text-center text-gray-400">Loading users...</div>
+
+      <table v-if="!loading" class="w-full table-auto bg-gray-800 text-white rounded-lg">
         <thead>
           <tr>
-            <th>Username</th>
-            <th>Role</th>
-            <th>Actions</th>
+            <th class="p-4">Username</th>
+            <th class="p-4">Role</th>
+            <th class="p-4">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="user in paginatedUsers" :key="user.id">
-            <td>{{ user.username }}</td>
-            <td>{{ user.role }}</td>
-            <td>
-              <button @click="editUser(user)">Edit</button>
-              <button @click="deleteUser(user.id)" class="danger">Delete</button>
+          <tr v-for="user in paginatedUsers" :key="user.id" class="border-b border-gray-600">
+            <td class="p-4">{{ user.username }}</td>
+            <td class="p-4">{{ user.role }}</td>
+            <td class="p-4 flex gap-2">
+              <button @click="editUser(user)" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Edit</button>
+              <button @click="deleteUser(user.id)" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
 
-      <div class="pagination">
-        <button @click="prevPage" :disabled="page === 1">Prev</button>
+      <div class="pagination flex justify-between mt-4 text-white">
+        <button @click="prevPage" :disabled="page === 1" class="py-2 px-4 bg-gray-600 rounded hover:bg-gray-700">Prev</button>
         <span>Page {{ page }}</span>
-        <button @click="nextPage" :disabled="page >= totalPages">Next</button>
+        <button @click="nextPage" :disabled="page >= totalPages" class="py-2 px-4 bg-gray-600 rounded hover:bg-gray-700">Next</button>
       </div>
     </section>
   </div>
 
-  <div v-else class="no-access">
-    <p>You do not have permission to view this page.</p>
+  <div v-else class="no-access text-center py-8">
+    <p class="text-lg text-gray-400">You do not have permission to view this page.</p>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue';
 import API from '@/api';
 
-export default {
-  name: 'AdminPanel',
-  data() {
-    return {
-      users: [],
-      formUser: {
-        username: '',
-        password: '',
-        role: 'user',
-      },
-      selectedUser: null,
-      loading: true,
-      page: 1,
-      pageSize: 5,
-    };
-  },
-  computed: {
-    isAdmin() {
-      return this.$store.state.user?.role === 'admin';
-    },
-    paginatedUsers() {
-      const start = (this.page - 1) * this.pageSize;
-      return this.users.slice(start, start + this.pageSize);
-    },
-    totalPages() {
-      return Math.ceil(this.users.length / this.pageSize);
-    },
-  },
-  async mounted() {
-    if (this.isAdmin) {
-      await this.fetchUsers();
-    }
-  },
-  methods: {
-    async fetchUsers() {
-      try {
-        const { data } = await API.get('/users');
-        this.users = data;
-      } catch {
-        alert('Error fetching users');
-      } finally {
-        this.loading = false;
-      }
-    },
-    async addUser() {
-      try {
-        await API.post('/users', this.formUser);
-        this.resetForm();
-        await this.fetchUsers();
-      } catch {
-        alert('Error adding user');
-      }
-    },
-    async updateUser() {
-      try {
-        await API.put(`/users/${this.selectedUser.id}`, this.formUser);
-        this.resetForm();
-        await this.fetchUsers();
-      } catch {
-        alert('Error updating user');
-      }
-    },
-    async deleteUser(userId) {
-      try {
-        await API.delete(`/users/${userId}`);
-        await this.fetchUsers();
-      } catch {
-        alert('Error deleting user');
-      }
-    },
-    editUser(user) {
-      this.selectedUser = user;
-      this.formUser = { ...user, password: '' };
-    },
-    cancelEdit() {
-      this.resetForm();
-    },
-    resetForm() {
-      this.selectedUser = null;
-      this.formUser = { username: '', password: '', role: 'user' };
-    },
-    prevPage() {
-      if (this.page > 1) this.page--;
-    },
-    nextPage() {
-      if (this.page < this.totalPages) this.page++;
-    },
-  },
+const users = ref([]);
+const formUser = ref({ username: '', password: '', role: 'user' });
+const selectedUser = ref(null);
+const loading = ref(true);
+const page = ref(1);
+const pageSize = 5;
+
+const isAdmin = computed(() => {
+  return $store.state.user?.role === 'admin';
+});
+
+const paginatedUsers = computed(() => {
+  const start = (page.value - 1) * pageSize;
+  return users.value.slice(start, start + pageSize);
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(users.value.length / pageSize);
+});
+
+const fetchUsers = async () => {
+  try {
+    const { data } = await API.get('/users');
+    users.value = data;
+  } catch (e) {
+    alert('Error fetching users');
+  } finally {
+    loading.value = false;
+  }
 };
+
+const addUser = async () => {
+  try {
+    await API.post('/users', formUser.value);
+    resetForm();
+    await fetchUsers();
+  } catch (e) {
+    alert('Error adding user');
+  }
+};
+
+const updateUser = async () => {
+  try {
+    await API.put(`/users/${selectedUser.value.id}`, formUser.value);
+    resetForm();
+    await fetchUsers();
+  } catch (e) {
+    alert('Error updating user');
+  }
+};
+
+const deleteUser = async (userId) => {
+  try {
+    await API.delete(`/users/${userId}`);
+    await fetchUsers();
+  } catch (e) {
+    alert('Error deleting user');
+  }
+};
+
+const editUser = (user) => {
+  selectedUser.value = user;
+  formUser.value = { ...user, password: '' };
+};
+
+const cancelEdit = () => {
+  resetForm();
+};
+
+const resetForm = () => {
+  selectedUser.value = null;
+  formUser.value = { username: '', password: '', role: 'user' };
+};
+
+const prevPage = () => {
+  if (page.value > 1) page.value--;
+};
+
+const nextPage = () => {
+  if (page.value < totalPages.value) page.value++;
+};
+
+onMounted(() => {
+  if (isAdmin.value) fetchUsers();
+});
 </script>
 
 <style scoped>
 .admin-page {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
   background-color: #1e1e1e;
   color: var(--text-color);
-  border-radius: 10px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 2rem;
-  gap: 10px;
-}
-
-form input,
-form select {
-  padding: 0.5rem;
-  background-color: var(--sidebar-bg);
-  color: var(--text-color);
-  border: 1px solid var(--text-color);
-  border-radius: 4px;
-}
-
-.form-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.users-section table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-
-.users-section th,
-.users-section td {
-  padding: 0.75rem;
-  text-align: left;
-  border-bottom: 1px solid var(--sidebar-bg);
-}
-
-button {
-  padding: 0.4rem 0.8rem;
-  background-color: var(--link-color);
-  color: var(--header-text);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #3a8bde;
-}
-
-button.danger {
-  background-color: #e53935;
-}
-
-button.danger:hover {
-  background-color: #c62828;
-}
-
-button.cancel {
-  background-color: #757575;
-}
-
-button.cancel:hover {
-  background-color: #616161;
-}
-
-.pagination {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-}
-
-.no-access {
-  text-align: center;
-  padding: 3rem;
-  color: var(--text-color);
-  opacity: 0.8;
 }
 </style>

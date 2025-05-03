@@ -8,15 +8,15 @@
     <!-- Header + Nav -->
     <header class="bg-white dark:bg-gray-800 shadow">
       <nav class="flex flex-wrap justify-center gap-4 py-4">
-        <RouterLink to="/" class="text-indigo-600 dark:text-indigo-300 hover:underline">Home</RouterLink>
-        <RouterLink to="/activities" class="text-indigo-600 dark:text-indigo-300 hover:underline">Activities</RouterLink>
-        <RouterLink to="/exercise-types" class="text-indigo-600 dark:text-indigo-300 hover:underline">Exercise Types</RouterLink>
-        <RouterLink to="/stats" class="text-indigo-600 dark:text-indigo-300 hover:underline">Stats</RouterLink>
-        <RouterLink to="/friends-activities" class="text-indigo-600 dark:text-indigo-300 hover:underline">Friends</RouterLink>
-        <RouterLink to="/login" class="text-indigo-600 dark:text-indigo-300 hover:underline">Login</RouterLink>
-        <RouterLink to="/register" class="text-indigo-600 dark:text-indigo-300 hover:underline">Register</RouterLink>
+        <RouterLink to="/" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Go to Home">Home</RouterLink>
+        <RouterLink to="/activities" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Go to Activities">Activities</RouterLink>
+        <RouterLink to="/exercise-types" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Go to Exercise Types">Exercise Types</RouterLink>
+        <RouterLink to="/stats" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Go to Stats">Stats</RouterLink>
+        <RouterLink to="/friends-activities" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Go to Friends' Activities">Friends</RouterLink>
+        <RouterLink to="/login" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Login">Login</RouterLink>
+        <RouterLink to="/register" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Register">Register</RouterLink>
         <!-- Dark Mode Toggle Button -->
-        <button @click="toggleDarkMode" class="text-indigo-600 dark:text-indigo-300 hover:underline">
+        <button @click="toggleDarkMode" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Toggle Dark Mode">
           {{ darkMode ? 'Light Mode' : 'Dark Mode' }}
         </button>
       </nav>

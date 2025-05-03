@@ -2,23 +2,29 @@ import { defineStore } from 'pinia';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    currentUser: null, // User structure could be { id, username, role }
+    currentUser: null,
   }),
 
   actions: {
-    async fetchCurrentUser() {
-      try {
-        const res = await fetch('/api/user'); // Your backend API to fetch the user data
-        const data = await res.json();
-        this.currentUser = data;
-      } catch (err) {
-        console.error('Failed to fetch user:', err);
+    setUser(user) {
+      this.currentUser = user;
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    },
+
+    loadUser() {
+      const saved = localStorage.getItem('currentUser');
+      if (saved) {
+        this.currentUser = JSON.parse(saved);
       }
     },
 
-    // Check if current user is admin
+    logout() {
+      this.currentUser = null;
+      localStorage.removeItem('currentUser');
+    },
+
     isAdmin() {
       return this.currentUser && this.currentUser.role === 'admin';
-    },
-  },
+    }
+  }
 });

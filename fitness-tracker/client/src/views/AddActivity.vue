@@ -2,6 +2,12 @@
   <div :class="['flex justify-center items-center min-h-screen', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
     <div class="form-container w-full max-w-md p-6 bg-gray-800 rounded-lg shadow-lg">
       <h2 class="text-2xl font-semibold mb-6 text-center">Add Activity</h2>
+
+      <!-- Dark Mode Toggle Button -->
+      <button @click="toggleDarkMode" class="mb-4 px-4 py-2 bg-indigo-600 text-white rounded-md">
+        Toggle Dark Mode
+      </button>
+
       <form @submit.prevent="submitForm" class="form">
         <label class="text-lg mb-2 block">
           Date:
@@ -15,7 +21,9 @@
           Duration (minutes):
           <input type="number" v-model.number="activity.duration" min="1" required class="input-field" />
         </label>
-        <button type="submit" class="submit-btn w-full">Submit</button>
+        <button type="submit" class="submit-btn w-full" :disabled="isSubmitting">
+          Submit
+        </button>
       </form>
 
       <p v-if="message" :class="{ success: success, error: !success }" class="mt-4">{{ message }}</p>
@@ -32,23 +40,45 @@ const darkMode = ref(false);
 const activity = ref({ date: '', exerciseType: '', duration: null });
 const message = ref('');
 const success = ref(false);
+const isSubmitting = ref(false);  // Track submission state
+
+const toggleDarkMode = () => {
+  darkMode.value = !darkMode.value;
+};
 
 const submitForm = async () => {
+  // Form validation
   if (!activity.value.date || !activity.value.exerciseType || !activity.value.duration) {
     message.value = 'All fields are required.';
     success.value = false;
     return;
   }
 
+  // Prevent future dates
+  const currentDate = new Date();
+  const activityDate = new Date(activity.value.date);
+  if (activityDate > currentDate) {
+    message.value = 'Please select a valid date.';
+    success.value = false;
+    return;
+  }
+
   try {
+    isSubmitting.value = true;
     await API.post('/activities', activity.value);
     message.value = 'Activity added successfully!';
     success.value = true;
-    activity.value = { date: '', exerciseType: '', duration: null };
+
+    // Delay before resetting the form for better user experience
+    setTimeout(() => {
+      activity.value = { date: '', exerciseType: '', duration: null };
+    }, 1000);  // Delay before clearing form
   } catch (err) {
     console.error(err);
     message.value = 'Error adding activity.';
     success.value = false;
+  } finally {
+    isSubmitting.value = false;
   }
 };
 </script>
@@ -72,6 +102,7 @@ const submitForm = async () => {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .submit-btn:hover {

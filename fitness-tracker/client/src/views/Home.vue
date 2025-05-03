@@ -3,6 +3,11 @@
     <h1 class="text-3xl font-bold mb-4">Welcome to the Fitness Tracker App</h1>
     <p class="mb-4">Track your activities, exercises, and stay fit!</p>
 
+    <!-- Dark Mode Toggle Button -->
+    <button @click="toggleDarkMode" class="mt-4 px-4 py-2 rounded-md text-white bg-gray-800 hover:bg-gray-600">
+      Toggle Dark Mode
+    </button>
+
     <div v-if="isLoggedIn" class="w-full max-w-lg p-4">
       <p class="text-xl mb-4">Welcome, {{ username }}!</p>
       <div class="links mb-6">
@@ -24,7 +29,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 const darkMode = ref(false);
 
@@ -38,13 +44,14 @@ const toggleDarkMode = () => {
   }
 };
 
-const isLoggedIn = () => !!localStorage.getItem('token');
+const router = useRouter();
+const isLoggedIn = computed(() => !!localStorage.getItem('token'));
 const username = localStorage.getItem('username') || 'User';
 
 const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('username');
-  this.$router.push('/login');
+  router.push('/login'); // Using the router from `useRouter` hook
 };
 </script>
 

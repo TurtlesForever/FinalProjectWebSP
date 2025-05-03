@@ -3,6 +3,11 @@
     <div class="activities w-full max-w-3xl p-6 bg-gray-800 rounded-lg shadow-lg">
       <h2 class="text-2xl font-semibold mb-6 text-center">My Activities</h2>
 
+      <!-- Dark Mode Toggle -->
+      <button @click="toggleDarkMode" class="mb-4 px-4 py-2 bg-indigo-600 text-white rounded-md">
+        Toggle Dark Mode
+      </button>
+
       <ul class="activity-list">
         <li v-for="act in activities" :key="act.id" class="activity-item">
           <div class="activity-details">
@@ -20,9 +25,14 @@ import { ref, onMounted } from 'vue';
 import API from '@/api';
 
 const darkMode = ref(false);
-
 const activities = ref([]);
 
+// Toggle dark mode
+const toggleDarkMode = () => {
+  darkMode.value = !darkMode.value;
+};
+
+// Fetch activities from API
 const fetchActivities = async () => {
   try {
     const { data } = await API.get('/activities');
@@ -32,15 +42,22 @@ const fetchActivities = async () => {
   }
 };
 
+// Delete an activity and update the UI optimistically
 const deleteActivity = async (id) => {
+  // Optimistic UI update
+  const activityToDelete = activities.value.find(a => a.id === id);
+  activities.value = activities.value.filter((a) => a.id !== id);
+
   try {
     await API.delete(`/activities/${id}`);
-    activities.value = activities.value.filter((a) => a.id !== id);
   } catch (err) {
+    // Rollback the deletion if the API call fails
+    activities.value.push(activityToDelete);
     console.error('Error deleting activity:', err.message);
   }
 };
 
+// Format date
 const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString();
 
 onMounted(fetchActivities);

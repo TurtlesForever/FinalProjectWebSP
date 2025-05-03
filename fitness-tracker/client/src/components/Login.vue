@@ -19,18 +19,33 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/store/userStore';
 import API from '@/api';
 
-const darkMode = ref(false);
+const router = useRouter();
+const userStore = useUserStore();
 
+const darkMode = ref(true); // Set to true for now, toggle if needed
 const user = ref({ username: '', password: '' });
 
 const loginUser = async () => {
   try {
     const res = await API.post('/users/login', user.value);
+
+    // Save token
     localStorage.setItem('token', res.data.token);
-    localStorage.setItem('username', user.value.username);
-    this.$router.push('/');
+
+    // Set user in Pinia store
+    const loggedInUser = {
+      id: res.data.user._id,
+      username: res.data.user.username,
+      role: res.data.user.role,
+    };
+    userStore.setUser(loggedInUser);
+
+    // Redirect to dashboard
+    router.push('/dashboard');
   } catch (err) {
     console.error('Login failed:', err);
     alert('Login failed. Check your credentials.');

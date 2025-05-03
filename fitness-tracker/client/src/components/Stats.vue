@@ -1,86 +1,63 @@
 <template>
-  <div class="stats-container">
-    <h2>Your Stats</h2>
-    <div v-if="stats.length > 0">
-      <ul>
-        <li v-for="(stat, index) in stats" :key="index">
-          <p><strong>Exercise:</strong> {{ stat.exerciseType }}</p>
-          <p><strong>Date:</strong> {{ stat.date }}</p>
-          <p><strong>Duration:</strong> {{ stat.duration }} minutes</p>
-        </li>
-      </ul>
+  <div class="stats-container min-h-screen flex flex-col items-center justify-center px-4 py-8">
+    <h2 class="text-3xl font-semibold mb-6">Your Stats</h2>
+
+    <div v-if="stats.length > 0" class="w-full max-w-2xl space-y-4">
+      <div
+        v-for="(stat, index) in stats"
+        :key="index"
+        class="stat-card bg-gray-800 p-4 rounded shadow"
+      >
+        <p><strong>Exercise:</strong> {{ stat.exerciseType }}</p>
+        <p><strong>Date:</strong> {{ stat.date }}</p>
+        <p><strong>Duration:</strong> {{ stat.duration }} minutes</p>
+      </div>
     </div>
-    <div v-else>
+
+    <div v-else class="text-lg text-gray-400 mt-6">
       <p>No stats available. Start adding activities!</p>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue';
 import API from '@/api';
 
-export default {
-  name: 'Stats',
-  data() {
-    return {
-      stats: [],
-      message: '',
-      success: false,
-    };
-  },
-  created() {
-    this.fetchStats();
-  },
-  methods: {
-    async fetchStats() {
-      try {
-        const response = await API.get('/stats');
-        this.stats = response.data;
-        this.message = 'Stats loaded successfully.';
-        this.success = true;
-      } catch (error) {
-        console.error(error);
-        this.message = 'Error loading stats.';
-        this.success = false;
-      }
-    },
-  },
+const stats = ref([]);
+const message = ref('');
+const success = ref(false);
+
+const fetchStats = async () => {
+  try {
+    const res = await API.get('/stats');
+    stats.value = res.data;
+    message.value = 'Stats loaded successfully.';
+    success.value = true;
+  } catch (err) {
+    console.error('Error loading stats:', err);
+    message.value = 'Error loading stats.';
+    success.value = false;
+  }
 };
+
+onMounted(() => {
+  fetchStats();
+});
 </script>
 
 <style scoped>
 .stats-container {
-  padding: 2rem;
-  text-align: center;
   background-color: #1e1e1e;
-  color: var(--text-color);
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  color: #ffffff;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  margin: 1rem 0;
+.stat-card {
   background-color: #2a2a2a;
-  padding: 1rem;
-  border-radius: 4px;
+  border: 1px solid #3c3c3c;
 }
 
-li p {
-  margin: 0.5rem 0;
-}
-
-.success {
-  margin-top: 1rem;
-  color: #4caf50;
-}
-
-.error {
-  margin-top: 1rem;
-  color: #ff5c5c;
+.stat-card p {
+  margin-bottom: 0.5rem;
 }
 </style>

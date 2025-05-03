@@ -19,18 +19,30 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/store/userStore';
 import API from '@/api';
 
-const darkMode = ref(false);
+const router = useRouter();
+const userStore = useUserStore();
 
+const darkMode = ref(true); // Keep dark mode consistent
 const user = ref({ username: '', password: '' });
 
 const registerUser = async () => {
   try {
     const res = await API.post('/users/register', user.value);
+
     localStorage.setItem('token', res.data.token);
-    localStorage.setItem('username', user.value.username);
-    this.$router.push('/');
+
+    const newUser = {
+      id: res.data.user._id,
+      username: res.data.user.username,
+      role: res.data.user.role,
+    };
+    userStore.setUser(newUser);
+
+    router.push('/dashboard');
   } catch (err) {
     console.error('Registration failed:', err);
     alert('Registration failed. Try again.');
