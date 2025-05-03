@@ -7,12 +7,12 @@ const routes = [
   // Auth Routes (Guest Only)
   {
     path: '/login',
-    component: () => import('@/views/Login.vue'),
+    component: () => import('@/components/Login.vue'),
     meta: { guest: true },
   },
   {
     path: '/register',
-    component: () => import('@/views/Register.vue'),
+    component: () => import('@/components/Register.vue'),
     meta: { guest: true },
   },
 
