@@ -3,7 +3,7 @@ module.exports = {
   content: [
     "./client/src/**/*.{vue,js,ts,jsx,tsx}",
     "./client/public/index.html"
-  ],  
+  ],
   theme: {
     extend: {
       colors: {
