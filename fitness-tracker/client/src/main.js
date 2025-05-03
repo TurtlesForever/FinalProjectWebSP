@@ -1,13 +1,12 @@
 import { createApp } from 'vue';
-import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
-
-import './index.css'; // TailwindCSS setup
-
+import { createPinia } from 'pinia';
 import axios from 'axios';
 
-// Add a request interceptor for auth
+import './assets/tailwind.css'; // Ensure this path is correct
+
+// Axios auth interceptor
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -21,7 +20,6 @@ axios.interceptors.request.use(
 
 // Initialize Vue app
 const app = createApp(App);
-console.log("Bootstrapping Vue app...");
 
 app.use(createPinia());
 app.use(router);
