@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { useUserStore } from '@/store/userStore';
+import { useUserStore } from '@/store/userStore'; // Assuming you're using Pinia for state management
 
+// Route Configuration
 const routes = [
   { path: '/', component: () => import('@/views/Home.vue') },
 
@@ -81,23 +82,27 @@ const router = createRouter({
   routes,
 });
 
-// Global Nav Guard
+// Global Navigation Guard
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
   const currentUser = userStore.currentUser;
 
+  // Check if the route requires authentication and if the user is logged in
   if (to.meta.requiresAuth && !currentUser) {
     return next('/login');
   }
 
+  // Check if the route requires admin rights and if the user is not an admin
   if (to.meta.isAdmin && currentUser?.role !== 'admin') {
     return next('/');
   }
 
+  // Prevent authenticated users from accessing guest-only routes
   if (to.meta.guest && currentUser) {
     return next('/');
   }
 
+  // Proceed to the next route
   next();
 });
 

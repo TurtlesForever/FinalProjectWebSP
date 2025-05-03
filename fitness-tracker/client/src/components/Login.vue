@@ -1,94 +1,70 @@
 <template>
-  <div :class="['flex justify-center items-center min-h-screen', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
-    <div class="form-container w-full max-w-sm p-6 bg-gray-800 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-semibold mb-6 text-center">Login</h2>
-      <form @submit.prevent="loginUser" class="form">
-        <label class="text-lg mb-2 block">
-          Username:
-          <input v-model="user.username" placeholder="Username" required class="input-field" />
-        </label>
-        <label class="text-lg mb-2 block">
-          Password:
-          <input v-model="user.password" type="password" placeholder="Password" required class="input-field" />
-        </label>
-        <button type="submit" class="submit-btn w-full">Login</button>
-      </form>
-    </div>
+  <div class="login-container">
+    <h1>Login</h1>
+    <form @submit.prevent="login">
+      <label for="username">Username:</label>
+      <input v-model="username" id="username" type="text" required />
+      
+      <label for="password">Password:</label>
+      <input v-model="password" id="password" type="password" required />
+      
+      <button type="submit">Login</button>
+    </form>
+    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '@/store/userStore';
-import API from '@/api';
 
 const router = useRouter();
-const userStore = useUserStore();
+const username = ref('');
+const password = ref('');
+const errorMessage = ref('');
 
-const darkMode = ref(true); // Set to true for now, toggle if needed
-const user = ref({ username: '', password: '' });
-
-const loginUser = async () => {
-  try {
-    const res = await API.post('/users/login', user.value);
-
-    // Save token
-    localStorage.setItem('token', res.data.token);
-
-    // Set user in Pinia store
-    const loggedInUser = {
-      id: res.data.user._id,
-      username: res.data.user.username,
-      role: res.data.user.role,
-    };
-    userStore.setUser(loggedInUser);
-
-    // Redirect to dashboard
+// Fake login authentication (You would replace this with actual API logic)
+const login = () => {
+  if (username.value === 'admin' && password.value === 'password') {
+    localStorage.setItem('token', 'fake-jwt-token'); // Store token
+    localStorage.setItem('username', username.value); // Store username
     router.push('/dashboard');
-  } catch (err) {
-    console.error('Login failed:', err);
-    alert('Login failed. Check your credentials.');
+  } else {
+    errorMessage.value = 'Invalid credentials. Please try again.';
   }
 };
 </script>
 
 <style scoped>
-.input-field {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #2a2a2a;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 4px;
-  font-size: 1rem;
+/* Style the login form */
+.login-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.submit-btn {
-  margin-top: 1rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #007bff;
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #4caf50;
   color: white;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
 }
 
-.submit-btn:hover {
-  background-color: #0056b3;
+button:hover {
+  background-color: #45a049;
 }
 
-.form-container {
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-}
-
-.form label {
-  display: block;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.error {
+  color: red;
 }
 </style>

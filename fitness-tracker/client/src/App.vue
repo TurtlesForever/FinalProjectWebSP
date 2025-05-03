@@ -1,22 +1,17 @@
 <template>
   <div :class="['min-h-screen', 'flex', 'flex-col', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
-    <!-- Test if Tailwind is working -->
-    <div class="bg-red-500 text-white p-4 rounded mb-4 text-center">
-      Tailwind is working!
-    </div>
-
     <!-- Header + Nav -->
     <header class="bg-white dark:bg-gray-800 shadow">
       <nav class="flex flex-wrap justify-center gap-4 py-4">
-        <RouterLink to="/" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Go to Home">Home</RouterLink>
-        <RouterLink to="/activities" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Go to Activities">Activities</RouterLink>
-        <RouterLink to="/exercise-types" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Go to Exercise Types">Exercise Types</RouterLink>
-        <RouterLink to="/stats" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Go to Stats">Stats</RouterLink>
-        <RouterLink to="/friends-activities" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Go to Friends' Activities">Friends</RouterLink>
-        <RouterLink to="/login" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Login">Login</RouterLink>
-        <RouterLink to="/register" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Register">Register</RouterLink>
-        <!-- Dark Mode Toggle Button -->
-        <button @click="toggleDarkMode" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Toggle Dark Mode">
+        <router-link to="/" class="text-indigo-600 dark:text-indigo-300 hover:underline">Home</router-link>
+        <router-link to="/dashboard" class="text-indigo-600 dark:text-indigo-300 hover:underline">Dashboard</router-link>
+        <router-link to="/stats" class="text-indigo-600 dark:text-indigo-300 hover:underline">Stats</router-link>
+        <router-link to="/friends" class="text-indigo-600 dark:text-indigo-300 hover:underline">Friends</router-link>
+        <router-link to="/login" class="text-indigo-600 dark:text-indigo-300 hover:underline">Login</router-link>
+        <router-link to="/register" class="text-indigo-600 dark:text-indigo-300 hover:underline">Register</router-link>
+
+        <!-- Dark Mode Toggle -->
+        <button @click="toggleDarkMode" class="text-indigo-600 dark:text-indigo-300 hover:underline">
           {{ darkMode ? 'Light Mode' : 'Dark Mode' }}
         </button>
       </nav>
@@ -24,7 +19,7 @@
 
     <!-- Main content -->
     <main class="flex-grow p-6">
-      <RouterView />
+      <router-view />
     </main>
 
     <!-- Footer -->
@@ -38,11 +33,12 @@
 import { ref } from 'vue';
 
 // Dark mode state
-const darkMode = ref(false);
+const darkMode = ref(localStorage.getItem('darkMode') === 'true');
 
 // Toggle dark mode
 const toggleDarkMode = () => {
   darkMode.value = !darkMode.value;
+  localStorage.setItem('darkMode', darkMode.value); // Persist dark mode state
   if (darkMode.value) {
     document.documentElement.classList.add('dark');
   } else {
@@ -52,5 +48,5 @@ const toggleDarkMode = () => {
 </script>
 
 <style scoped>
-/* Scoped styles are no longer needed as Tailwind handles the styling */
+/* Additional styles are not needed as Tailwind handles the layout */
 </style>

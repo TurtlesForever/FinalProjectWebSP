@@ -18,4 +18,21 @@ const router = createRouter({
   routes,
 });
 
+// Global Navigation Guard
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = !!localStorage.getItem('token'); // Check if token exists in localStorage
+  const isAdmin = localStorage.getItem('role') === 'admin'; // Check if the user is an admin (example, based on a "role" in localStorage)
+
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    // Redirect to login if the route requires authentication and the user is not logged in
+    next('/');
+  } else if (to.meta.requiresAdmin && !isAdmin) {
+    // Redirect to dashboard if the route requires admin access and the user is not an admin
+    next('/dashboard');
+  } else {
+    // Proceed to the requested route
+    next();
+  }
+});
+
 export default router;
