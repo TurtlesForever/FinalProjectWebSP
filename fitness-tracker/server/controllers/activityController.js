@@ -1,4 +1,4 @@
-const pool = require('../db');
+const pool = require('../db/db');
 const Activity = require('../models/activityModel');
 
 // Create activity and tag friends
