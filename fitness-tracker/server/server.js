@@ -8,7 +8,8 @@ const cors = require('cors');
 const activityRoutes = require('./routes/activityRoutes');
 const exerciseTypeRoutes = require('./routes/exerciseTypeRoutes');
 const userRoutes = require('./routes/userRoutes');
-const friendsRoutes = require('./routes/friends');
+const friendsRoutes = require('./routes/friendsRoutes');
+
 
 const pool = require('../db');  // import your db helper
 
