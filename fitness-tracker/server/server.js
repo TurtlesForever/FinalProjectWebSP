@@ -10,6 +10,9 @@ const app = express();
 const userRoutes = require('./routes/userRoutes');
 app.use('/users', userRoutes);
 
+const friendsRouter = require('./routes/friends')
+app.use('/api/friends', friendsRoutes);
+
 const path = require('path');
 const cors = require('cors');
 app.use(cors());

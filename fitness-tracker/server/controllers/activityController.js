@@ -98,3 +98,43 @@ exports.getActivitiesByDateRange = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch activities by date range' });
   }
 };
+
+const pool = require('../db');
+
+// Create activity and tag friends
+exports.createActivity = async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const { name, duration, type_id, taggedFriends = [] } = req.body;
+    const userId = req.user.id;
+
+    await client.query('BEGIN');
+
+    const insertActivityQuery = `
+      INSERT INTO activities (name, duration, type_id, user_id)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id
+    `;
+    const { rows } = await client.query(insertActivityQuery, [
+      name, duration, type_id, userId
+    ]);
+    const activityId = rows[0].id;
+
+    const tagInsertQuery = `
+      INSERT INTO activity_tags (activity_id, user_id)
+      VALUES ($1, $2)
+    `;
+    for (const friend of taggedFriends) {
+      await client.query(tagInsertQuery, [activityId, friend.id]);
+    }
+
+    await client.query('COMMIT');
+    res.status(201).json({ message: 'Activity created', activityId });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('Error creating activity:', err);
+    res.status(500).json({ error: 'Failed to create activity' });
+  } finally {
+    client.release();
+  }
+};
