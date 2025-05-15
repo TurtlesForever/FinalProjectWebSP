@@ -13,9 +13,11 @@ A new Autocomplete feature using [Oruga UI](https://oruga-ui.com/components/Auto
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
-## 📌 Features
+## 📜 Paragraph Submission
 
 For this feature, I used the Autocomplete component from Oruga UI (https://oruga-ui.com/components/Autocomplete.html), which integrates smoothly with Vue 3 and Bulma. I implemented it as a friend tagging tool in the post submission form, so users can tag friends when they log a workout or activity. The Autocomplete sends asynchronous requests to the server as the user types, returning matching friend suggestions from the database. This ensures only relevant data is fetched rather than loading all friend names at once, keeping performance optimized. The feature uses a reusable component and is fully functional in the deployed app.
+
+## 📌 Features
 
 ✔️ User Authentication — Secure login with JWT and role-based access (User/Admin)
 ✔️ Personalized Dashboard — Track fitness logs and progress
