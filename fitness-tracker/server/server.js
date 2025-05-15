@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const activityRoutes = require('./routes/activityRoutes');
 const exerciseTypeRoutes = require('./routes/exerciseTypeRoutes');
 const app = express();
+const db = require('../db');
 
 const userRoutes = require('./routes/userRoutes');
 app.use('/users', userRoutes);
