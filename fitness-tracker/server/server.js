@@ -8,10 +8,8 @@ const cors = require('cors');
 const activityRoutes = require('./routes/activityRoutes');
 const exerciseTypeRoutes = require('./routes/exerciseTypeRoutes');
 const userRoutes = require('./routes/userRoutes');
-const friendsRoutes = require('./routes/friendsRoutes');
-
-
-const pool = require('../db');  // import your db helper
+const friendsRoutes = require('./routes/friends');
+const postRoutes = require('./routes/posts');  // ADD this
 
 const app = express();
 
@@ -22,6 +20,7 @@ app.use('/users', userRoutes);
 app.use('/api/friends', friendsRoutes);
 app.use('/activities', activityRoutes);
 app.use('/exercise-types', exerciseTypeRoutes);
+app.use('/api/posts', postRoutes);  // ADD this
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -32,8 +31,8 @@ app.get('*', (req, res) => {
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('Connected to database'))
-  .catch(err => console.error('Database connection error:', err));
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 app.listen(10000, () => {
   console.log('Server running on port 10000');

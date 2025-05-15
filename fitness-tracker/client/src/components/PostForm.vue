@@ -1,53 +1,89 @@
 <template>
-  <form @submit.prevent="submitActivity" class="space-y-6">
-    <div>
-      <label class="text-white">Activity Name</label>
-      <input v-model="activityData.name" class="input" required />
-    </div>
-    <div>
-      <label class="text-white">Duration (minutes)</label>
-      <input v-model="activityData.duration" type="number" class="input" required />
-    </div>
-    <div>
-      <label class="text-white">Exercise Type ID</label>
-      <input v-model="activityData.type_id" type="number" class="input" required />
-    </div>
+  <section class="max-w-xl mx-auto p-4 bg-gray-800 text-white rounded-xl shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Post a New Workout</h2>
 
-    <TagFriends v-model="taggedFriends" />
+    <form @submit.prevent="submitPost" class="space-y-4">
+      <div>
+        <label class="block mb-1">Activity</label>
+        <input
+          v-model="activity"
+          type="text"
+          required
+          class="w-full p-2 rounded bg-gray-700 text-white"
+        />
+      </div>
 
-    <button type="submit" class="bg-primary text-white px-4 py-2 rounded">
-      Submit Activity
-    </button>
-  </form>
+      <div>
+        <label class="block mb-1">Duration (minutes)</label>
+        <input
+          v-model.number="duration"
+          type="number"
+          min="1"
+          required
+          class="w-full p-2 rounded bg-gray-700 text-white"
+        />
+      </div>
+
+      <div>
+        <label class="block mb-1">Tag Friends</label>
+        <FriendTagger @update:friends="updateTaggedFriends" />
+      </div>
+
+      <div class="text-right">
+        <button
+          type="submit"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </section>
 </template>
 
-<script setup>
-import { ref } from 'vue';
+<script>
 import axios from 'axios';
-import TagFriends from './TagFriends.vue';
+import FriendTagger from './FriendTagger.vue';
 
-const activityData = ref({
-  name: '',
-  duration: 0,
-  type_id: null
-});
-
-const taggedFriends = ref([]);
-const token = localStorage.getItem('token');
-
-const submitActivity = async () => {
-  try {
-    const payload = {
-      ...activityData.value,
-      taggedFriends: taggedFriends.value
+export default {
+  name: 'PostForm',
+  components: { FriendTagger },
+  data() {
+    return {
+      activity: '',
+      duration: 30,
+      taggedFriendIds: [],
     };
-    await axios.post('/api/activities', payload, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    alert('Activity posted successfully!');
-  } catch (err) {
-    console.error('Activity post failed:', err);
-    alert('Error posting activity');
-  }
+  },
+  methods: {
+    updateTaggedFriends(ids) {
+      this.taggedFriendIds = ids;
+    },
+    async submitPost() {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.post(
+          '/api/posts',
+          {
+            activity: this.activity,
+            duration: this.duration,
+            taggedFriends: this.taggedFriendIds,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        this.activity = '';
+        this.duration = 30;
+        this.taggedFriendIds = [];
+        alert('Workout posted!');
+      } catch (err) {
+        console.error('Post submission failed:', err);
+        alert('Failed to submit post');
+      }
+    },
+  },
 };
 </script>

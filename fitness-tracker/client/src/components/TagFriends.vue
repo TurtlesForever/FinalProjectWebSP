@@ -1,55 +1,64 @@
+<!-- TagFriends.vue -->
 <template>
-  <div class="mb-6">
-    <label class="block text-white mb-2">Tag Friends</label>
-    <o-autocomplete
-      v-model="selectedFriend"
-      :data="friendOptions"
-      :async="true"
-      field="name"
-      placeholder="Start typing a friend's name..."
-      :loading="loading"
-      @typing="fetchSuggestions"
-      @select="addFriend"
-    />
-    <div class="mt-4 flex flex-wrap gap-2">
-      <span
-        v-for="friend in modelValue"
-        :key="friend.id"
-        class="inline-block bg-secondary text-black px-3 py-1 rounded-full text-sm"
-      >
-        {{ friend.name }}
-      </span>
-    </div>
-  </div>
+  <o-autocomplete
+    v-model="searchQuery"
+    :data="suggestions"
+    field="name"
+    :loading="isLoading"
+    @select="onSelect"
+    placeholder="Tag friends..."
+    :open-on-focus="true"
+    class="text-black dark:text-white"
+  />
 </template>
 
-<script setup>
-import { ref, defineProps, defineEmits } from 'vue';
+<script>
+import { ref, watch } from 'vue';
 import axios from 'axios';
 
-const props = defineProps({ modelValue: Array });
-const emit = defineEmits(['update:modelValue']);
+export default {
+  name: 'TagFriends',
+  emits: ['update:friends'],
+  setup(_, { emit }) {
+    const searchQuery = ref('');
+    const suggestions = ref([]);
+    const isLoading = ref(false);
+    const selectedIds = ref([]);
 
-const selectedFriend = ref(null);
-const friendOptions = ref([]);
-const loading = ref(false);
+    watch(searchQuery, async (newVal) => {
+      if (newVal.trim().length < 2) {
+        suggestions.value = [];
+        return;
+      }
 
-const fetchSuggestions = async (query) => {
-  if (!query) return;
-  loading.value = true;
-  try {
-    const { data } = await axios.get(`/api/friends/search?q=${encodeURIComponent(query)}`);
-    friendOptions.value = data;
-  } catch (err) {
-    console.error('Error fetching suggestions', err);
-  } finally {
-    loading.value = false;
-  }
-};
+      isLoading.value = true;
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`/api/search?q=${encodeURIComponent(newVal)}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        suggestions.value = res.data;
+      } catch (err) {
+        console.error('Search error:', err);
+      } finally {
+        isLoading.value = false;
+      }
+    });
 
-const addFriend = (friend) => {
-  if (!props.modelValue.some((f) => f.id === friend.id)) {
-    emit('update:modelValue', [...props.modelValue, friend]);
+    const onSelect = (friend) => {
+      if (!selectedIds.value.includes(friend.id)) {
+        selectedIds.value.push(friend.id);
+        emit('update:friends', selectedIds.value);
+      }
+      searchQuery.value = '';
+    };
+
+    return {
+      searchQuery,
+      suggestions,
+      isLoading,
+      onSelect,
+    };
   }
 };
 </script>
