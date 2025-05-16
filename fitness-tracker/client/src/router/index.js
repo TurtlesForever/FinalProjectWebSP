@@ -1,12 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { useUserStore } from '@/store/userStore'; // Assuming you're using Pinia for state management
+import { useUserStore } from '@/store/userStore'; // Assuming you're using Pinia
 
-// Route Configuration
 const routes = [
-  { path: '/', component: () => import('@/views/Home.vue') },
-  { path: '/:pathMatch(.*)*', redirect: '/' },
+  // Public Route
+  {
+    path: '/',
+    component: () => import('@/views/Home.vue'),
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
+  },
 
-  // Auth Routes (Guest Only)
+  // Guest-only Routes
   {
     path: '/login',
     component: () => import('@/components/Login.vue'),
@@ -55,7 +61,7 @@ const routes = [
     meta: { requiresAuth: true },
   },
 
-  // Admin-Only Routes
+  // Admin-only Routes
   {
     path: '/activity-list',
     component: () => import('@/components/ActivityList.vue'),
@@ -88,22 +94,18 @@ router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
   const currentUser = userStore.currentUser;
 
-  // Check if the route requires authentication and if the user is logged in
   if (to.meta.requiresAuth && !currentUser) {
     return next('/login');
   }
 
-  // Check if the route requires admin rights and if the user is not an admin
   if (to.meta.isAdmin && currentUser?.role !== 'admin') {
     return next('/');
   }
 
-  // Prevent authenticated users from accessing guest-only routes
   if (to.meta.guest && currentUser) {
     return next('/');
   }
 
-  // Proceed to the next route
   next();
 });
 
