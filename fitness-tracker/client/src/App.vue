@@ -29,11 +29,14 @@
 <script setup>
 import { onMounted, computed } from 'vue';
 import { useDarkModeStore } from '@/stores/darkMode';
+import { useUserStore } from '@/store/userStore';
 
 const darkModeStore = useDarkModeStore();
+const userStore = useUserStore();
 
 onMounted(() => {
   darkModeStore.initialize();
+  userStore.loadUser();
 });
 
 const toggleDarkMode = () => {

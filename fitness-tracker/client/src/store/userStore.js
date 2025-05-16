@@ -5,6 +5,11 @@ export const useUserStore = defineStore('user', {
     currentUser: null,
   }),
 
+  getters: {
+    isLoggedIn: (state) => !!state.currentUser,
+    isAdmin: (state) => state.currentUser?.role === 'admin',
+  },
+
   actions: {
     setUser(user) {
       this.currentUser = user;
@@ -22,9 +27,5 @@ export const useUserStore = defineStore('user', {
       this.currentUser = null;
       localStorage.removeItem('currentUser');
     },
-
-    isAdmin() {
-      return this.currentUser && this.currentUser.role === 'admin';
-    }
-  }
+  },
 });

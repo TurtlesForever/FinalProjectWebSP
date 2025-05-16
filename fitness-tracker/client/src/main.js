@@ -11,6 +11,7 @@ import './assets/tailwind.css';
 
 const app = createApp(App);
 
+// Auth token interceptor
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');

@@ -4,6 +4,7 @@ import { useUserStore } from '@/store/userStore'; // Assuming you're using Pinia
 // Route Configuration
 const routes = [
   { path: '/', component: () => import('@/views/Home.vue') },
+  { path: '/:pathMatch(.*)*', redirect: '/' },
 
   // Auth Routes (Guest Only)
   {
