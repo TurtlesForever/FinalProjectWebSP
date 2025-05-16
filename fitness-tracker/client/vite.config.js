@@ -16,5 +16,8 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true,
     chunkSizeWarningLimit: 2000,
+    rollupOptions: {
+      external: ['@oruga-ui/oruga-next/dist/oruga.css']
+    },
   },
 });
