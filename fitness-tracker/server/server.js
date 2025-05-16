@@ -26,7 +26,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // For client routing fallback
 app.get('*', (req, res) => {
+  console.log(`Fallback route hit: ${req.originalUrl}`);
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
 });
 
 // MongoDB connection

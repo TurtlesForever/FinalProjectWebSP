@@ -8,13 +8,13 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),  // Resolving '@' to the 'src' folder
+      '@': path.resolve(__dirname, './src'),
     },
   },
   build: {
-    outDir: 'dist',
+    outDir: '../server/public',
     emptyOutDir: true,
     sourcemap: true,
-    chunkSizeWarningLimit: 2000,  // Increase chunk size limit to avoid warnings
+    chunkSizeWarningLimit: 2000,
   },
 });
