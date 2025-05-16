@@ -11,7 +11,6 @@ import './assets/tailwind.css';
 
 const app = createApp(App);
 
-// Setup axios interceptor for auth token
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -29,9 +28,5 @@ const pinia = createPinia();
 app.use(pinia);
 app.use(router);
 app.use(Oruga);
-
-// Initialize dark mode class from Pinia store on app mount
-const darkModeStore = useDarkModeStore();
-darkModeStore.initialize();
 
 app.mount('#app');
