@@ -24,9 +24,9 @@ app.use('/api/posts', postRoutes);  // ADD this
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// For client routing fallback
-app.get('*', (req, res) => {
-  console.log(`Fallback route hit: ${req.originalUrl}`);
+// Serve index.html only for client-side routes (exclude API/static requests)
+app.get(/^\/(?!api|users|activities|exercise-types|assets|favicon|health).*/, (req, res) => {
+  console.log(`Client route fallback hit: ${req.originalUrl}`);
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
