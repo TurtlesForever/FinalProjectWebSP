@@ -6,13 +6,12 @@ import axios from 'axios';
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 import Oruga from '@oruga-ui/oruga-next';
-import '@oruga-ui/oruga-next/dist/oruga.css'; // Import Oruga styles
+import '@oruga-ui/oruga-next/dist/oruga.css';
+import './assets/tailwind.css';
 
-import './assets/tailwind.css'; // Ensure this path is correct
+const app = createApp(App);
 
-createApp(App).use(Oruga).mount('#app')
-
-// Axios auth interceptor
+// Setup axios interceptor for auth token
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -24,12 +23,15 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Initialize Vue app
-const app = createApp(App);
-
 app.component('v-select', vSelect);
-app.use(createPinia());
+
+const pinia = createPinia();
+app.use(pinia);
 app.use(router);
 app.use(Oruga);
+
+// Initialize dark mode class from Pinia store on app mount
+const darkModeStore = useDarkModeStore();
+darkModeStore.initialize();
 
 app.mount('#app');

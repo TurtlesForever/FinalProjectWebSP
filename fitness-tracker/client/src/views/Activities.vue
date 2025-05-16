@@ -1,111 +1,78 @@
 <template>
-  <div :class="['flex justify-center items-center min-h-screen', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
-    <div class="activities w-full max-w-3xl p-6 bg-gray-800 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-semibold mb-6 text-center">My Activities</h2>
+  <div :class="['activities-container min-h-screen p-6', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
+    <h2 class="text-3xl font-bold mb-6">Your Activities</h2>
 
-      <!-- Dark Mode Toggle -->
-      <button @click="toggleDarkMode" class="mb-4 px-4 py-2 bg-indigo-600 text-white rounded-md">
-        Toggle Dark Mode
-      </button>
+    <router-link
+      to="/add-activity"
+      class="inline-block mb-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md"
+    >
+      Add New Activity
+    </router-link>
 
-      <ul class="activity-list">
-        <li v-for="act in activities" :key="act.id" class="activity-item">
-          <div class="activity-details">
-            <strong>{{ act.type }}</strong> — {{ act.duration }} min on {{ formatDate(act.date) }}
-          </div>
-          <button class="delete-btn" @click="deleteActivity(act.id)">Delete</button>
-        </li>
-      </ul>
-    </div>
+    <ul>
+      <li
+        v-for="activity in activities"
+        :key="activity._id"
+        class="activity-item bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-lg p-4 mb-3 shadow-sm flex justify-between items-center"
+      >
+        <div>
+          <p class="text-lg font-semibold">{{ activity.type }}</p>
+          <p class="text-sm text-gray-600 dark:text-gray-300">{{ formatDate(activity.date) }} - {{ activity.duration }} mins</p>
+        </div>
+        <button
+          @click="deleteActivity(activity._id)"
+          class="text-red-600 hover:text-red-800 focus:outline-none"
+          aria-label="Delete activity"
+        >
+          ✕
+        </button>
+      </li>
+    </ul>
+
+    <p v-if="activities.length === 0" class="text-center text-gray-500 dark:text-gray-400 italic">
+      You have no recorded activities.
+    </p>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import API from '@/api';
+import { useDarkModeStore } from '@/stores/darkMode';
 
-const darkMode = ref(false);
+const darkModeStore = useDarkModeStore();
+const darkMode = computed(() => darkModeStore.darkMode);
+
 const activities = ref([]);
 
-// Toggle dark mode
-const toggleDarkMode = () => {
-  darkMode.value = !darkMode.value;
-};
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString();
+}
 
-// Fetch activities from API
-const fetchActivities = async () => {
+async function loadActivities() {
   try {
     const { data } = await API.get('/activities');
-    activities.value = data;
-  } catch (err) {
-    console.error('Failed to load activities:', err.message);
+    activities.value = data.activities || [];
+  } catch (error) {
+    console.error(error);
   }
-};
+}
 
-// Delete an activity and update the UI optimistically
-const deleteActivity = async (id) => {
-  // Optimistic UI update
-  const activityToDelete = activities.value.find(a => a.id === id);
-  activities.value = activities.value.filter((a) => a.id !== id);
-
+async function deleteActivity(id) {
   try {
     await API.delete(`/activities/${id}`);
-  } catch (err) {
-    // Rollback the deletion if the API call fails
-    activities.value.push(activityToDelete);
-    console.error('Error deleting activity:', err.message);
+    activities.value = activities.value.filter(a => a._id !== id);
+  } catch (error) {
+    console.error('Failed to delete activity', error);
   }
-};
+}
 
-// Format date
-const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString();
-
-onMounted(fetchActivities);
+onMounted(() => {
+  loadActivities();
+});
 </script>
 
 <style scoped>
-.activity-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.activity-item {
-  background-color: #2a2a2a;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-left: 5px solid #4caf50;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 6px;
-}
-
-.activity-details {
-  flex: 1;
-  margin-right: 1rem;
-}
-
-.delete-btn {
-  background-color: #ff5c5c;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.delete-btn:hover {
-  background-color: #e64545;
-}
-
-.activities {
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-}
-
-.activities h2 {
-  color: #f9f9f9;
-}
+/* Tailwind utility classes handle styles */
 </style>

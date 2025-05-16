@@ -1,5 +1,10 @@
 <template>
-  <section class="max-w-xl mx-auto p-4 bg-gray-800 text-white rounded-xl shadow-md">
+  <section
+    :class="[
+      'max-w-xl mx-auto p-4 rounded-xl shadow-md',
+      darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
+    ]"
+  >
     <h2 class="text-2xl font-bold mb-4">Post a New Workout</h2>
 
     <form @submit.prevent="submitPost" class="space-y-4">
@@ -9,7 +14,7 @@
           v-model="activity"
           type="text"
           required
-          class="w-full p-2 rounded bg-gray-700 text-white"
+          :class="inputClasses"
         />
       </div>
 
@@ -20,7 +25,7 @@
           type="number"
           min="1"
           required
-          class="w-full p-2 rounded bg-gray-700 text-white"
+          :class="inputClasses"
         />
       </div>
 
@@ -41,49 +46,50 @@
   </section>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from 'vue';
 import axios from 'axios';
 import FriendTagger from './FriendTagger.vue';
+import { useDarkModeStore } from '@/stores/darkMode';
 
-export default {
-  name: 'PostForm',
-  components: { FriendTagger },
-  data() {
-    return {
-      activity: '',
-      duration: 30,
-      taggedFriendIds: [],
-    };
-  },
-  methods: {
-    updateTaggedFriends(ids) {
-      this.taggedFriendIds = ids;
-    },
-    async submitPost() {
-      try {
-        const token = localStorage.getItem('token');
-        await axios.post(
-          '/api/posts',
-          {
-            activity: this.activity,
-            duration: this.duration,
-            taggedFriends: this.taggedFriendIds,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        this.activity = '';
-        this.duration = 30;
-        this.taggedFriendIds = [];
-        alert('Workout posted!');
-      } catch (err) {
-        console.error('Post submission failed:', err);
-        alert('Failed to submit post');
+const store = useDarkModeStore();
+const darkMode = computed(() => store.darkMode);
+
+const activity = ref('');
+const duration = ref(30);
+const taggedFriendIds = ref([]);
+
+const inputClasses = computed(() =>
+  `w-full p-2 rounded ${darkMode.value ? 'bg-gray-700 text-white' : 'bg-gray-100 text-black'}`
+);
+
+function updateTaggedFriends(ids) {
+  taggedFriendIds.value = ids;
+}
+
+async function submitPost() {
+  try {
+    const token = localStorage.getItem('token');
+    await axios.post(
+      '/api/posts',
+      {
+        activity: activity.value,
+        duration: duration.value,
+        taggedFriends: taggedFriendIds.value,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    },
-  },
-};
+    );
+    activity.value = '';
+    duration.value = 30;
+    taggedFriendIds.value = [];
+    alert('Workout posted!');
+  } catch (err) {
+    console.error('Post submission failed:', err);
+    alert('Failed to submit post');
+  }
+}
 </script>

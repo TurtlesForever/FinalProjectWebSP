@@ -1,83 +1,124 @@
 <template>
-  <div class="dashboard-page min-h-screen flex flex-col items-center px-4 py-8 text-white">
-    <h2 class="text-4xl font-semibold mb-8 text-gradient">Dashboard</h2>
+  <div :class="['dashboard min-h-screen p-6', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
+    <h1 class="text-4xl font-extrabold mb-6 text-center text-gradient">
+      Dashboard
+    </h1>
 
-    <div class="statistics w-full max-w-4xl flex flex-wrap gap-6 justify-center mb-8">
-      <div class="stat-item w-full sm:w-1/2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 border border-gray-600 rounded-lg p-6 text-center shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl">
-        <h3 class="text-xl font-medium mb-2 text-gray-100">Total Activities</h3>
+    <section class="stats grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div
+        class="stat-card bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center"
+      >
         <p class="text-3xl font-bold">{{ totalActivities }}</p>
+        <p class="text-gray-600 dark:text-gray-300 mt-1">Activities</p>
       </div>
-      <div class="stat-item w-full sm:w-1/2 bg-gradient-to-r from-teal-400 to-cyan-500 border border-gray-600 rounded-lg p-6 text-center shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl">
-        <h3 class="text-xl font-medium mb-2 text-gray-100">Total Duration</h3>
-        <p class="text-3xl font-bold">{{ totalDuration }} mins</p>
+
+      <div
+        class="stat-card bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center"
+      >
+        <p class="text-3xl font-bold">{{ totalDuration }}</p>
+        <p class="text-gray-600 dark:text-gray-300 mt-1">Total Duration (mins)</p>
       </div>
-    </div>
 
-    <div class="recent-activities w-full max-w-4xl">
-      <h3 class="text-2xl font-semibold mb-4">Recent Activities</h3>
+      <div
+        class="stat-card bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center"
+      >
+        <p class="text-3xl font-bold">{{ uniqueExerciseTypes }}</p>
+        <p class="text-gray-600 dark:text-gray-300 mt-1">Exercise Types</p>
+      </div>
+    </section>
 
-      <ul v-if="activities.length" class="space-y-4">
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Recent Activities</h2>
+      <ul>
         <li
-          v-for="activity in activities"
+          v-for="activity in recentActivities"
           :key="activity._id"
-          class="activity-card bg-gradient-to-r from-gray-700 to-gray-800 border border-gray-600 p-6 rounded-lg shadow-md transform transition duration-300 hover:scale-105 hover:shadow-xl"
+          class="activity-item bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-lg p-4 mb-3 shadow-sm flex justify-between items-center"
         >
-          <div class="text-lg font-semibold text-white">{{ activity.type }}</div>
-          <div class="text-gray-300">{{ activity.duration }} mins</div>
-          <div class="activity-date text-sm text-gray-400">{{ formatDate(activity.date) }}</div>
+          <div>
+            <p class="font-semibold">{{ activity.type }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">
+              {{ formatDate(activity.date) }} — {{ activity.duration }} mins
+            </p>
+          </div>
+          <button
+            @click="deleteActivity(activity._id)"
+            class="text-red-600 hover:text-red-800 focus:outline-none"
+            aria-label="Delete activity"
+          >
+            ✕
+          </button>
         </li>
       </ul>
 
-      <p v-else class="text-gray-400 italic">No recent activities.</p>
-    </div>
+      <p v-if="!activities.length" class="text-center italic text-gray-500 dark:text-gray-400">
+        No activities to show.
+      </p>
+    </section>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import API from '@/api';
+import { useDarkModeStore } from '@/stores/darkMode';
+
+const darkModeStore = useDarkModeStore();
+const darkMode = computed(() => darkModeStore.darkMode);
 
 const activities = ref([]);
-const totalActivities = ref(0);
-const totalDuration = ref(0);
 
-const fetchDashboardData = async () => {
+const totalActivities = computed(() => activities.value.length);
+
+const totalDuration = computed(() =>
+  activities.value.reduce((sum, a) => sum + (a.duration || 0), 0)
+);
+
+// Count unique exercise types in activities
+const uniqueExerciseTypes = computed(() => {
+  const types = new Set(activities.value.map(a => a.type));
+  return types.size;
+});
+
+// Show recent 5 activities (most recent by date)
+const recentActivities = computed(() => {
+  return [...activities.value]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 5);
+});
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString();
+}
+
+async function loadActivities() {
   try {
-    const { data } = await API.get('/activities/dashboard');
-    activities.value = data.activities;
-    totalActivities.value = data.totalActivities;
-    totalDuration.value = data.totalDuration;
-  } catch (e) {
-    alert('Error fetching dashboard data: ' + e.message);
+    const { data } = await API.get('/activities');
+    activities.value = data.activities || [];
+  } catch (error) {
+    console.error('Failed to load activities:', error);
   }
-};
+}
 
-const formatDate = (dateStr) => {
-  return new Date(dateStr).toLocaleDateString();
-};
+async function deleteActivity(id) {
+  try {
+    await API.delete(`/activities/${id}`);
+    activities.value = activities.value.filter(a => a._id !== id);
+  } catch (error) {
+    console.error('Failed to delete activity:', error);
+  }
+}
 
 onMounted(() => {
-  fetchDashboardData();
+  loadActivities();
 });
 </script>
 
 <style scoped>
-.dashboard-page {
-  background-color: #121212;
-}
-
 .text-gradient {
-  background: linear-gradient(45deg, #ff7e5f, #feb47b);
+  background: linear-gradient(to right, #7928ca, #ff0080);
   -webkit-background-clip: text;
-  color: transparent;
-}
-
-.activity-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.activity-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  -webkit-text-fill-color: transparent;
 }
 </style>

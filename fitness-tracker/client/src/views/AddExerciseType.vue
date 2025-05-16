@@ -1,138 +1,78 @@
 <template>
-  <div class="form-container">
-    <h2>Add Exercise Type</h2>
-    <form @submit.prevent="submitForm" class="form">
-      <label>
-        Name:
-        <input v-model="exerciseType.name" placeholder="e.g. Swimming" required />
+  <div :class="['add-exercise-type-page min-h-screen p-6 flex flex-col items-center', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
+    <h2 class="text-3xl font-bold mb-6">Add Exercise Type</h2>
+
+    <form @submit.prevent="submitExerciseType" class="w-full max-w-md space-y-4">
+      <label class="block">
+        <span class="text-sm font-medium mb-1 block">Name</span>
+        <input
+          type="text"
+          v-model.trim="name"
+          required
+          class="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        />
       </label>
-      <label>
-        Description:
-        <textarea v-model="exerciseType.description" placeholder="Describe the exercise..." required></textarea>
+
+      <label class="block">
+        <span class="text-sm font-medium mb-1 block">Description</span>
+        <textarea
+          v-model.trim="description"
+          rows="4"
+          class="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        ></textarea>
       </label>
-      <button type="submit" class="submit-btn" :disabled="isSubmitting">
-        Submit
+
+      <button
+        type="submit"
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md"
+      >
+        Add Exercise Type
       </button>
     </form>
 
-    <!-- Loading Indicator -->
-    <div v-if="isSubmitting" class="loading">Submitting...</div>
-
-    <!-- Message Feedback -->
-    <p v-if="message" :class="{ success: success, error: !success }">{{ message }}</p>
+    <p v-if="errorMessage" class="mt-4 text-red-500">{{ errorMessage }}</p>
+    <p v-if="successMessage" class="mt-4 text-green-500">{{ successMessage }}</p>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from 'vue';
 import API from '@/api';
+import { useRouter } from 'vue-router';
+import { useDarkModeStore } from '@/stores/darkMode';
 
-export default {
-  name: 'AddExerciseType',
-  data() {
-    return {
-      exerciseType: {
-        name: '',
-        description: '',
-      },
-      message: '',
-      success: false,
-      isSubmitting: false, // Track form submission state
-    };
-  },
-  methods: {
-    async submitForm() {
-      if (!this.exerciseType.name || !this.exerciseType.description) {
-        this.message = 'All fields are required.';
-        this.success = false;
-        return;
-      }
+const darkModeStore = useDarkModeStore();
+const darkMode = computed(() => darkModeStore.darkMode);
 
-      this.isSubmitting = true;
-      try {
-        await API.post('/exercise-types', this.exerciseType);
-        this.message = 'Exercise type added!';
-        this.success = true;
-        this.exerciseType = { name: '', description: '' }; // Clear fields
-        setTimeout(() => {
-          this.message = ''; // Clear message after 3 seconds
-        }, 3000);
-      } catch (err) {
-        console.error(err);
-        this.message = 'Error adding exercise type.';
-        this.success = false;
-        setTimeout(() => {
-          this.message = ''; // Clear message after 3 seconds
-        }, 3000);
-      } finally {
-        this.isSubmitting = false;
-      }
-    },
-  },
-};
+const router = useRouter();
+
+const name = ref('');
+const description = ref('');
+const errorMessage = ref('');
+const successMessage = ref('');
+
+async function submitExerciseType() {
+  errorMessage.value = '';
+  successMessage.value = '';
+
+  if (!name.value) {
+    errorMessage.value = 'Name is required.';
+    return;
+  }
+
+  try {
+    await API.post('/exercise-types', {
+      name: name.value,
+      description: description.value,
+    });
+    successMessage.value = 'Exercise type added successfully.';
+    setTimeout(() => router.push('/exercise-types'), 1000);
+  } catch (error) {
+    errorMessage.value = 'Failed to add exercise type.';
+  }
+}
 </script>
 
 <style scoped>
-.form-container {
-  margin: 2rem auto;
-  max-width: 500px;
-  padding: 1.5rem;
-  background-color: #1e1e1e;
-  border-radius: 8px;
-  color: var(--text-color);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-input,
-textarea {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #2a2a2a;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 4px;
-}
-
-textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.submit-btn {
-  padding: 0.75rem;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.submit-btn:hover {
-  background-color: #45a049;
-}
-
-.submit-btn:disabled {
-  background-color: #aaa;
-  cursor: not-allowed;
-}
-
-.success {
-  margin-top: 1rem;
-  color: #4caf50;
-}
-
-.error {
-  margin-top: 1rem;
-  color: #ff5c5c;
-}
-
-.loading {
-  margin-top: 1rem;
-  color: #ffa500;
-}
+/* Tailwind */
 </style>

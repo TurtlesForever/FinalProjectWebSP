@@ -1,5 +1,5 @@
 <template>
-  <div :class="['flex flex-col items-center min-h-screen', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
+  <div :class="['flex flex-col items-center min-h-screen px-4', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
     <h1 class="text-3xl font-bold mb-4">Welcome to the Fitness Tracker App</h1>
     <p class="mb-4">Track your activities, exercises, and stay fit!</p>
 
@@ -29,20 +29,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useDarkModeStore } from '@/stores/darkMode';
 
-const darkMode = ref(false);
-
-// Dark mode state management
-const toggleDarkMode = () => {
-  darkMode.value = !darkMode.value;
-  if (darkMode.value) {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-};
+const darkModeStore = useDarkModeStore();
+const darkMode = computed(() => darkModeStore.darkMode);
+const toggleDarkMode = () => darkModeStore.toggle();
 
 const router = useRouter();
 const isLoggedIn = computed(() => !!localStorage.getItem('token'));
@@ -51,7 +44,7 @@ const username = localStorage.getItem('username') || 'User';
 const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('username');
-  router.push('/login'); // Using the router from `useRouter` hook
+  router.push('/login');
 };
 </script>
 
@@ -63,17 +56,7 @@ const logout = () => {
   border-radius: 4px;
   cursor: pointer;
 }
-
 .logout-btn:hover {
   background-color: #ff4040;
-}
-
-a {
-  text-decoration: none;
-  color: var(--link-color);
-}
-
-a:hover {
-  text-decoration: underline;
 }
 </style>

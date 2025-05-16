@@ -1,135 +1,108 @@
 <template>
-  <div :class="['flex justify-center items-center min-h-screen', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
-    <div class="form-container w-full max-w-md p-6 bg-gray-800 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-semibold mb-6 text-center">Add Activity</h2>
+  <div :class="['add-activity-page min-h-screen p-6 flex flex-col items-center', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
+    <h2 class="text-3xl font-bold mb-6">Add Activity</h2>
 
-      <!-- Dark Mode Toggle Button -->
-      <button @click="toggleDarkMode" class="mb-4 px-4 py-2 bg-indigo-600 text-white rounded-md">
-        Toggle Dark Mode
+    <form @submit.prevent="submitActivity" class="w-full max-w-md space-y-4">
+      <label class="block">
+        <span class="text-sm font-medium mb-1 block">Activity Type</span>
+        <v-select
+          :options="exerciseTypeNames"
+          v-model="activityType"
+          placeholder="Select or type an activity type"
+          :reduce="option => option"
+          clearable
+          class="w-full"
+        />
+      </label>
+
+      <label class="block">
+        <span class="text-sm font-medium mb-1 block">Duration (minutes)</span>
+        <input
+          type="number"
+          v-model.number="duration"
+          min="1"
+          required
+          class="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        />
+      </label>
+
+      <label class="block">
+        <span class="text-sm font-medium mb-1 block">Date</span>
+        <input
+          type="date"
+          v-model="date"
+          required
+          class="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        />
+      </label>
+
+      <button
+        type="submit"
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md"
+      >
+        Add Activity
       </button>
+    </form>
 
-      <form @submit.prevent="submitForm" class="form">
-        <label class="text-lg mb-2 block">
-          Date:
-          <input type="date" v-model="activity.date" required class="input-field" />
-        </label>
-        <label class="text-lg mb-2 block">
-          Exercise Type:
-          <input v-model="activity.exerciseType" placeholder="e.g. Running" required class="input-field" />
-        </label>
-        <label class="text-lg mb-2 block">
-          Duration (minutes):
-          <input type="number" v-model.number="activity.duration" min="1" required class="input-field" />
-        </label>
-        <button type="submit" class="submit-btn w-full" :disabled="isSubmitting">
-          Submit
-        </button>
-      </form>
-
-      <p v-if="message" :class="{ success: success, error: !success }" class="mt-4">{{ message }}</p>
-    </div>
+    <p v-if="errorMessage" class="mt-4 text-red-500">{{ errorMessage }}</p>
+    <p v-if="successMessage" class="mt-4 text-green-500">{{ successMessage }}</p>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import API from '@/api';
+import { useRouter } from 'vue-router';
+import { useDarkModeStore } from '@/stores/darkMode';
 
-const darkMode = ref(false);
+const darkModeStore = useDarkModeStore();
+const darkMode = computed(() => darkModeStore.darkMode);
 
-const activity = ref({ date: '', exerciseType: '', duration: null });
-const message = ref('');
-const success = ref(false);
-const isSubmitting = ref(false);  // Track submission state
+const router = useRouter();
 
-const toggleDarkMode = () => {
-  darkMode.value = !darkMode.value;
-};
+const activityType = ref(null);
+const duration = ref(null);
+const date = ref(new Date().toISOString().substr(0, 10));
+const errorMessage = ref('');
+const successMessage = ref('');
+const exerciseTypeNames = ref([]);
 
-const submitForm = async () => {
-  // Form validation
-  if (!activity.value.date || !activity.value.exerciseType || !activity.value.duration) {
-    message.value = 'All fields are required.';
-    success.value = false;
-    return;
+async function loadExerciseTypes() {
+  try {
+    const { data } = await API.get('/exercise-types');
+    exerciseTypeNames.value = data.exerciseTypes.map(t => t.name);
+  } catch (error) {
+    console.error(error);
   }
+}
 
-  // Prevent future dates
-  const currentDate = new Date();
-  const activityDate = new Date(activity.value.date);
-  if (activityDate > currentDate) {
-    message.value = 'Please select a valid date.';
-    success.value = false;
+async function submitActivity() {
+  errorMessage.value = '';
+  successMessage.value = '';
+
+  if (!activityType.value || !duration.value || !date.value) {
+    errorMessage.value = 'Please fill all fields.';
     return;
   }
 
   try {
-    isSubmitting.value = true;
-    await API.post('/activities', activity.value);
-    message.value = 'Activity added successfully!';
-    success.value = true;
-
-    // Delay before resetting the form for better user experience
-    setTimeout(() => {
-      activity.value = { date: '', exerciseType: '', duration: null };
-    }, 1000);  // Delay before clearing form
-  } catch (err) {
-    console.error(err);
-    message.value = 'Error adding activity.';
-    success.value = false;
-  } finally {
-    isSubmitting.value = false;
+    await API.post('/activities', {
+      type: activityType.value,
+      duration: duration.value,
+      date: date.value,
+    });
+    successMessage.value = 'Activity added successfully.';
+    setTimeout(() => router.push('/activities'), 1000);
+  } catch (error) {
+    errorMessage.value = 'Failed to add activity.';
   }
-};
+}
+
+onMounted(() => {
+  loadExerciseTypes();
+});
 </script>
 
 <style scoped>
-.input-field {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #2a2a2a;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.submit-btn {
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.submit-btn:hover {
-  background-color: #45a049;
-}
-
-.success {
-  margin-top: 1rem;
-  color: #4caf50;
-}
-
-.error {
-  margin-top: 1rem;
-  color: #ff5c5c;
-}
-
-.form-container {
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-}
-
-.form label {
-  display: block;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+/* Tailwind styles */
 </style>
