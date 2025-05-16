@@ -1,23 +1,37 @@
 <template>
   <div :class="['min-h-screen flex flex-col', darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900']">
     <header class="bg-white dark:bg-gray-800 shadow">
-      <nav class="flex flex-wrap justify-center gap-4 py-4">
-        <router-link to="/" class="text-indigo-600 dark:text-indigo-300 hover:underline">Home</router-link>
-        <router-link to="/dashboard" class="text-indigo-600 dark:text-indigo-300 hover:underline">Dashboard</router-link>
-        <router-link to="/stats" class="text-indigo-600 dark:text-indigo-300 hover:underline">Stats</router-link>
-        <router-link to="/friends" class="text-indigo-600 dark:text-indigo-300 hover:underline">Friends</router-link>
-        <router-link to="/login" class="text-indigo-600 dark:text-indigo-300 hover:underline">Login</router-link>
-        <router-link to="/register" class="text-indigo-600 dark:text-indigo-300 hover:underline">Register</router-link>
+      <nav class="flex flex-wrap justify-center gap-4 py-4 items-center" aria-label="Main navigation">
+        <ul class="flex flex-wrap gap-4 items-center">
+          <li><router-link to="/" class="text-indigo-600 dark:text-indigo-300 hover:underline">Home</router-link></li>
+          <li><router-link to="/dashboard" class="text-indigo-600 dark:text-indigo-300 hover:underline">Dashboard</router-link></li>
+          <li><router-link to="/stats" class="text-indigo-600 dark:text-indigo-300 hover:underline">Stats</router-link></li>
+          <li><router-link to="/friends" class="text-indigo-600 dark:text-indigo-300 hover:underline">Friends</router-link></li>
 
-        <!-- Dark Mode Toggle -->
-        <button @click="toggleDarkMode" class="text-indigo-600 dark:text-indigo-300 hover:underline">
-          {{ darkMode ? 'Light Mode' : 'Dark Mode' }}
-        </button>
+          <template v-if="isLoggedIn">
+            <li><span class="text-indigo-600 dark:text-indigo-300">Welcome, {{ username }}!</span></li>
+            <li>
+              <button @click="logout" class="text-red-500 dark:text-red-300 hover:underline" aria-label="Logout">
+                Logout
+              </button>
+            </li>
+          </template>
+          <template v-else>
+            <li><router-link to="/login" class="text-indigo-600 dark:text-indigo-300 hover:underline">Login</router-link></li>
+            <li><router-link to="/register" class="text-indigo-600 dark:text-indigo-300 hover:underline">Register</router-link></li>
+          </template>
+
+          <li>
+            <button @click="toggleDarkMode" class="text-indigo-600 dark:text-indigo-300 hover:underline" aria-label="Toggle dark mode">
+              {{ darkMode ? 'Light Mode' : 'Dark Mode' }}
+            </button>
+          </li>
+        </ul>
       </nav>
     </header>
 
     <main class="flex-grow p-6">
-      <router-view />
+      <router-view :key="$route.fullPath" />
     </main>
 
     <footer class="bg-white dark:bg-gray-800 text-center py-4 border-t border-gray-300 dark:border-gray-700">
@@ -27,25 +41,20 @@
 </template>
 
 <script setup>
-import { onMounted, computed } from 'vue';
-import { useDarkModeStore } from '@/stores/darkMode';
-import { useUserStore } from '@/store/userStore';
+import { useSession } from '@/composables/useSession';
 
-const darkModeStore = useDarkModeStore();
-const userStore = useUserStore();
+const {
+  isLoggedIn,
+  username,
+  darkMode,
+  toggleDarkMode,
+  logout,
+  initializeSession,
+} = useSession();
 
-onMounted(() => {
-  darkModeStore.initialize();
-  userStore.loadUser();
-});
-
-const toggleDarkMode = () => {
-  darkModeStore.toggle();
-};
-
-const darkMode = computed(() => darkModeStore.darkMode);
+initializeSession();
 </script>
 
 <style scoped>
-/* Tailwind handles most styles */
+/* Tailwind covers all main styling */
 </style>

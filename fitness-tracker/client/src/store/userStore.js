@@ -14,18 +14,25 @@ export const useUserStore = defineStore('user', {
     setUser(user) {
       this.currentUser = user;
       localStorage.setItem('currentUser', JSON.stringify(user));
+      if (user.token) localStorage.setItem('token', user.token);
+      if (user.username) localStorage.setItem('username', user.username);
     },
 
     loadUser() {
-      const saved = localStorage.getItem('currentUser');
-      if (saved) {
-        this.currentUser = JSON.parse(saved);
+      try {
+        const saved = localStorage.getItem('currentUser');
+        if (saved) this.currentUser = JSON.parse(saved);
+      } catch (e) {
+        console.warn('Failed to parse saved user data', e);
+        this.currentUser = null;
       }
     },
 
     logout() {
       this.currentUser = null;
       localStorage.removeItem('currentUser');
-    },
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+    }
   },
 });
