@@ -1,6 +1,7 @@
-const express = require('express')
-const router = express.Router()
-const pool = require('../db/db') // your PostgreSQL connection pool
+const express = require('express');
+const router = express.Router();
+const pool = require('../db/db');
+const verifyToken = require('../middleware/verifyToken');
 
 router.get('/search', verifyToken, async (req, res) => {
   const query = req.query.q.toLowerCase();
@@ -16,4 +17,4 @@ router.get('/search', verifyToken, async (req, res) => {
   }
 });
 
-module.exports = router
+module.exports = router;
