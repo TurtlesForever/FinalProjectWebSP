@@ -50,7 +50,7 @@
 import { ref, computed } from 'vue';
 import axios from 'axios';
 import FriendTagger from './FriendTagger.vue';
-import { useDarkModeStore } from '@/stores/darkMode';
+import { useDarkModeStore } from '@/store/darkMode';
 
 const store = useDarkModeStore();
 const darkMode = computed(() => store.darkMode);

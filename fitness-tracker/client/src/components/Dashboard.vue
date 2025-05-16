@@ -61,7 +61,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import API from '@/api';
-import { useDarkModeStore } from '@/stores/darkMode';
+import { useDarkModeStore } from '@/store/darkMode';
 
 const darkModeStore = useDarkModeStore();
 const darkMode = computed(() => darkModeStore.darkMode);

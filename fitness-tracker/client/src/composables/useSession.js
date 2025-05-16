@@ -1,7 +1,7 @@
 import { computed, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/store/userStore';
-import { useDarkModeStore } from '@/stores/darkMode';
+import { useDarkModeStore } from '@/store/darkMode';
 
 export function useSession() {
   const router = useRouter();
