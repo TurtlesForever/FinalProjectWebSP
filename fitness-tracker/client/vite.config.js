@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
 export default defineConfig({
-  base: '/',
+  base: './',
   logLevel: 'info',
   plugins: [vue()],
   resolve: {
